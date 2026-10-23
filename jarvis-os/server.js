@@ -10538,7 +10538,9 @@ async function buildNeuralGraph() {
   const E = (from, to, kind) => { edges.push({ from, to, kind: kind || 'flow' }); };
 
   // --- core spine: how a request actually travels ---
-  N('you', 'ATHARV', 'io', 'voice · text · ⌘K',
+  // The owner's node carries the name set in Settings (profile.userName), so a new Mac shows its own owner, not a
+  // name typed into the code; a blank profile reads YOU.
+  N('you', (profile.userName() || 'you').toUpperCase(), 'io', 'voice · text · ⌘K',
     'You. Every request enters here — typed in chat, spoken through the mic, or triggered by a hotkey.');
   N('ui', 'JARVIS OS UI', 'core', 'chat · voice · vision · world · neural',
     'The interface layer: chat view, voice orb, camera vision, World Monitor and this Neural Network. Renders replies and streams live state from the server.');

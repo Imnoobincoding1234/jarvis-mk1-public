@@ -10,6 +10,7 @@ deprecated and will be removed". Ollama still serves everything else (the reader
 | `llama-server` | the arm64 slice (`lipo -thin arm64`) of the llama-server bundled in Ollama.app **0.33.3** — llama.cpp commit `0f3a71be1`, still signed by Ollama (team 3MU9H2V9Y9). Links only macOS system frameworks. sha256 `71f3955613d4513dbf3010f571ed1609264f0aa1628401daa6716d54c26b4687` |
 | `jarvis.jinja` | jarvis's chat template, byte-identical to `ollama show jarvis --template` |
 | `jarvis.params.json` | jarvis's sampling defaults, as in its Ollama manifest (Modelfile.jarvis + the Bonsai base) |
+| `LICENSE-llama.cpp.txt` | llama.cpp's MIT licence and its vendored libraries' licences, as Ollama.app ships them (`Contents/Resources/LLAMA_CPP_VENDORS_LICENSE`) — `llama-server` is passed on under these |
 
 The base weights come from the installed Ollama model `hf.co/prism-ml/Bonsai-4B-gguf:Q1_0` (its blob, read from the
 manifest), and the adapter from `finetune/adapters/bonsai_v42_s1/jarvis-v42-lora.gguf` (restored by the vault; same sha256

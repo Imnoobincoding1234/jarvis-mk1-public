@@ -326,7 +326,7 @@ build_if_needed "jarvis-control" "JarvisControl.app" "JarvisControl.swift"
 [ -d "Jarvis Search/src" ] && ok "Jarvis Search source vendored (build: cd 'Jarvis Search/src' && bash build.sh)"
 
 # ── 5. launchd agents, written for THIS machine ────────────────────────────
-# NOT copied from a committed plist. The originals hardcode /Users/you and one of them pointed at
+# NOT copied from a committed plist. The originals hardcode /Users/atharv and one of them pointed at
 # a directory outside this repo entirely for months. Generating them from $ROOT means the paths are
 # right by construction on any machine and any username.
 say "launchd agents"
@@ -363,21 +363,21 @@ write_agent() { # label, program-args..., then optional KEY=VALUE env via AGENT_
   launchctl bootstrap "gui/$UID_N" "$plist" >/dev/null 2>&1 && ok "$label loaded" || bad "$label failed to load"
 }
 mkdir -p logs
-AGENT_KEEPALIVE=1 AGENT_INTERVAL= AGENT_ENV= write_agent com.jarvis.jarvisos       "$NODE" "$ROOT/jarvis-os/server.js"
-AGENT_KEEPALIVE=1 AGENT_INTERVAL= AGENT_ENV= write_agent com.jarvis.claplistener   "$ROOT/clap-daemon/ClapListener.app/Contents/MacOS/ClapListener"
-AGENT_KEEPALIVE=1 AGENT_INTERVAL= AGENT_ENV= write_agent com.jarvis.jarviscontrol  "$ROOT/jarvis-control/JarvisControl.app/Contents/MacOS/JarvisControl"
+AGENT_KEEPALIVE=1 AGENT_INTERVAL= AGENT_ENV= write_agent com.atharv.jarvisos       "$NODE" "$ROOT/jarvis-os/server.js"
+AGENT_KEEPALIVE=1 AGENT_INTERVAL= AGENT_ENV= write_agent com.atharv.claplistener   "$ROOT/clap-daemon/ClapListener.app/Contents/MacOS/ClapListener"
+AGENT_KEEPALIVE=1 AGENT_INTERVAL= AGENT_ENV= write_agent com.atharv.jarviscontrol  "$ROOT/jarvis-control/JarvisControl.app/Contents/MacOS/JarvisControl"
 AGENT_KEEPALIVE=1 AGENT_INTERVAL= \
   AGENT_ENV="FOCUS_ON=AIC_DND_On FOCUS_OFF=AIC_DND_Off POLL=1.0 CLAP_LOG=$ROOT/clap-daemon/clap.log" \
-  write_agent com.jarvis.focusguard "$ROOT/focus-guard/FocusGuard.app/Contents/MacOS/FocusGuard"
-AGENT_KEEPALIVE=0 AGENT_INTERVAL=300 AGENT_ENV= write_agent com.jarvis.jarvisselfheal "$NODE" "$ROOT/security/selfheal.js"
-AGENT_KEEPALIVE=0 AGENT_INTERVAL=3600 AGENT_ENV= write_agent com.jarvis.jarviscanary  "$NODE" "$ROOT/security/canary.js"
-AGENT_KEEPALIVE=0 AGENT_INTERVAL=86400 AGENT_ENV= write_agent com.jarvis.jarvissecurity /bin/bash "$ROOT/security/verify.sh"
+  write_agent com.atharv.focusguard "$ROOT/focus-guard/FocusGuard.app/Contents/MacOS/FocusGuard"
+AGENT_KEEPALIVE=0 AGENT_INTERVAL=300 AGENT_ENV= write_agent com.atharv.jarvisselfheal "$NODE" "$ROOT/security/selfheal.js"
+AGENT_KEEPALIVE=0 AGENT_INTERVAL=3600 AGENT_ENV= write_agent com.atharv.jarviscanary  "$NODE" "$ROOT/security/canary.js"
+AGENT_KEEPALIVE=0 AGENT_INTERVAL=86400 AGENT_ENV= write_agent com.atharv.jarvissecurity /bin/bash "$ROOT/security/verify.sh"
 # HOW MANY MODELS OLLAMA MAY HOLD (his rule). 2026-09-23: one — three at once had frozen the 8 GB Mac. Since
 # 2026-10-09: four, because jarvis-os/ollama.js makeRoomFor keeps a heavy model alone and the light ones (chat
 # model, reader, embedders) within a memory budget — so the chat model keeps its cached prompt between turns.
 # Ollama.app has no setting for it, so launchd hands it the environment variable at login; Ollama reads it when it
-# starts. Off switch: launchctl bootout gui/$UID/com.jarvis.ollamaonemodel && launchctl unsetenv OLLAMA_MAX_LOADED_MODELS
-AGENT_KEEPALIVE=0 AGENT_INTERVAL= AGENT_ENV= write_agent com.jarvis.ollamaonemodel /bin/launchctl setenv OLLAMA_MAX_LOADED_MODELS 4
+# starts. Off switch: launchctl bootout gui/$UID/com.atharv.ollamaonemodel && launchctl unsetenv OLLAMA_MAX_LOADED_MODELS
+AGENT_KEEPALIVE=0 AGENT_INTERVAL= AGENT_ENV= write_agent com.atharv.ollamaonemodel /bin/launchctl setenv OLLAMA_MAX_LOADED_MODELS 4
 
 # ── 6. integrity baseline (per machine — a copied manifest means nothing) ───
 say "integrity baseline"
@@ -392,7 +392,7 @@ fi
 say "checking it actually answers"
 sleep 3
 if curl -s -o /dev/null -m 8 -w '' http://127.0.0.1:8787/ 2>/dev/null; then ok "jarvis-os answering on :8787"
-else warn "jarvis-os not answering yet — check logs/com.jarvis.jarvisos.log"; fi
+else warn "jarvis-os not answering yet — check logs/com.atharv.jarvisos.log"; fi
 
 # ── 8. the part no script may do ───────────────────────────────────────────
 cat <<'PERMS'

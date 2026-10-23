@@ -2,7 +2,7 @@
 # Off switch — stop and remove FocusGuard.
 set -euo pipefail
 
-LABEL="com.jarvis.focusguard"
+LABEL="com.atharv.focusguard"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 
 echo "→ Stopping launch agent"

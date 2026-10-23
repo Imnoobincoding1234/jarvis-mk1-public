@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Write round 4's synthetic training batches: several requests in one message (`multi`), the look-alikes
-that stay ONE reading or `none`, and notes with `write` — in Mihir's texting style (data/style_profile.md).
+that stay ONE reading or `none`, and notes with `write` — in Atharv's texting style (data/style_profile.md).
 
     gen_round4.py            # writes data/round4_batches/<batch>.tsv
     then (only after round 3 is evaluated): synth_add.py <batch> < data/round4_batches/<batch>.tsv
@@ -20,7 +20,7 @@ pick = rng.choice
 
 APPS = ['spotify', 'notes', 'whatsapp', 'brave', 'calculator', 'terminal', 'insta', 'youtube', 'yt', 'discord', 'vs code',
         'safari', 'reminders', 'netflix', 'chatgpt', 'gmail', 'github', 'finder', 'maps', 'photos', 'calendar', 'settings']
-PEOPLE = ['mama', 'papa', 'bhai', 'didi', 'nanu', 'kunal', 'rehaan', 'ira', 'rohan', 'kabir', 'priya', 'arjun', 'simran',
+PEOPLE = ['mama', 'papa', 'bhai', 'didi', 'nanu', 'parth', 'sidhu', 'harsimran', 'rohan', 'kabir', 'priya', 'arjun', 'simran',
           'dev', 'riya', 'my sister', 'coach', 'jake', 'emma']
 BODIES = ['omw', 'wsg', 'im outside', 'running late', 'call me', 'gn', 'hbu', 'lmk when ur free', 'reached home', 'bring my charger',
           'dinner at 8', 'the plan is off', 'thx', 'ok', 'see u tmrw', 'where u at', 'kal milte hai', 'ghar pahunch gaya']
@@ -30,8 +30,8 @@ VIDS = ['minecraft', 'f1 highlights', 'mrbeast', 'cricket highlights', 'a podcas
 WHATS = ['call the dentist', 'drink water', 'charge my phone', 'submit the project', 'take my meds', 'pack my bag', 'go to the gym']
 WHENS = ['tmrw', 'at 6', 'in an hour', 'tonight', 'at 7pm', 'in 20 mins', 'on friday']
 SEARCH_Q = ['ipl schedule', 'best budget earbuds', 'gta 6 release date', 'ps5 price in india', 'f1 standings', 'cheap flights to goa']
-NOTES = ['buy eggs milk bread', 'the wifi password is on the router', 'gym at 6', 'kunal owes me 500', 'call the plumber']
-CITIES = ['delhi', 'mumbai', 'shimla', 'nagpur', 'london']
+NOTES = ['buy eggs milk bread', 'the wifi password is on the router', 'gym at 6', 'parth owes me 500', 'call the plumber']
+CITIES = ['delhi', 'mumbai', 'shimla', 'ludhiana', 'london']
 
 
 def step():

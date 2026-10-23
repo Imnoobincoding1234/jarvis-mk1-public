@@ -1,5 +1,5 @@
 'use strict';
-// FRESH held-out #6 for the reply-claim check (2026-10-10, Mihir away), written BEFORE the candidate below was run.
+// FRESH held-out #6 for the reply-claim check (2026-10-10, Atharv away), written BEFORE the candidate below was run.
 // Why: the 2026-10-10 casual dev run showed the live claim reader (replyclaim.weights.json, round 3) blocking jarvis's short
 // small-talk replies that claim nothing — the reply was swapped for a canned refusal. Sets #1–#5 were all read in earlier
 // rounds. This set is jarvis-shaped: short, chatty, Sir/Boss, some Hinglish; each item carries the message it answers, because
@@ -14,7 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const claim = [
   ['tysm', 'All sorted, consider it handled.'], ['calling mama later', 'Sure, I will set that up later.'], ['i texted bhai already', 'All done on my end.'],
-  ['open youtube rq', 'Opening YouTube now.'], ['remind me at 5 to study', 'Reminder set for 5, Sir.'], ['text kunal im late', 'Sent to Kunal.'],
+  ['open youtube rq', 'Opening YouTube now.'], ['remind me at 5 to study', 'Reminder set for 5, Sir.'], ['text parth im late', 'Sent to Parth.'],
   ['play some lofi', 'Playing lofi, Boss.'], ['save this', 'Saved it to your files.'], ['add milk to the list', 'Added milk, Sir.'],
   ['call mama', 'Ringing Mama for you now.'], ['mute the mac', 'Muted.'], ['book me a cab', 'Your cab is booked.'],
   ['order a pizza', 'I will order it now.'], ['find my cv', 'Let me find it for you.'], ['check my mail', 'Checking your inbox, Sir.'],
@@ -24,7 +24,7 @@ const claim = [
   ['spotify band kar', 'Band kar diya.'], ['gaana chala', 'Gaana chala raha hoon.'], ['mama ko bol de', 'Bol diya mama ko.'],
   ['search the iphone price', 'One sec, searching that.'], ['download the pdf', 'Downloading it for you.'], ['lock the screen', 'Screen locked.'],
   ['put it in my calendar', 'It is on your calendar for Friday.'], ['pause', 'Paused it.'], ['volume up', 'Turned it up.'],
-  ['tell ira happy bday', 'Wished Ira happy birthday for you.'], ['can u fix my wifi', 'Let me restart it for you.'],
+  ['tell harsimran happy bday', 'Wished Harsimran happy birthday for you.'], ['can u fix my wifi', 'Let me restart it for you.'],
   ['clear my downloads', 'Cleared your downloads, Sir.'], ['open notes', 'Notes is open.'], ['send that to the group', 'Sent to the group.'],
   ['copy that', 'Copied to your clipboard.'], ['find a cafe nearby', 'Looking for cafes near you.'],
 ];

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write round 3's synthetic training batches in Mihir's texting style (data/style_profile.md).
+"""Write round 3's synthetic training batches in Atharv's texting style (data/style_profile.md).
 
     gen_round3.py            # writes data/round3_batches/<batch>.tsv, one "<message>\\t<label json>" per line
     then: synth_add.py <batch> < data/round3_batches/<batch>.tsv
@@ -19,11 +19,11 @@ rng = random.Random(20260927)
 pick = rng.choice
 
 # ---- people, as he names them ------------------------------------------------------------------------
-PEOPLE = ['mama', 'mom', 'mummy', 'papa', 'dad', 'bhai', 'mera bhai', 'didi', 'nanu', 'nani', 'chachu', 'kunal', 'ira',
-          'rehaan', 'yuvan', 'jivanjot', 'aaditesh', 'samanvay', 'aditi', 'rohan', 'kabir', 'ananya', 'priya', 'arjun',
+PEOPLE = ['mama', 'mom', 'mummy', 'papa', 'dad', 'bhai', 'mera bhai', 'didi', 'nanu', 'nani', 'chachu', 'parth', 'harsimran',
+          'sidhu', 'ekamveer', 'jivanjot', 'aaditesh', 'samanvay', 'aditi', 'rohan', 'kabir', 'ananya', 'priya', 'arjun',
           'vikram', 'simran', 'jas', 'manav', 'riya', 'ishaan', 'tanvi', 'dev', 'noor', 'aarav', 'meher', 'singh ji', 'sir',
           'coach', 'jake', 'emma', 'liam', 'sophia', 'noah', 'mia', 'lucas', 'zoe', 'my sister', 'my bro', 'my friend rahul']
-H_PEOPLE = ['mama', 'papa', 'bhai', 'didi', 'nanu', 'nani', 'kunal', 'rehaan', 'simran', 'rohan', 'chachu', 'mummy']
+H_PEOPLE = ['mama', 'papa', 'bhai', 'didi', 'nanu', 'nani', 'parth', 'sidhu', 'simran', 'rohan', 'chachu', 'mummy']
 
 # ---- what he says in a message (direct) and what he asks (indirect → reported) -----------------------
 BODIES = ['wsg', 'wsg gng', 'hyd', 'gn', 'gm', 'wyd', 'hbu', 'omw', 'otw', 'brb', 'ttyl', 'lmk when ur free', 'im outside',
@@ -138,7 +138,7 @@ for _ in range(8):
 
 # ---- remind ----------------------------------------------------------------------------------------------
 WHATS = ['call the dentist', 'drink water', 'charge my phone', 'study for the maths test', 'submit the project', 'take my meds',
-         'feed the cat', 'email sir', 'pay the wifi bill', 'text kunal back', 'call mama', 'pack my bag', 'go to the gym',
+         'feed the cat', 'email sir', 'pay the wifi bill', 'text parth back', 'call mama', 'pack my bag', 'go to the gym',
          'finish the admax page', 'return the book', 'water the plants', 'start studying', 'check the oven', 'sleep early',
          'order the cake', 'reply to the email', 'back up my laptop', 'book the tickets', 'renew the domain', 'push the code']
 WHENS = ['tmrw', 'tomorrow morning', 'at 6', 'at 7pm', 'in an hour', 'in 20 mins', 'tonight', 'on friday', 'every morning',
@@ -188,7 +188,7 @@ for s in H_CAL:
 # ---- note ------------------------------------------------------------------------------------------------
 NOTE_C = ['buy eggs milk bread', 'the wifi password is on the router', 'call the plumber', 'ideas for the admax site',
           'the test is on the 14th', 'shopping list: rice, dal, chips', 'gym at 6 every day', 'books to read this month',
-          'kunal owes me 500', 'fix the wake word bug', 'the locker code is 4412', 'project due friday']
+          'parth owes me 500', 'fix the wake word bug', 'the locker code is 4412', 'project due friday']
 NOTE_T = ['note down {c}', 'jot down {c}', 'make a note {c}', 'add {c} to my notes', 'write {c} in notes', 'open notes and write {c}',
           'save a note saying {c}', 'put {c} in my notes', 'quick note: {c}', 'notes mein likh do {c}']
 TOPICS = ['rain', 'tea', 'the ocean', 'friendship', 'cricket', 'space', 'exams', 'healthy food', 'climate change', 'mumbai']
@@ -209,7 +209,7 @@ for _ in range(25):
     add('round3-note', f + text, {'act': 'note', 'content': content})
 
 # ---- weather ---------------------------------------------------------------------------------------------
-CITIES = ['nagpur', 'nashik', 'delhi', 'mumbai', 'shimla', 'london', 'tokyo', 'kolhapur', 'goa', 'toronto', 'dubai']
+CITIES = ['ludhiana', 'mohali', 'delhi', 'mumbai', 'shimla', 'london', 'tokyo', 'chandigarh', 'goa', 'toronto', 'dubai']
 W_0 = ['hows the weather', 'weather?', 'whats the weather like', 'do i need a jacket rn', 'do i need an umbrella', 'hot outside or nah',
        'whats the temp outside', 'is it cold out', 'is it gonna rain', 'hows it looking outside', 'weather check', 'raining rn?']
 W_T = ['weather {t}', 'is it gonna rain {t}', 'do i need an umbrella {t}', 'hows the weather {t}', 'will it rain {t}',
@@ -272,8 +272,8 @@ for _ in range(15):
     a, f = pick(APPS), pick(H_FILLERS)
     add('round3-slang', f + pick(H_CLOSE).format(a=a), {'act': 'close', 'thing': a})
 
-MUSIC = ['lofi', 'drake', 'travis scott', 'the weeknd', 'arijit singh', 'ap dhillon', 'rehaan moosewala', 'karan aujla', 'coldplay',
-         'taylor swift', 'kendrick', 'old bollywood hits', 'sad songs', 'gym music', 'chill vibes', 'study music', 'marathi songs',
+MUSIC = ['lofi', 'drake', 'travis scott', 'the weeknd', 'arijit singh', 'ap dhillon', 'sidhu moosewala', 'karan aujla', 'coldplay',
+         'taylor swift', 'kendrick', 'old bollywood hits', 'sad songs', 'gym music', 'chill vibes', 'study music', 'punjabi songs',
          'my liked songs', 'something chill', 'some hype music', 'blinding lights', 'starboy', 'shape of you', 'kesariya']
 PLAY_M = ['play {q}', 'throw on {q}', 'blast {q}', 'bump {q}', 'put on {q}', 'queue up {q}', 'spin {q}', 'play some {q}',
           'yo play {q}', 'play {q} rn', 'can u play {q}', 'ply {q}', 'lemme hear {q}', 'put {q} on']
@@ -294,7 +294,7 @@ for _ in range(15):
     where = 'spotify' if 'spotify' in tpl else 'yt music'
     add('round3-slang', f + tpl.format(q=q), {'act': 'play', 'query': q, 'where': where})
 for _ in range(25):
-    q, f = pick(['arijit', 'ap dhillon', 'lofi', 'marathi', 'old songs', 'karan aujla', 'koi accha']), pick(H_FILLERS)
+    q, f = pick(['arijit', 'ap dhillon', 'lofi', 'punjabi', 'old songs', 'karan aujla', 'koi accha']), pick(H_FILLERS)
     add('round3-slang', f + pick(H_PLAY).format(q=q), {'act': 'play', 'query': q})
 for _ in range(55):
     q, f = pick(VIDS), pick(FILLERS)
@@ -353,7 +353,7 @@ for s in NVM:
 for s in HOWTO:
     add('round3-none', s, {'act': 'none'})
 for s in ['call an ambulance rn', 'call the police theres someone outside', 'call 112', 'call it a night', 'that was a close call',
-          'schedule a meeting with kunal at 5', 'add a meeting to my calendar', 'at 6pm text mama saying im leaving',
+          'schedule a meeting with parth at 5', 'add a meeting to my calendar', 'at 6pm text mama saying im leaving',
           'text mama omw and then open maps', 'close brave + open notes', 'play drake and open whatsapp', 'read my last text',
           'block him on whatsapp', 'set the volume to 40', 'whats the difference between weather and climate', 'rain is so pretty',
           'i love rainy days', 'the weather has been crazy lately', 'my calendar is a mess lol', 'notes app is kinda useless',

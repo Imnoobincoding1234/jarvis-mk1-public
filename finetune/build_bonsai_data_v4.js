@@ -17,7 +17,7 @@ let seed = 40404;
 const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
 const pick = a => a[Math.floor(rnd() * a.length)];
 const int = (lo, hi) => lo + Math.floor(rnd() * (hi - lo + 1));
-const nm = () => pick(['Sir', 'Mihir', 'Boss']);
+const nm = () => pick(['Sir', 'Atharv', 'Boss']);
 const cap = s => s.replace(/(^|\s)\S/g, c => c.toUpperCase());
 const fmt = n => Number.isInteger(n) ? String(n) : String(Math.round(n * 100) / 100);
 const P = require('./data/v4_parts/chat_patch.js')({ pick, int, cap, fmt });
@@ -62,7 +62,7 @@ const readJsonl = f => fs.existsSync(f) ? fs.readFileSync(f, 'utf8').split('\n')
   const kindN = {}; for (const r of rows) kindN[r.kind] = (kindN[r.kind] || 0) + 1;
   const used = {}, patch = []; let capped = 0;
   for (const r of rows.filter(r => !held.has(userOf(r)))) {
-    const a = r.kind + '\u0000' + r.messages[r.messages.length - 1].content.replace(/\b(Sir|Mihir|Boss)\b/g, '{n}');
+    const a = r.kind + '\u0000' + r.messages[r.messages.length - 1].content.replace(/\b(Sir|Atharv|Boss)\b/g, '{n}');
     if ((used[a] = (used[a] || 0) + 1) > Math.max(3, Math.ceil(kindN[r.kind] * 0.03)) && r.kind !== 'resolve_none') { capped++; continue; }
     patch.push(r);
   }
@@ -86,7 +86,7 @@ const readJsonl = f => fs.existsSync(f) ? fs.readFileSync(f, 'utf8').split('\n')
   for (const r of patch.concat(webTrain, molmo)) (by[r.kind] = by[r.kind] || []).push(r);
   for (const [k, rs] of Object.entries(by).sort()) {
     const qs = new Set(rs.map(r => r.messages[r.messages.length - 2].content)), as = {};
-    for (const r of rs) { const a = r.messages[r.messages.length - 1].content.replace(/\b(Sir|Mihir|Boss)\b/g, '{n}'); as[a] = (as[a] || 0) + 1; }
+    for (const r of rs) { const a = r.messages[r.messages.length - 1].content.replace(/\b(Sir|Atharv|Boss)\b/g, '{n}'); as[a] = (as[a] || 0) + 1; }
     const top = Math.max(...Object.values(as));
     const extra = k.startsWith('web') ? '  websites ' + new Set(rs.map(r => r.website)).size : '';
     console.log(k.padEnd(13) + ' rows ' + String(rs.length).padStart(5) + '  inputs ' + String(qs.size).padStart(5) + '  replies ' + String(Object.keys(as).length).padStart(5) + '  top ' + (top / rs.length * 100).toFixed(1) + '%' + extra);

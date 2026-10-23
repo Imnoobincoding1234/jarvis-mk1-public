@@ -15,7 +15,7 @@ const NORMAL = { batteryPct: 64, charging: false, cpu: 18, ramPct: 78, diskPct: 
   // v4.2: a fixed clock and weather (promptclock.js) so the prompts do not depend on the build minute; v4.1's set is unchanged
   const C = require('./promptclock');
   const sys0 = await J._systemPrompt(null, { over: { stats: NORMAL, down: [] } });
-  const sys = process.env.GROUNDED_HELD ? C.setClock(sys0, C.at('2026-10-13T16:10'), { temp: 27, unit: 'C', desc: 'Clear', city: 'Nagpur' }) : sys0;
+  const sys = process.env.GROUNDED_HELD ? C.setClock(sys0, C.at('2026-10-13T16:10'), { temp: 27, unit: 'C', desc: 'Clear', city: 'Ludhiana' }) : sys0;
   const out = H.items.map((c, i) => ({ section: 'grounded', i, q: c.q, max: 120, meta: { must: c.must || null, decline: !!c.decline, note: c.note || null, title: c.source.title },
     messages: [{ role: 'system', content: sys }, { role: 'user', content: G.userMessage(c.q, c.source) }] }));
   fs.writeFileSync(path.join(__dirname, 'data', process.env.GROUNDED_PROMPTS || 'bonsai_eval_prompts_v41_grounded.jsonl'), out.map(r => JSON.stringify(r)).join('\n') + '\n');

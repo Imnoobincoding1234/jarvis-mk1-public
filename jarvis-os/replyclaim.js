@@ -68,9 +68,9 @@ const REPLY_CLAIM_EXEMPLARS = {
     'It is easier to order those the night before.',
     'There is nothing on your calendar today.', 'Good morning, Sir.',
     // A SHORT FACTUAL ANSWER WITH AN HONORIFIC IS NOT A COMPLETION CLAIM. Measured: "Your name is
-    // Mihir, Sir." classified as `done`, because it shares its shape with "Added to your
+    // Atharv, Sir." classified as `done`, because it shares its shape with "Added to your
     // reminders, Sir." — and misreading it would have replaced a correct answer with a refusal.
-    'Your name is Mihir, Sir.', 'Your battery is at 81 percent, Sir.',
+    'Your name is Atharv, Sir.', 'Your battery is at 81 percent, Sir.',
     'It is 7pm in London, Sir.', 'That is 391, Sir.', 'The file is on your desktop, Sir.',
     // THE SYSTEM'S OWN REFUSALS. These are the strings the guards below emit. Reading one of them
     // back as a claim would be the guard triggering on its own output.

@@ -434,7 +434,7 @@ console.log('\n— find_contact: single exact match is confident, no false ambig
   // Its own address book and app registry. personIn asks Contacts which span is a person, and a
   // suite that reads HIS Contacts would pass on one Mac and nowhere else.
   A.init({
-    contacts: [{ name: 'Mama', nick: '' }, { name: 'Kunal Nani', nick: 'Kunal' }],
+    contacts: [{ name: 'Mama', nick: '' }, { name: 'Parth Nani', nick: 'Parth' }],
     fuzzyApp: n => {
       const q = String(n || '').toLowerCase().trim().replace(/^(?:the|my)\s+/, '');
       for (const app of ['Notes', 'Calculator', 'Safari', 'Reminders', 'TextEdit', 'App Store', 'Spotify'])
@@ -567,7 +567,7 @@ console.log('\n— find_contact: single exact match is confident, no false ambig
 // Which country a world question is about. The monitor's standing feeds are global, so this is what
 // decides whether it goes and fetches a country's own press at all.
 // Pointing at a control in plain words — the atom teach mode is built from. These fixtures are the
-// phrasings Mihir actually used when describing the feature.
+// phrasings Atharv actually used when describing the feature.
 // Site-scoped UI actions reaching the agent lane at all.
 //
 // Before this, "star the jarvis repo on github" hit the statement guard, went to plain chat, and the
@@ -652,7 +652,7 @@ async function runSiteActionTests() {
   // MUST NOT: an action verb with no site named is somebody else's lane (files, notes, reminders).
   for (const g of ['delete my downloads folder',
                    'save this as a note',
-                   'follow up with kunal tomorrow']) {
+                   'follow up with parth tomorrow']) {
     eq('no site named: ' + g, await A.agentIntent(g), false);
   }
 }
@@ -980,7 +980,7 @@ async function runRoutingGuardTests() {
     ['search the internet for the eiffel tower height and open the first result', 'eiffel tower height'],
     ['search online for cheap flights and click the first result', 'cheap flights'],
     ['search for the eiffel tower height and open the first result', 'eiffel tower height'],
-    ['google the best pizza in nagpur and open the top result', 'best pizza in nagpur'],
+    ['google the best pizza in ludhiana and open the top result', 'best pizza in ludhiana'],
     ['look up the population of japan and click the first result', 'population of japan'],
     ['search youtube for lofi beats and open the first result', 'lofi beats'],
     ['search youtube for mrbeast and click the first result', 'mrbeast'],
@@ -1207,7 +1207,7 @@ console.log('\n— SOS: the right number, for where he actually is —');
 {
   const S = require(process.env.HOME + '/JARVIS MK-1/jarvis-os/sos.js');
 
-  // THE WHOLE REASON THIS IS A LOOKUP AND NOT A CONSTANT. He lives in Maharashtra; his mother is in
+  // THE WHOLE REASON THIS IS A LOOKUP AND NOT A CONSTANT. He lives in Punjab; his mother is in
   // California. Dialling 911 in India reaches nothing at all.
   eq('India, ambulance', S.numberFor('IN', 'ambulance').number, '108');
   eq('India, police', S.numberFor('IN', 'police').number, '100');
@@ -1234,7 +1234,7 @@ console.log('\n— SOS: the right number, for where he actually is —');
   const junk = S.buildScript({ service: 'ambulance', name: 'A', address: 'mix', city: 'Fairview', lat: 30.7, lon: 76.6 });
   eq('a junk address is never read out', /address is: mix/i.test(junk), false);
   eq('and it asks them to trace the call instead', /trace this call|use those coordinates/i.test(junk), true);
-  const real = S.buildScript({ service: 'fire', name: 'A', address: 'House 42, Sector 125, Fairview, Maharashtra 999301' });
+  const real = S.buildScript({ service: 'fire', name: 'A', address: 'House 42, Sector 125, Fairview, Punjab 999301' });
   eq('a real address is read out', /House 42, Sector 125/.test(real), true);
 
   // The script must always declare itself a machine: a dispatcher who thinks a person is on the
@@ -1247,8 +1247,8 @@ console.log('\n— SOS: the right number, for where he actually is —');
 console.log('\n— SOS: the flat number is only true at home —');
 {
   const S = require(process.env.HOME + '/JARVIS MK-1/jarvis-os/sos.js');
-  const home = 'Marigold Towers, B block, B-101, Marigold Vihar, Oakridge, Fairview, Maharashtra, 999300, India';
-  const away = 'Sector 17, Kolhapur, 160017, India';
+  const home = 'Marigold Towers, B block, B-101, Marigold Vihar, Oakridge, Fairview, Punjab, 999300, India';
+  const away = 'Sector 17, Chandigarh, 160017, India';
 
   // AT HOME the flat leads and is stated as fact — that is what he confirmed himself.
   const atHome = S.buildScript({ service: 'ambulance', name: 'A', address: home, addressExact: true });
@@ -1272,7 +1272,7 @@ console.log('\n— calls: a recipient comes from Contacts, or it does not happen
   const CALL_NOT_RE = eval(/const CALL_NOT_RE = (\/.*?\/i);/.exec(src)[1]);
   const claims = t => CALL_RE.test(t) && !CALL_NOT_RE.test(t);
 
-  for (const t of ['call nanu', 'ring mama', 'phone kunal', 'dial yuvan', 'call up nanu'])
+  for (const t of ['call nanu', 'ring mama', 'phone parth', 'dial ekamveer', 'call up nanu'])
     eq('claims a call request: "' + t + '"', claims(t), true);
 
   // IDIOMS ARE NOT INSTRUCTIONS. "call it a day" reaching the dialler would be far worse than it
@@ -2956,7 +2956,7 @@ function runMachineQuestionTests() {
   eq('kya, asking', J.isStatement('kya mera laptop theek hai'), false);
   // The copula is NOT an interrogative. These must stay statements, or every Hinglish sentence he
   // types opens the action lanes.
-  eq('a plain Hinglish statement stays a statement', J.isStatement('mera naam Mihir hai'), true);
+  eq('a plain Hinglish statement stays a statement', J.isStatement('mera naam Atharv hai'), true);
   eq('a Hinglish statement about the laptop', J.isStatement('mera laptop slow chal raha hai'), true);
 
   console.log('\n— which apps are open —');

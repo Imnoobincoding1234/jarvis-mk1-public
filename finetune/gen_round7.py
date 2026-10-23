@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Round 7's rows — `when`, front pages and reasons, Hinglish opens, talk about music, Hinglish volume, someone's news, screenshot
-slang, "close the X app", casual weather/calendar, artist + song. New sentences in Mihir's style.
+slang, "close the X app", casual weather/calendar, artist + song. New sentences in Atharv's style.
     gen_round7.py       # writes data/round7_batches/round7.tsv
     then: synth_add.py round7 < data/round7_batches/round7.tsv
 
@@ -28,7 +28,7 @@ APPS = ['spotify', 'discord', 'whatsapp', 'notes', 'safari', 'chrome', 'zoom', '
         'calculator', 'finder', 'mail', 'photos', 'music', 'teams', 'obs', 'figma', 'brave', 'terminal', 'reminders', 'maps']
 SITES = ['youtube', 'github', 'chatgpt', 'reddit', 'netflix', 'instagram', 'twitter', 'gmail', 'outlook', 'linkedin', 'amazon',
          'hotstar', 'canva', 'leetcode', 'coursera', 'wikipedia', 'pinterest']
-PEOPLE = ['mama', 'papa', 'bhai', 'kunal', 'ira', 'rehaan', 'yuvan', 'nanu', 'tanya', 'vikram', 'ishaan', 'meher', 'jas',
+PEOPLE = ['mama', 'papa', 'bhai', 'parth', 'harsimran', 'sidhu', 'ekamveer', 'nanu', 'tanya', 'vikram', 'ishaan', 'meher', 'jas',
           'kavya', 'arnav', 'karan', 'riya', 'sahil', 'didi', 'chachu', 'bua', 'my coach', 'aman', 'simran']
 DELAYS = ['in 2 minutes', 'in 5 mins', 'in like 10 mins', 'in 15 min', 'in 20 minutes', 'in half an hour', 'in an hour', 'in 2 hours',
           'after 10 minutes', 'after half an hour', 'after an hour', 'in about a minute', 'in 30 secs', 'in 45 mins', 'in 3 hours',
@@ -39,7 +39,7 @@ HI_WHEN = ['10 minute baad', '5 min mein', 'aadhe ghante mein', 'ek ghante baad'
            'shaam 6 baje', 'dopahar 2 baje', '15 minute baad', '20 min mein', 'raat 11 baje', 'subah 6 baje', 'kal shaam 5 baje']
 SONGS = [('arijit singh', 'tum hi ho'), ('the weeknd', 'starboy'), ('taylor swift', 'cruel summer'), ('ap dhillon', 'brown munde'),
          ('karan aujla', 'softly'), ('coldplay', 'yellow'), ('drake', 'one dance'), ('billie eilish', 'lovely'), ('diljit dosanjh', 'lover'),
-         ('eminem', 'mockingbird'), ('dua lipa', 'levitating'), ('rehaan moosewala', 'so high'), ('linkin park', 'in the end'),
+         ('eminem', 'mockingbird'), ('dua lipa', 'levitating'), ('sidhu moosewala', 'so high'), ('linkin park', 'in the end'),
          ('pritam', 'tum se hi'), ('bruno mars', 'grenade'), ('ed sheeran', 'perfect'), ('kanye west', 'stronger'), ('shubh', 'cheques'),
          ('imagine dragons', 'believer'), ('post malone', 'circles'), ('anuv jain', 'husn'), ('lana del rey', 'young and beautiful')]
 QUERIES = ['the match score', 'the ipl points table', 'cheap flights to goa', 'todays news', 'the weather in shimla', 'jee mains result',

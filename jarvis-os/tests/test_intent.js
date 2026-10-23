@@ -119,7 +119,7 @@ agent.init({ jlog: () => {}, fuzzyApp: n => {
   // The junk drawer that lost its own exemplar to order-food. What must hold is the VERDICT: every
   // region grouped under a procedure answers with that procedure, whichever shape it recognised.
   for (const goal of ['find a recipe for butter chicken and open the first result',
-                      'google the best pizza in nagpur and open the first one',
+                      'google the best pizza in ludhiana and open the first one',
                       'look up jensen huang']) {
     const r = await pb.semanticMatch(goal);
     eq('"' + goal.slice(0, 44) + '" → search-and-open-result', r && (r.group || r.id), 'search-and-open-result');
@@ -199,7 +199,7 @@ agent.init({ jlog: () => {}, fuzzyApp: n => {
   // span is a person. The SHAPE is machine-independent and asserted here; whether a given name
   // resolves depends on his actual Contacts, so that is not asserted.
   for (const goal of ['ring mama on whatsapp', 'give mama a call on whatsapp',
-                      'phone mama on whatsapp', 'whatsapp call mama', 'call kunal']) {
+                      'phone mama on whatsapp', 'whatsapp call mama', 'call parth']) {
     eq('"' + goal + '" is a call', await agent.shapeOf(goal), 'call');
   }
   // Cold cache: no address book means no guess, and the request falls through exactly as before.
@@ -229,7 +229,7 @@ agent.init({ jlog: () => {}, fuzzyApp: n => {
   // A false positive here replaces a CORRECT answer with a refusal, which is its own kind of lying.
   for (const reply of [
     'The CEO of Google is Sundar Pichai.',
-    'Your name is Mihir, Sir.',
+    'Your name is Atharv, Sir.',
     'Your battery is at 14 percent, Sir.',
     'I can help with that. What would you like it to say?',
     'Let me explain how that works.',

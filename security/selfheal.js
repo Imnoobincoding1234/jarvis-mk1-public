@@ -6,7 +6,7 @@
 //
 // It does NOT fix bugs in source code. Nothing here reads, patches or rewrites a line of an agent —
 // a program that edits its own logic while running unattended is not self-healing, it is an
-// unreviewed committer with root on Mihir's Mac. What it fixes is the class of failure that actually
+// unreviewed committer with root on Atharv's Mac. What it fixes is the class of failure that actually
 // took agents down here, all of which are process-level and all of which a restart clears:
 //
 //   1. DEAD          — the agent is not running at all.
@@ -66,10 +66,10 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 // idleCpu is what this agent looks like when it is behaving. JARVIS OS is allowed to work hard — it
 // runs real requests — so it is judged on whether its port answers, not on load.
 const AGENTS = [
-  { id: 'jarvisos',       label: 'com.jarvis.jarvisos',       idleCpu: 90, probe: { port: 8787, path: '/' } },
-  { id: 'jarviscontrol',  label: 'com.jarvis.jarviscontrol',  idleCpu: 40, probe: { port: 8765, path: '/status' } },
-  { id: 'claplistener',   label: 'com.jarvis.claplistener',   idleCpu: 60 },   // taps the mic; some load is normal
-  { id: 'focusguard',     label: 'com.jarvis.focusguard',     idleCpu: 40 },
+  { id: 'jarvisos',       label: 'com.atharv.jarvisos',       idleCpu: 90, probe: { port: 8787, path: '/' } },
+  { id: 'jarviscontrol',  label: 'com.atharv.jarviscontrol',  idleCpu: 40, probe: { port: 8765, path: '/status' } },
+  { id: 'claplistener',   label: 'com.atharv.claplistener',   idleCpu: 60 },   // taps the mic; some load is normal
+  { id: 'focusguard',     label: 'com.atharv.focusguard',     idleCpu: 40 },
   // Not a launchd job — a real .app. It is here because it is the one that actually wedged.
   { id: 'jarvissearch',   app: path.join(ROOT, 'Jarvis Search', 'Jarvis Search.app'), match: 'JarvisSearch', idleCpu: 25 },
 ];
@@ -108,7 +108,7 @@ function probe(p) {
 }
 
 // ---------------- leaked helpers ----------------
-// THE AGENT IS FINE; THE THING IT LEANS ON IS NOT. Every check above asks whether one of Mihir's
+// THE AGENT IS FINE; THE THING IT LEANS ON IS NOT. Every check above asks whether one of Atharv's
 // own processes is unwell. This asks a different question: has a system helper that one of them
 // keeps alive grown to a size that hurts an 8 GB machine.
 //
@@ -200,7 +200,7 @@ async function checkAgent(agent, st) {
 
   // NOT LOADED IS A DECISION, NOT A FAULT. A KeepAlive agent that crashes stays in launchd's list (with a
   // last exit) and launchd itself restarts it; it only leaves the list when someone boots it out on purpose
-  // — `launchctl bootout`, an uninstall.sh, or Mihir muting the listener for a training run. Kickstarting
+  // — `launchctl bootout`, an uninstall.sh, or Atharv muting the listener for a training run. Kickstarting
   // an unloaded label does nothing, and this script used to log "HEALED" anyway: 127 false heals of
   // claplistener between 2026-09-27 and 10-01 while it stayed (correctly) off. Logged once per change.
   if (agent.label && !info.listed) {

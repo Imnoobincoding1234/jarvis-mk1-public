@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 
 DIR="$(pwd)"
 BIN="$DIR/FocusGuard.app/Contents/MacOS/FocusGuard"
-LABEL="com.jarvis.focusguard"
+LABEL="com.atharv.focusguard"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 LOG="$DIR/focus.log"
 

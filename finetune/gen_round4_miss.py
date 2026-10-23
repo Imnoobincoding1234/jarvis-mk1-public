@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Round 4's rows for the SHAPES round 3 got wrong — new sentences in Mihir's style, never the failing lines.
+"""Round 4's rows for the SHAPES round 3 got wrong — new sentences in Atharv's style, never the failing lines.
     gen_round4_miss.py       # writes data/round4_batches/round4-miss.tsv
     then: synth_add.py round4-miss < data/round4_batches/round4-miss.tsv
 
@@ -11,7 +11,7 @@ of data/casual_stress_heldout.jsonl, and build_dataset.py --exclude drops near o
   - a person after a short verb ("yo txt kabir …" read the person as "txt")      → message {to, body}
   - a body that starts with "i" ("i cant make it" lost its "i")                   → body copied whole
   - "did u text X" / "u called mama right"                                        → none (a question about the past)
-  - "at 9 text kunal …"                                                           → none (a scheduled send)
+  - "at 9 text parth …"                                                           → none (a scheduled send)
   - calls in his register ("call X rq", "yo facetime X", "X ko phone kar")        → call
   - "skip this trash song" read as a delete                                       → next_track
   - Hinglish player words ("gaana band kar", "awaaz badha")                       → pause / volume
@@ -42,16 +42,16 @@ BODIES = ['im outside', 'omw', 'gn', 'wya', 'call me when u can', 'running 10 mi
           'reached', 'u up?', 'the match starts at 8', 'lets go tmrw', 'ok bet', 'ghar aa raha hu', 'khana kha liya?']
 I_BODIES = ['i cant come today', 'i\'ll be there in 10', 'i forgot my keys', 'i reached', 'i need the notes',
             'i wont be home for dinner', 'i owe u one', 'i left my bag in ur car', 'im gonna be late', 'i miss u guys']
-ARTISTS = ['ed sheeran', 'taylor swift', 'diljit', 'rehaan moosewala', 'seedhe maut', 'badshah', 'pritam', 'shreya ghoshal',
+ARTISTS = ['ed sheeran', 'taylor swift', 'diljit', 'sidhu moosewala', 'seedhe maut', 'badshah', 'pritam', 'shreya ghoshal',
            'eminem', 'kendrick', 'sza', 'the local train', 'prateek kuhad', 'krsna', 'imagine dragons', 'post malone']
-HI_MUSIC = ['diljit ke gaane', 'marathi gaane', 'old songs', 'pritam ke songs', 'romantic gaane', 'party songs',
-            'rehaan ke gaane', 'bhajan', 'sufi songs']
+HI_MUSIC = ['diljit ke gaane', 'punjabi gaane', 'old songs', 'pritam ke songs', 'romantic gaane', 'party songs',
+            'sidhu ke gaane', 'bhajan', 'sufi songs']
 CREATORS = ['technoblade', 'markiplier', 'bb ki vines', 'triggered insaan', 'dhruv rathee', 'sidemen', 'mkbhd',
             'fukra insaan', 'tanmay bhat', 'mrwhosetheboss']
 TASKS = ['pay the electricity bill', 'call nanu', 'water the plants', 'return the library book', 'email sir',
          'book the cab', 'finish the ppt', 'renew my metro card']
 TIMES = ['at 6', 'at 9pm', 'tmrw morning', 'in 30 mins', 'tonight', 'at 5:30', 'on sunday', 'in 2 hours']
-CITIES = ['kolhapur', 'jaipur', 'pune', 'amritsar', 'goa']
+CITIES = ['chandigarh', 'jaipur', 'pune', 'amritsar', 'goa']
 
 rows = []
 

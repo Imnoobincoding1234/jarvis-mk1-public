@@ -9,7 +9,7 @@ changes what JARVIS does; it changes who is allowed to touch it and lets you det
 |--------|---------|-------|
 | A website you visit drives the local API (DNS-rebinding / CSRF) — screen capture, chat, file open, Shortcuts | `Host`/`Origin` allowlist **+** per-install secret token on every `/api` call | `jarvis-os/server.js`, `public/app.js` |
 | Local process/malware reads your passwords | Settings password stored as **salted SHA-256** (no cleartext on disk or in the binary); `jarvis.yaml`, `.env`, API token forced to `600` | `harden.sh` |
-| A script/binary run by a login agent gets silently modified (trojaned) | **SHA-256 integrity manifest** + daily verify agent that alerts on drift | `integrity.sh`, `verify.sh`, `com.jarvis.jarvissecurity` |
+| A script/binary run by a login agent gets silently modified (trojaned) | **SHA-256 integrity manifest** + daily verify agent that alerts on drift | `integrity.sh`, `verify.sh`, `com.atharv.jarvissecurity` |
 | A world/group-writable file becomes a hijack foothold | Recursive `go-w` strip + writable-launch-agent report | `harden.sh` |
 
 ## Files
@@ -34,5 +34,5 @@ bash security/integrity.sh   # re-baseline AFTER you intentionally edit code
 own edit as drift. That is by design: an unexplained `CHANGED`/`NEW` is exactly the signal
 you want.
 
-The daily agent (`com.jarvis.jarvissecurity`) runs `verify.sh` at 09:00 and at login;
+The daily agent (`com.atharv.jarvissecurity`) runs `verify.sh` at 09:00 and at login;
 output is in `agent.log`.

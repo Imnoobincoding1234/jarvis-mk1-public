@@ -38,7 +38,7 @@ const CASES = [
   ['tell me about the new samsung phone', null],
   ['what happened in the match last night', null],
   ['summarise the news today', null],
-  ['whats the weather in kolhapur', null],
+  ['whats the weather in chandigarh', null],
   ['find out when the shop closes', null],
   ['google the offside rule', null],
   ['what does ERR_CONNECTION_REFUSED mean', null],

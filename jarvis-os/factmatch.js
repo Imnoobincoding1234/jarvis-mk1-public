@@ -13,7 +13,7 @@
 //
 //     ◆ i hate summer and enjoy winters          (stored nothing — see selffact.js)
 //     ◆ do i hate summer
-//       "You told me: Mihir hates being woken up early, hates phone calls, and hates people
+//       "You told me: Atharv hates being woken up early, hates phone calls, and hates people
 //        being late, Sir."
 //
 // The question was about SUMMER. The fact that came back is about mornings, phones and lateness.
@@ -28,8 +28,8 @@
 // WHAT THIS DOES INSTEAD. Embeds the question, embeds each candidate fact, and ranks by cosine. A
 // fact has to be about the same THING, not merely share a word with the sentence.
 //
-//     "do i hate summer"  vs  "Mihir hates being woken up early, hates phone calls…"   far
-//     "do i hate summer"  vs  "Mihir hates summer and enjoys winters"                  near
+//     "do i hate summer"  vs  "Atharv hates being woken up early, hates phone calls…"   far
+//     "do i hate summer"  vs  "Atharv hates summer and enjoys winters"                  near
 //
 // IT ABSTAINS, and the direction matters. Below FLOOR nothing is returned, the lane does not claim
 // the turn, and the request carries on to normal chat exactly as it did when no word matched. A
@@ -65,11 +65,11 @@ function init(d) { deps = Object.assign(deps, d || {}); }
 //    0.65     12            0               4
 //
 // The two that 0.55 lets through say why the floor is this high: "am i allergic to cats" pulls
-// "Mihir is allergic to peanuts" to 0.559, and "do i hate mondays" pulls the hates-list to 0.557.
+// "Atharv is allergic to peanuts" to 0.559, and "do i hate mondays" pulls the hates-list to 0.557.
 // Both are about the right SUBJECT and the wrong OBJECT, which is as close as a wrong answer gets.
 // 0.60 is the first floor that refuses them, and it still clears "do i hate summer" at 0.682.
 //
-// The cost was one miss — "where do i live" pulls "Mihir lives in Nagpur" to only 0.520, BELOW
+// The cost was one miss — "where do i live" pulls "Atharv lives in Ludhiana" to only 0.520, BELOW
 // two of the adversarial pairs. No single cosine can order those correctly, because what separates
 // them is not similarity: one fact SUPPLIES the value the question asks for, the other CONTRADICTS
 // the value it names. So a second stage decides the band, and the miss is gone.
@@ -81,7 +81,7 @@ const FLOOR_ASK = 0.45;
 //
 // The obvious second stage is to ask the 3B "does this fact answer this question, yes or no". That
 // was measured first and it collapsed exactly as the handoff says sitekind's confirm pass did:
-// sixteen out of sixteen answered NO, including "do i prefer tea or coffee" against "Mihir prefers
+// sixteen out of sixteen answered NO, including "do i prefer tea or coffee" against "Atharv prefers
 // tea over coffee". A small model asked to judge a proposition says no.
 //
 // Handed the same sixteen as a numbered list with a "none of them" option, the same model scored

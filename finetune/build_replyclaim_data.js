@@ -28,13 +28,13 @@ const D = [
    ['Adding a reminder for Friday.'], ['I\'ll remind you to call Aditi tonight.', 'Let me add that reminder.']],
   [['Bread is on your list now.', 'I put onions and tomatoes on the grocery list.', 'Your list now has coffee and sugar.', 'Detergent added to shopping.'],
    ['Adding rice to your list.'], ['I\'ll put butter on the list.']],
-  [['Your message to Kunal was delivered.', 'I\'ve messaged Aditi that you\'re on the way.', 'Text sent to Rahul.', 'WhatsApp message sent to the family group.'],
-   ['Messaging Samanvay now.', 'Sending your text to Aditi.'], ['I\'ll text Rahul for you.', 'Let me send that to Kunal.']],
-  [['Called Kunal, he picked up.', 'Your call to the office is connected.'],
+  [['Your message to Parth was delivered.', 'I\'ve messaged Aditi that you\'re on the way.', 'Text sent to Rahul.', 'WhatsApp message sent to the family group.'],
+   ['Messaging Samanvay now.', 'Sending your text to Aditi.'], ['I\'ll text Rahul for you.', 'Let me send that to Parth.']],
+  [['Called Parth, he picked up.', 'Your call to the office is connected.'],
    ['Ringing Aditi now.', 'Placing a call to your dad.'], ['I\'ll call him right now.']],
   [['Your email to the professor is sent.', 'I\'ve replied to the landlord.', 'The draft went out to your team.'],
    ['Sending the email now.'], ['I\'ll email the report to her.', 'Let me reply to that mail.']],
-  [['Your call with Kunal is on the calendar for Sunday.', 'I\'ve scheduled the dentist for Tuesday at 11.', 'The meeting is booked into your calendar.'],
+  [['Your call with Parth is on the calendar for Sunday.', 'I\'ve scheduled the dentist for Tuesday at 11.', 'The meeting is booked into your calendar.'],
    ['Adding the event to your calendar.'], ['I\'ll put it on your calendar.']],
   [['Now playing Believer by Imagine Dragons.', 'Your workout playlist is playing.', 'The song is on, Sir.', 'Arijit Singh is playing now.'],
    ['Playing your chill mix now.', 'Starting the playlist.'], ['I\'ll put on some jazz.', 'Let me queue that song.']],
@@ -55,7 +55,7 @@ const D = [
   [['Your pizza is ordered from Domino\'s.', 'I placed the order for the headphones.', 'The groceries are in your Blinkit cart.', 'Your food is on its way.'],
    ['Ordering biryani for you now.', 'Adding the charger to your Amazon cart.'], ['I\'ll order that for you.', 'Let me place the order.']],
   [['Paid 1200 rupees to the electrician.', 'The bill has been paid.', 'Money sent to Mom.'],
-   ['Sending 300 rupees to Kunal.'], ['I\'ll pay the bill now.']],
+   ['Sending 300 rupees to Parth.'], ['I\'ll pay the bill now.']],
   [['Your train ticket is booked.', 'I reserved a table at Barbeque Nation.', 'The hotel is booked for Friday.', 'Your ride is confirmed.'],
    ['Booking the cab now.'], ['I\'ll book the flight.', 'Let me reserve a table.']],
   [['The lights are on in the living room.', 'AC is set to 22.', 'The fan is off.'],
@@ -109,8 +109,8 @@ const N = [
   'Deleting old files frees up space.', 'Keeping a to-do list helps you focus.',
 'It could be the Wi-Fi rather than the laptop.',
   // Grounded status and answers.
-  'You have four unread emails.', 'Your battery is at 55 percent.', 'It is 31C in Nagpur right now.',
-  'Your next event is lunch with Kunal at 1.', 'There is nothing due today.', 'Your disk has 88 GB free.',
+  'You have four unread emails.', 'Your battery is at 55 percent.', 'It is 31C in Ludhiana right now.',
+  'Your next event is lunch with Parth at 1.', 'There is nothing due today.', 'Your disk has 88 GB free.',
   'You were last on Spotify an hour ago.', 'The trip takes about 40 minutes.', 'That comes to 1575 rupees.',
   'The answer is 144 minutes.', '2 to the power 10 is 1024.', 'Your RAM is 62 percent used.',
   // Limits and refusals — the machine saying what it did NOT do.
@@ -139,7 +139,7 @@ for (const s of [
   'Understood, I\'ve saved your gym schedule.', 'Okay, Sir, I\'ve booked the cab for 8.', 'Alright, I\'m pulling up your inbox now.',
   'Sure, I\'m setting that timer.', 'Got it, I\'ve added eggs to the list.', 'Certainly! I\'ve sent the email to your manager.',
   'Absolutely, Sir. I\'m opening YouTube for you now.', 'No problem, I\'ve scheduled it for Tuesday.',
-  'Right away, Sir, I\'m sending the file to Kunal.', 'Great, I\'ve updated your address in your profile.',
+  'Right away, Sir, I\'m sending the file to Parth.', 'Great, I\'ve updated your address in your profile.',
   'Perfect, I\'ve renamed the folder to archive.', 'I\'ve gone ahead and cancelled the order.', 'I went ahead and muted that chat.',
   'I\'ve made a note that you prefer window seats.', 'I\'ve remembered that your sister\'s birthday is in May.',
   'I\'ve logged today\'s expenses.', 'Your preferences have been updated.', 'The playlist is now playing on Spotify.',
@@ -169,7 +169,7 @@ for (const s of [
   'Hmm, the answer depends on your plan.', 'A phone can slow down when its storage is nearly full.', 'It seems the signal is weak in that room.',
   'Excellent choice! That laptop has great battery life.', 'Absolutely, that\'s common. Rain forms when water vapour cools.',
   'No worries, that happens to everyone.', 'The seminar was held online last Monday.', 'Your parcel from yesterday was delivered at 3 PM.',
-  'Kunal replied to your message an hour ago.', 'Okay Boss, you can turn on Night Shift from Control Center.',
+  'Parth replied to your message an hour ago.', 'Okay Boss, you can turn on Night Shift from Control Center.',
   'Sure, to rename a file just click its name once and type.', 'Alright, I can\'t reach your email from here.',
   'I haven\'t sent it yet, Sir.', 'Do you want me to go ahead and book it?', 'Want me to check your calendar?',
 ]) add('none', s);
@@ -181,7 +181,7 @@ for (const s of [
 
 // ---- ROUND 3: the guard's ORIGINAL design exemplars (replyclaim.js REPLY_CLAIM_EXEMPLARS, written before
 // 2026-09-24). Rounds 1–2 left them out, and the reader then missed the case this guard exists for — the
-// fabricated order confirmation from his terminal — and flagged "Your name is Mihir, Sir." Pre-existing data,
+// fabricated order confirmation from his terminal — and flagged "Your name is Atharv, Sir." Pre-existing data,
 // not sentences written after reading any held-out miss.
 for (const [label, list] of Object.entries(require('../jarvis-os/replyclaim.js').REPLY_CLAIM_EXEMPLARS)) for (const s of list) add(label, s);
 
@@ -190,9 +190,9 @@ for (const [label, list] of Object.entries(require('../jarvis-os/replyclaim.js')
 // Written after #6 was read and after FRESH #7 was written; no #6 or #7 sentence, and near copies of #7 are refused below.
 const ROUND5 = process.argv.includes('--round5');
 if (ROUND5) {
-  for (const s of ['Text chala gaya Kunal ko.', 'Gaana laga diya, Sir.', 'Reminder set kar diya.', 'Calendar mein daal diya.', 'File delete kar di.',
+  for (const s of ['Text chala gaya Parth ko.', 'Gaana laga diya, Sir.', 'Reminder set kar diya.', 'Calendar mein daal diya.', 'File delete kar di.',
     'App band kar di.', 'Chrome ab khula hai, Sir.', 'Mama ko bata diya.', 'Order place ho gaya.', 'Note likh diya Notes mein.', 'Screenshot le liya.',
-    'Wifi band kar diya.', 'Folder bana diya Desktop pe.', 'Alarm set ho gaya.', 'Kunal ko call laga diya.',
+    'Wifi band kar diya.', 'Folder bana diya Desktop pe.', 'Alarm set ho gaya.', 'Parth ko call laga diya.',
     'Wifi is off.', 'Dark mode is on now.', 'Your Mac is muted.', 'The window is minimised.', 'Brave is closed.', 'Notifications are paused.',
     'Your downloads are cleared.', 'The song is paused.', 'Your hotspot is on.', 'Night Shift is on now.', 'The PDF is downloaded.',
     'Your status is updated.', 'Lights are off.', 'The tab is pinned.', 'Recording stopped.']) add('done', s);

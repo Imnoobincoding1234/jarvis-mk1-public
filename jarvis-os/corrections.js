@@ -7,7 +7,7 @@ const profile = require('./profile');   // who the user is — see profile.userR
 // This project already learns from a correction in exactly ONE place: rephrase()
 // in learned.js records "this wording means that taught procedure" after he
 // answers a same-job question. Everything else he corrects is thrown away. Told
-// "no, Kunal's number is the other one", "it's spelled Mihir not Miheer", "I
+// "no, Parth's number is the other one", "it's spelled Atharv not Atharva", "I
 // said the AdMax site not the AdMax repo", JARVIS agrees pleasantly in the moment
 // and holds the same wrong belief on the next turn.
 //
@@ -65,7 +65,7 @@ function detect(userText, prevAssistant) {
   if (/\?\s*$/.test(rest)) return null;
   // ABANDONING A REQUEST IS NOT CORRECTING AN ANSWER. "actually never mind" opens
   // with a repair marker and carries content, and filing it would store the
-  // standing fact "Mihir corrected me: never mind" — which then competes for
+  // standing fact "Atharv corrected me: never mind" — which then competes for
   // retrieval slots with things he actually said.
   if (/^(?:never\s?mind|nvm|forget it|leave it|skip it|cancel that|don'?t bother|rehne do|chhod do)\b/i.test(rest)) return null;
   return { marker: m[0].trim().toLowerCase(), correction: rest.slice(0, 300) };

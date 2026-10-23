@@ -52,7 +52,7 @@ ROWS = [
   ('play some soft piano music', p('some soft piano music')), ('throw on a sad playlist', p('a sad playlist')),
   ('play some 2000s pop', p('some 2000s pop')), ('queue up some kanye', p('some kanye')), ('play a mellow song', p('a mellow song')),
   ('put on some workout bangers', p('some workout bangers')), ('play some classic bollywood', p('some classic bollywood')),
-  ('play a couple of arijit songs', p('a couple of arijit songs')), ('blast some marathi bangers', p('some marathi bangers')),
+  ('play a couple of arijit songs', p('a couple of arijit songs')), ('blast some punjabi bangers', p('some punjabi bangers')),
   ('put on a nice instrumental', p('a nice instrumental')), ('play some lo-fi for studying', p('some lo-fi for studying')),
   ('throw on some old school rap', p('some old school rap')), ('play a random bollywood song', p('a random bollywood song')),
   ('play some coldplay songs', p('some coldplay songs')), ('put on some rainy day jazz', p('some rainy day jazz')),
@@ -60,14 +60,14 @@ ROWS = [
   ('play some sufi music', p('some sufi music')), ('put on a happy playlist', p('a happy playlist')), ('play some country songs', p('some country songs')),
   ('bump some drill', p('some drill')), ('play a slow romantic song', p('a slow romantic song')), ('throw on some edm for the gym', p('some edm for the gym')),
   # front words on music — Hinglish
-  ('kuch purani ghazals chala do', p('kuch purani ghazals')), ('koi naya marathi gaana bajao', p('koi naya marathi gaana')),
+  ('kuch purani ghazals chala do', p('kuch purani ghazals')), ('koi naya punjabi gaana bajao', p('koi naya punjabi gaana')),
   ('ek romantic gaana laga do', p('ek romantic gaana')), ('thoda arijit chala do', p('thoda arijit')), ('kuch party songs bajao', p('kuch party songs')),
   ('koi sad song chala de', p('koi sad song')), ('kuch english songs laga', p('kuch english songs')), ('thoda lofi chala de', p('thoda lofi')),
   ('ek dance number bajao', p('ek dance number')), ('koi 90s ka gaana chala', p('koi 90s ka gaana')), ('kuch shaant music lagao', p('kuch shaant music')),
   ('thoda diljit bajao yaar', p('thoda diljit')), ('koi motivational gaana chala do', p('koi motivational gaana')), ('kuch bhajan laga do', p('kuch bhajan')),
   ('ek accha sa english gaana bajao', p('ek accha sa english gaana')), ('koi rap song chala', p('koi rap song')),
   ('kuch nusrat sahab ki qawwali chala do', p('kuch nusrat sahab ki qawwali')), ('thoda old school bollywood chala', p('thoda old school bollywood')),
-  ('koi garba song laga do', p('koi garba song')), ('kuch slow marathi chala de', p('kuch slow marathi')), ('ek lori bajao', p('ek lori')),
+  ('koi garba song laga do', p('koi garba song')), ('kuch slow punjabi chala de', p('kuch slow punjabi')), ('ek lori bajao', p('ek lori')),
   ('koi chill playlist laga', p('koi chill playlist')), ('kuch hits of the week chala do', p('kuch hits of the week')), ('thoda jazz bajao', p('thoda jazz')),
   ('koi workout wala gaana chala', p('koi workout wala gaana')),
   # a platform, and video
@@ -88,7 +88,7 @@ ROWS = [
   ('spotify pe koi chill playlist laga', p('koi chill playlist', 'spotify')), ('jiosaavn pe thoda sufi bajao', p('thoda sufi', 'jiosaavn')),
   ('play a random playlist on spotify', p('a random playlist', 'spotify')), ('put on some kpop on spotify', p('some kpop', 'spotify')),
   ('spotify pe ek party mix laga do', p('ek party mix', 'spotify')), ('play some taylor swift on apple music', p('some taylor swift', 'apple music')),
-  ('yt music pe kuch marathi chala', p('kuch marathi', 'yt music')), ('play some ghazals on yt music', p('some ghazals', 'yt music')),
+  ('yt music pe kuch punjabi chala', p('kuch punjabi', 'yt music')), ('play some ghazals on yt music', p('some ghazals', 'yt music')),
   ('play some old classics on spotify', p('some old classics', 'spotify')),
 ]
 def norm(s): return ' '.join(w for w in re.split(r'[^\w]+', str(s).lower()) if w)

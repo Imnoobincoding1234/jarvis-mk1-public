@@ -391,7 +391,7 @@ const buyLabel = s => BUY_LABEL_RE.test(String(s || '').replace(/&/g, ' and '));
 
 // ---------------- safety ----------------
 // Hosts and paths where acting is refused outright. Deliberately broad: the cost of a false
-// positive is Mihir clicking something himself, and the cost of a false negative is JARVIS
+// positive is Atharv clicking something himself, and the cost of a false negative is JARVIS
 // operating his bank.
 // THE GATEWAYS THIS COUNTRY ACTUALLY USES WERE MISSING. The host list was
 // Western banks and card processors; a checkout in India redirects to Razorpay,
@@ -432,7 +432,7 @@ function looksLikeCard(s) {
 const ADDRESS_FIELD_RE = /address|street|\baddr\b|line ?[12]\b|pin ?code|postal|\bzip\b|locality|landmark|\bflat\b|house|building|society|\bcity\b|\btown\b/i;
 
 // THE FIELD THAT BROKE THIS: Swiggy's saved-location box is labelled with the address ITSELF —
-// "HOME Marigold Vihar, Fairview, Maharashtra 999301, India" — so it contains not one of the words above and
+// "HOME Marigold Vihar, Fairview, Punjab 999301, India" — so it contains not one of the words above and
 // sailed straight past the check. The query "dominos pizza" went into his home address, which bounced
 // the page to the promo homepage and ended the run having searched for nothing.
 //

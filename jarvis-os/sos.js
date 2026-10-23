@@ -2,7 +2,7 @@
 // ---------------------------------------------------------------------------
 // JARVIS SOS — reaching emergency services, correctly, for wherever he actually is.
 //
-// WHAT THIS IS FOR. He is in Fairview, Maharashtra. His mother and step-father are in California. He
+// WHAT THIS IS FOR. He is in Fairview, Punjab. His mother and step-father are in California. He
 // travels. An assistant that dials 911 because 911 is the number an American model has memorised is
 // worse than no assistant at all — in India it reaches nothing. So the country is resolved from his
 // CURRENT location every time, and the number comes from a table rather than from a model.

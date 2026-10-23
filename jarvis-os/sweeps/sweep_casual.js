@@ -80,10 +80,10 @@ function allowedCmd(file, args) {
 const FIXTURE = [
   { name: 'Mama', nick: '', phone: '+919900000001' },
   { name: 'Mera Bhai', nick: 'Bhai', phone: '+919900000002' },
-  { name: 'Kunal', nick: '', phone: '+919900000003' },
-  { name: 'Ira', nick: '', phone: '+919900000004' },
-  { name: 'Rehaan', nick: '', phone: '+919900000005' },
-  { name: 'Yuvan', nick: '', phone: '+919900000006' },
+  { name: 'Parth', nick: '', phone: '+919900000003' },
+  { name: 'Harsimran', nick: '', phone: '+919900000004' },
+  { name: 'Sidhu', nick: '', phone: '+919900000005' },
+  { name: 'Ekamveer', nick: '', phone: '+919900000006' },
   { name: 'Nanu', nick: '', phone: '+919900000007' },
 ];
 function fixtureFind(q) {

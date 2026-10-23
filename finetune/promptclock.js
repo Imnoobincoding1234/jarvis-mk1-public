@@ -1,7 +1,7 @@
 'use strict';
 // promptclock.js — set the clock and weather inside a JARVIS system prompt (2026-10-05, jarvis v4.2).
 //
-// Why: server.js puts "Now Monday, October 5, 2026 at 9:31 PM. Weather 29°C Clear Nagpur." into the system prompt
+// Why: server.js puts "Now Monday, October 5, 2026 at 9:31 PM. Weather 29°C Clear Ludhiana." into the system prompt
 // (nowText(), the live weather). Every training row of a round was built in the same minute, so the model saw ONE time
 // of day per round — and every eval prompt another single time (v4.1's held-out was built at 10:49 AM, so "shaam ho gayi
 // jarvis" got "Good morning."). And with a weather line in every prompt it learned it always knows the weather ("can u
@@ -47,7 +47,7 @@ const WEATHERS = [['Clear', 31], ['Clear', 24], ['Partly cloudy', 27], ['Overcas
 function randomWeather(rnd) {
   if (rnd() < 0.2) return null;                               // offline: no weather line at all
   const [desc, t] = WEATHERS[Math.floor(rnd() * WEATHERS.length)];
-  return { temp: t + Math.floor(rnd() * 5) - 2, unit: 'C', desc, city: rnd() < 0.8 ? 'Nagpur' : 'Nashik' };
+  return { temp: t + Math.floor(rnd() * 5) - 2, unit: 'C', desc, city: rnd() < 0.8 ? 'Ludhiana' : 'Mohali' };
 }
 
 module.exports = { setClock, clockText, at, randomClock, bucketOf, randomWeather, CLOCK_RE };

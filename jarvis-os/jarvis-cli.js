@@ -444,7 +444,7 @@ async function askYesNo(prompt, rl) {
 function reachError(e) {
   const m = String((e && e.message) || e);
   if (/ECONNREFUSED/.test(m)) {
-    return 'JARVIS is not answering on ' + HOST + ':' + PORT + '.\n   Start him with:  launchctl kickstart -k gui/$(id -u)/com.jarvis.jarvisos';
+    return 'JARVIS is not answering on ' + HOST + ':' + PORT + '.\n   Start him with:  launchctl kickstart -k gui/$(id -u)/com.atharv.jarvisos';
   }
   if (/timed out/i.test(m)) return 'That took longer than I was willing to wait. He may still be working — try “/steps”.';
   return m;
@@ -474,7 +474,7 @@ async function status() {
     if (w && w.temp != null) bits.push(STEEL + Math.round(w.temp) + '°' + (w.unit || '') + R);
     return { line: MARGIN + bits.join(STEEL + ' · ' + R) };
   } catch (e) {
-    return { line: RED + MARGIN + '○ offline' + R + STEEL + '  —  launchctl kickstart -k gui/$(id -u)/com.jarvis.jarvisos' + R };
+    return { line: RED + MARGIN + '○ offline' + R + STEEL + '  —  launchctl kickstart -k gui/$(id -u)/com.atharv.jarvisos' + R };
   }
 }
 const tint = (k, s) => (k === 'warn' ? AMBER : STEEL) + s + R;

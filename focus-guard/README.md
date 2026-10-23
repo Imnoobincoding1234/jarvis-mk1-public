@@ -32,7 +32,7 @@ bash uninstall.sh
 ```
 
 ## Tune (no rebuild — edit the plist then reload)
-`~/Library/LaunchAgents/com.jarvis.focusguard.plist`
+`~/Library/LaunchAgents/com.atharv.focusguard.plist`
 
 | Var | Default | Meaning |
 |-----|---------|---------|

@@ -23,7 +23,7 @@
 // that needs a live Mac to run is policy nobody can test. agent.js keeps the loop and the tools;
 // this decides what the loop should do.
 //
-// MODEL-AGNOSTIC BY CONSTRUCTION. Mihir runs a local 3B today with no API key. Every decision here
+// MODEL-AGNOSTIC BY CONSTRUCTION. Atharv runs a local 3B today with no API key. Every decision here
 // is deterministic code rather than a judgement call handed to the model, so the harness behaves
 // identically on a 3B and on a frontier model — the model only picks the next tool. The one place
 // a model COULD be used (judging whether a goal was met) deliberately is not, because a 3B
@@ -189,7 +189,7 @@ const RETRYABLE_RE = new RegExp([
 function classify(result) {
   if (result && result.ok) return 'ok';
   // A TOOL THAT ASKED HIM A QUESTION did not fail — it needs his answer, and no retry can give it (2026-10-22: the composer's
-  // "What should the message to Ira say?" matched neither list below, counted as retryable, and the loop retried it four
+  // "What should the message to Harsimran say?" matched neither list below, counted as retryable, and the loop retried it four
   // times before "ran out of retries"). Read from the tool's own flag (data.asked), never from its words.
   if (result && result.data && result.data.asked) return 'asked';
   const say = String((result && result.say) || '');

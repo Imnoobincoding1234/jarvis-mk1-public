@@ -4,25 +4,25 @@ jarvis:
   version: 1
 agents:
   clap.enabled: true
-  clap.label: com.jarvis.claplistener
+  clap.label: com.atharv.claplistener
   clap.type: launchd
   control.enabled: true
-  control.label: com.jarvis.jarviscontrol
+  control.label: com.atharv.jarviscontrol
   control.type: launchd
   focus.enabled: true
-  focus.label: com.jarvis.focusguard
+  focus.label: com.atharv.focusguard
   focus.type: launchd
   jarvisos.enabled: true
-  jarvisos.label: com.jarvis.jarvisos
+  jarvisos.label: com.atharv.jarvisos
   jarvisos.type: launchd
   selfheal.enabled: true
-  selfheal.label: com.jarvis.jarvisselfheal
+  selfheal.label: com.atharv.jarvisselfheal
   selfheal.type: launchd
   search.enabled: true
   search.label: local.jarvis.search
   search.type: app
   security.enabled: true
-  security.label: com.jarvis.jarvissecurity
+  security.label: com.atharv.jarvissecurity
   security.type: launchd
 database:
   host: localhost

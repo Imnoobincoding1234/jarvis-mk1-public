@@ -14,7 +14,7 @@ const HTML = `<html><head><title>Sign up</title></head><body>
 <nav><a href="/">Home</a><a href="https://ext.example/x">Partner</a></nav>
 <h1>Create your account</h1>
 <form name="signup" action="/s"><label for="n">Your name</label><input id="n" name="name" required>
-<select name="city"><option>Pick</option><option>Kolhapur</option><option selected>Delhi</option></select>
+<select name="city"><option>Pick</option><option>Chandigarh</option><option selected>Delhi</option></select>
 <label><input type="checkbox" name="news" checked> Send me news</label><input type="password" name="pw"><input type="hidden" name="t" value="x">
 <textarea name="m" placeholder="Message">hey</textarea><button type="submit">Save</button><button disabled>Later</button>
 <span id="lb">Phone number</span><input name="ph" aria-labelledby="lb"><input type="search" name="q" aria-label="Search the site">
@@ -31,7 +31,7 @@ ok(L[2] === '[dialog "Cookies"]' && L[3] === '  [0] button "Accept"', 'an open d
 ok(L.includes('[navigation]') && L.includes('  [2] link "Partner" → ext.example'), 'landmark; off-site link shows its host');
 ok(L.includes('# Create your account'), 'heading');
 ok(L.includes('  [3] textbox "Your name" required'), '<label for> names the box; required shown');
-ok(L.includes('  [4] combobox (city) = "Delhi" {Pick, Kolhapur, Delhi}'), 'select: no label → its form name; current value and options');
+ok(L.includes('  [4] combobox (city) = "Delhi" {Pick, Chandigarh, Delhi}'), 'select: no label → its form name; current value and options');
 ok(L.includes('  [5] checkbox "Send me news" checked'), 'wrapping <label>; checked state');
 ok(L.includes('  [6] textbox "Message" = "hey"'), 'textarea: placeholder names it, its text is its value');
 ok(L.includes('  [7] button "Save"') && L.includes('  [8] button "Later" disabled'), 'buttons by content; disabled');

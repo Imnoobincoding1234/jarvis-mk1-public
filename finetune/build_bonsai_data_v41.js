@@ -22,7 +22,7 @@ let seed = 41414;
 const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
 const pick = a => a[Math.floor(rnd() * a.length)];
 const sh = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-const nm = () => pick(['Sir', 'Mihir', 'Boss']);
+const nm = () => pick(['Sir', 'Atharv', 'Boss']);
 const P = require('./data/v41_parts/chat_patch.js')({ pick });
 const NORMAL = { batteryPct: 64, charging: false, cpu: 18, ramPct: 78, diskPct: 61 };
 const D = f => path.join(__dirname, 'data', f);
@@ -128,7 +128,7 @@ const readJson = f => JSON.parse(fs.readFileSync(D(f), 'utf8'));
   const kindN = {}; for (const r of rows) kindN[r.kind] = (kindN[r.kind] || 0) + 1;
   const used = {}, patch = []; let capped = 0;
   for (const r of rows.filter(r => !held.has(userOf(r)))) {
-    const a = r.kind + '\u0000' + r.messages[r.messages.length - 1].content.replace(/\b(Sir|Mihir|Boss)\b/g, '{n}');
+    const a = r.kind + '\u0000' + r.messages[r.messages.length - 1].content.replace(/\b(Sir|Atharv|Boss)\b/g, '{n}');
     if ((used[a] = (used[a] || 0) + 1) > Math.max(3, Math.ceil(kindN[r.kind] * 0.03)) && r.kind !== 'resolve_none') { capped++; continue; }
     patch.push(r);
   }
@@ -149,7 +149,7 @@ const readJson = f => JSON.parse(fs.readFileSync(D(f), 'utf8'));
   for (const r of patch) (by[r.kind] = by[r.kind] || []).push(r);
   for (const [k, rs] of Object.entries(by).sort()) {
     const qs = new Set(rs.map(userOf)), as = {};
-    for (const r of rs) { const a = r.messages[r.messages.length - 1].content.replace(/\b(Sir|Mihir|Boss)\b/g, '{n}'); as[a] = (as[a] || 0) + 1; }
+    for (const r of rs) { const a = r.messages[r.messages.length - 1].content.replace(/\b(Sir|Atharv|Boss)\b/g, '{n}'); as[a] = (as[a] || 0) + 1; }
     const top = Math.max(...Object.values(as));
     console.log(k.padEnd(17) + ' rows ' + String(rs.length).padStart(5) + '  inputs ' + String(qs.size).padStart(5) + '  replies ' + String(Object.keys(as).length).padStart(5) + '  top ' + (top / rs.length * 100).toFixed(1) + '%');
   }

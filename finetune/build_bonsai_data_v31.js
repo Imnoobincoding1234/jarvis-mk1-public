@@ -11,7 +11,7 @@ let seed = 31031;
 const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
 const pick = a => a[Math.floor(rnd() * a.length)];
 const int = (lo, hi) => lo + Math.floor(rnd() * (hi - lo + 1));
-const nm = () => pick(['Sir', 'Mihir', 'Boss']);
+const nm = () => pick(['Sir', 'Atharv', 'Boss']);
 const cap = s => s.replace(/(^|\s)\S/g, c => c.toUpperCase());
 const fmt = n => Number.isInteger(n) ? String(n) : String(Math.round(n * 100) / 100);
 const hm = m => { const h = Math.floor(m / 60) % 24, mm = m % 60, ap = h >= 12 ? 'PM' : 'AM'; return ((h % 12) || 12) + ':' + String(mm).padStart(2, '0') + ' ' + ap; };
@@ -90,7 +90,7 @@ const OVERUSED = new Set(['Nothing that needs you. What is on your mind?']);
   // the cap, enforced: rows past a reply's allowance in its kind are dropped (and counted)
   const kindN = {}; for (const r of clean0) kindN[r.kind] = (kindN[r.kind] || 0) + 1;
   const used = {}, clean = []; let capped = 0;
-  for (const r of clean0) { const a = r.kind + '\u0000' + r.messages[r.messages.length - 1].content.replace(/\b(Sir|Mihir|Boss)\b/g, '{n}');
+  for (const r of clean0) { const a = r.kind + '\u0000' + r.messages[r.messages.length - 1].content.replace(/\b(Sir|Atharv|Boss)\b/g, '{n}');
     if ((used[a] = (used[a] || 0) + 1) > Math.max(3, Math.ceil(kindN[r.kind] * 0.03))) { capped++; continue; } clean.push(r); }
   if (capped) console.log('dropped ' + capped + ' rows over the per-reply cap');
 
@@ -106,7 +106,7 @@ const OVERUSED = new Set(['Nothing that needs you. What is on your mind?']);
   for (const r of clean) (by[r.kind] = by[r.kind] || []).push(r);
   let over = 0;
   for (const [k, rs] of Object.entries(by)) {
-    const qs = new Set(rs.map(userOf)), as = {}; for (const r of rs) { const a = r.messages[r.messages.length - 1].content.replace(/\b(Sir|Mihir|Boss)\b/g, '{n}'); as[a] = (as[a] || 0) + 1; }
+    const qs = new Set(rs.map(userOf)), as = {}; for (const r of rs) { const a = r.messages[r.messages.length - 1].content.replace(/\b(Sir|Atharv|Boss)\b/g, '{n}'); as[a] = (as[a] || 0) + 1; }
     const top = Object.entries(as).sort((a, b) => b[1] - a[1])[0];
     const share = top[1] / rs.length;
     if (top[1] > Math.max(3, Math.ceil(rs.length * 0.03))) { over++; console.log('  OVER 3%: ' + k + ' "' + top[0].slice(0, 60) + '" ' + top[1] + '/' + rs.length); }

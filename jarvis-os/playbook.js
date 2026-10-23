@@ -209,7 +209,7 @@ const PLAYBOOKS = [
     // moved to `when` (where it still corroborates) and the dish vocabulary moved in, mirroring
     // FOOD_CATEGORY_RE in server.js so "order me momos" keeps working without "order" alone
     // claiming the request.
-    // SAMOSA WAS MISSING FROM BOTH COPIES OF THIS LIST, on a machine in Maharashtra.
+    // SAMOSA WAS MISSING FROM BOTH COPIES OF THIS LIST, on a machine in Punjab.
     // "what are samosas?" then "okay order that for me" resolved the pronoun
     // correctly and still went to AMAZON, because nothing here recognised the word
     // as food and shop-add-to-cart's `must` (which includes the bare verb "order")
@@ -498,8 +498,8 @@ const PLAYBOOKS = [
     slots: {},
     steps: [
       'find_contact FIRST. A recipient that did not come from Contacts is an invented one, and messaging a stranger is the failure that matters here.',
-      // 2026-10-10 casual dev run: "ping yuvan on whatsapp asking about the maths hw" ran find_contact → compose and STOPPED
-      // ("Found Yuvan. Drafted.") — the old lines said "show him the draft" without naming the tool that does it, so the draft
+      // 2026-10-10 casual dev run: "ping ekamveer on whatsapp asking about the maths hw" ran find_contact → compose and STOPPED
+      // ("Found Ekamveer. Drafted.") — the old lines said "show him the draft" without naming the tool that does it, so the draft
       // was never shown or offered. send_message is that tool: it asks first (needsConfirm) and sends only after his yes.
       'compose the message (kind "message", the contact as recipient) — never write the words inline.',
       'send_message with the composed text. It does NOT send by itself: it shows him the draft and who it is going to, and waits for his yes. Stopping after compose leaves a draft he never sees.',
@@ -715,14 +715,14 @@ const EXEMPLARS = {
     'google the weather in delhi', 'find me the wikipedia page for tigers',
     'search him up on brave', 'look up jensen huang',
   ],
-  // THE OBJECT MUST NOT OUTVOTE THE ACTION. Measured: "google the best pizza in nagpur and open
+  // THE OBJECT MUST NOT OUTVOTE THE ACTION. Measured: "google the best pizza in ludhiana and open
   // the first one" landed on order-food, and "search online for cheap flights and click the first
   // result" on shop-add-to-cart — the content words (pizza, flights) pulled harder than the thing
   // actually being asked for, which is a web search whose first result gets opened. These belong
   // together because they share an ACTION, and keeping them apart from the plain lookups above is
   // what lets each centroid stand for one thing.
   'search-then-open': [
-    'google the best pizza in nagpur and open the first one',
+    'google the best pizza in ludhiana and open the first one',
     'search online for cheap flights and click the first result',
     'look up the price of a playstation and open the top link',
     'search for the best laptop under 50000 and open the first article',
@@ -741,7 +741,7 @@ const EXEMPLARS = {
     'organise my documents', 'clean up the screenshots folder',
   ],
   'message-someone': [
-    'message mama on whatsapp', 'text kunal that i am running late',
+    'message mama on whatsapp', 'text parth that i am running late',
     'send a whatsapp to dad asking about dinner', 'ring mama on whatsapp',
     'whatsapp my brother saying happy birthday',
   ],
@@ -757,7 +757,7 @@ const EXEMPLARS = {
   // Hinglish both, so Hindi does not pile up in one region (see the note on languages in feedback).
   'find-businesses': [
     'find shops near me that do not have a website', 'list cafes in sector 70 with their phone numbers',
-    'get me the numbers of salons around here', 'which restaurants in wakad have no website',
+    'get me the numbers of salons around here', 'which restaurants in zirakpur have no website',
     'businesses near my house without a website', 'find potential clients nearby who need a website',
     'mere area ki dukaanon ke phone number nikaal do', 'bina website wale local business dhoondo',
   ],

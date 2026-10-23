@@ -5,7 +5,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 APP="ClapListener.app"
-BUNDLE_ID="com.jarvis.claplistener"
+BUNDLE_ID="com.atharv.claplistener"
 
 echo "→ Assembling $APP"
 rm -rf "$APP"

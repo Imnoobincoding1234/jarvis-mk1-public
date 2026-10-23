@@ -49,7 +49,7 @@ const DEFAULTS = {
   // paramedics to his flat while he is collapsed in another town is the worst thing this file could do.
   // BLANK BY DESIGN — the real values live in state/profile.json, which is vaulted and never
   // committed. They used to sit here as literals, which meant a stranger's fresh clone did not fall
-  // back to NOTHING, it fell back to MIHIR'S FLAT. An SOS from that install would have read his
+  // back to NOTHING, it fell back to ATHARV'S FLAT. An SOS from that install would have read his
   // street address to a dispatcher for someone who has never been there — precisely the failure the
   // note above warns about, arriving through a different door.
   // Empty is safe: a missing homeMatch already means "not at a known address", so the geocoded
@@ -59,7 +59,7 @@ const DEFAULTS = {
   name: '',
   pronouns: 'they/them',       // how JARVIS refers to the user when writing ABOUT them
   city: '',      // weather/traffic resolve here; city granularity is enough
-  language: 'en',              // 'en-understand-hi' = also parses Hindi/Marathi/Hinglish, answers in English
+  language: 'en',              // 'en-understand-hi' = also parses Hindi/Punjabi/Hinglish, answers in English
   // WHERE, for everything that depends on it. Empty = read from this Mac (System Settings → Language &
   // Region / Date & Time), so a machine in Germany is German and one in the US is American without
   // anyone configuring it. The SOS lane does NOT use these: it resolves the country from where the
@@ -275,7 +275,7 @@ function promptLines(opts) {
     out.push(pr.poss[0].toUpperCase() + pr.poss.slice(1) + ' hours vary daily — never assume a timetable. Judge whether ' + pr.subj + ' ' + is + ' around from recent activity, not the clock.');
   }
   if (p.language === 'en-understand-hi') {
-    out.push(Subj + ' ' + (pr.subj === 'they' ? 'mix' : 'mixes') + ' Hindi/Marathi and Hinglish into ' + pr.poss + ' requests. Understand them, but always ANSWER in English.');
+    out.push(Subj + ' ' + (pr.subj === 'they' ? 'mix' : 'mixes') + ' Hindi/Punjabi and Hinglish into ' + pr.poss + ' requests. Understand them, but always ANSWER in English.');
   }
   if (p.pronouns && p.pronouns !== 'they/them') {
     out.push('Use ' + p.pronouns + ' when writing about ' + pr.obj + ' to anyone else.');
@@ -387,8 +387,8 @@ function family_time() {
 // THE FACTS ARE THERE; THE QUESTION CANNOT REACH THEM. Retrieval is tf-idf over the words in the
 // query, and "who am I" / "tell me about myself" contain no rare word to match on — every token is a
 // stopword. So passive recall returned nothing and the model did what a small model does with a
-// question it cannot answer: it apologised and asked Mihir to introduce himself, with a full
-// biography sitting in the store. Measured, not assumed: "who is Kunal" retrieves fine, "who am I"
+// question it cannot answer: it apologised and asked Atharv to introduce himself, with a full
+// biography sitting in the store. Measured, not assumed: "who is Parth" retrieves fine, "who am I"
 // returns null.
 //
 // Same remedy as family_time — answer it from the store, deterministically, before a model sees it.
@@ -396,7 +396,7 @@ const BIO_ORDER = ['Who he is', 'Household', 'Hobbies', 'Goals'];
 
 // Profile facts carry instructions to JARVIS as well as biography — "Weather and travel answers
 // should resolve there at city level", "Use this when suggesting music". Read back verbatim, the
-// answer to "who am I" told Mihir how his own weather lookups are routed. Sentences aimed at JARVIS
+// answer to "who am I" told Atharv how his own weather lookups are routed. Sentences aimed at JARVIS
 // are dropped; only the ones describing him survive.
 const DIRECTIVE_RE = /^\s*(?:use|do not|don'?t|never|always|avoid|order|prefer|those are|that is what|answers?\b|weather\b)/i;
 function biographyOnly(text) {

@@ -28,7 +28,7 @@ const NOTE_EXEMPLARS = {
   ],
   keep: [
     'buy eggs milk bread', 'the wifi password is on the router', 'call the plumber tmrw', 'gym at 6 every day',
-    'kunal owes me 500', 'the locker code is 4412', 'project due friday', 'meeting moved to 3pm', 'dentist on the 12th',
+    'parth owes me 500', 'the locker code is 4412', 'project due friday', 'meeting moved to 3pm', 'dentist on the 12th',
     'ideas: dark mode, voice wake', 'rahul bday 14 march', 'pick up the parcel', 'my shoe size is 9', 'hello',
     'doodh aur bread lana hai', 'the test is on the 14th', 'passwords go in the vault not here',
   ],

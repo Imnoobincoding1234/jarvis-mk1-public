@@ -174,17 +174,17 @@ head('D0 · a message step the model left empty is filled from THIS run (2026-10
 {
   const T = A.threadMessageArgs;
   const steps = [{ tool: 'find_contact' }, { tool: 'compose' }];
-  const results = [{ ok: true, say: 'Found Yuvan.', data: { name: 'Yuvan', phone: '+919900000011' } }, { ok: true, say: 'Drafted.', text: 'whats the maths hw?', data: { text: 'whats the maths hw?' } }];
-  const a = T('send_message', {}, steps, results, 'ping yuvan on whatsapp asking about the maths hw');
+  const results = [{ ok: true, say: 'Found Ekamveer.', data: { name: 'Ekamveer', phone: '+919900000011' } }, { ok: true, say: 'Drafted.', text: 'whats the maths hw?', data: { text: 'whats the maths hw?' } }];
+  const a = T('send_message', {}, steps, results, 'ping ekamveer on whatsapp asking about the maths hw');
   eq(a.body, 'whats the maths hw?', 'an empty body takes the text this run composed');
   eq(a.phone, '+919900000011', 'and the recipient comes from this run\'s contact lookup');
-  eq(a.name, 'Yuvan', 'with the contact\'s name');
+  eq(a.name, 'Ekamveer', 'with the contact\'s name');
   const kept = T('send_message', { body: 'hi', phone: '+911' }, steps, results, 'g');
   eq(kept.body, 'hi', 'a body the model gave is never replaced');
   eq(kept.phone, '+911', 'nor a recipient it gave');
-  const byName = T('send_message', { to: 'yuvan', body: 'yo' }, steps, results, 'g');
+  const byName = T('send_message', { to: 'ekamveer', body: 'yo' }, steps, results, 'g');
   eq(byName.phone, '+919900000011', 'a NAME in `to` that is the contact found gets that contact\'s number');
-  const other = T('send_message', { to: 'kunal', body: 'yo' }, steps, results, 'g');
+  const other = T('send_message', { to: 'parth', body: 'yo' }, steps, results, 'g');
   ok(!other.phone, 'a different name is left alone — never one person\'s name over another\'s number');
   const failed = T('send_message', {}, steps, [{ ok: false }, { ok: false }], 'g');
   ok(!failed.body && !failed.phone, 'nothing is taken from a step that failed');
@@ -192,15 +192,15 @@ head('D0 · a message step the model left empty is filled from THIS run (2026-10
   const c = T('compose', { kind: 'message', purpose: 'message' }, [], [], 'tell didi im outside', { to: 'didi', body: 'im outside', reported: false });
   ok(c.strict === true && c.said === 'im outside', 'a message compose rewrites the body the READER cut out (strict), not the model\'s purpose');
   ok(!c.noVerbatim, 'and the reader\'s body may stand as it is');
-  const c2 = T('compose', { kind: 'message', purpose: 'message' }, [], [], 'ping yuvan on whatsapp asking about the maths hw', null);
+  const c2 = T('compose', { kind: 'message', purpose: 'message' }, [], [], 'ping ekamveer on whatsapp asking about the maths hw', null);
   ok(c2.strict === true && c2.noVerbatim === true, 'with no reading, his whole instruction goes in but may not come back as the message');
   eq(T('compose', { kind: 'text', purpose: 'a poem' }, [], [], 'g').strict, undefined, 'other writing is left to the free composer');
   // The 3B echoes a whole instruction back word for word (measured 2026-10-10, qwen2.5:3b, both temperatures).
-  A.init({ jlog: () => {}, llm: async () => ({ text: 'ping yuvan on whatsapp asking about the maths hw' }) });
-  const e = await A.compose({ kind: 'message', strict: true, said: 'ping yuvan on whatsapp asking about the maths hw', noVerbatim: true, recipient: 'Yuvan' });
-  ok(!e.ok && /what should the message to Yuvan say/i.test(e.say), 'an echoed instruction is not a draft — it asks what to say: "' + e.say + '"');
+  A.init({ jlog: () => {}, llm: async () => ({ text: 'ping ekamveer on whatsapp asking about the maths hw' }) });
+  const e = await A.compose({ kind: 'message', strict: true, said: 'ping ekamveer on whatsapp asking about the maths hw', noVerbatim: true, recipient: 'Ekamveer' });
+  ok(!e.ok && /what should the message to Ekamveer say/i.test(e.say), 'an echoed instruction is not a draft — it asks what to say: "' + e.say + '"');
   A.init({ jlog: () => {}, llm: async () => ({ text: 'what about the maths hw?' }) });
-  const g = await A.compose({ kind: 'message', strict: true, said: 'asking about the maths hw', message: 'ping yuvan asking about the maths hw' });
+  const g = await A.compose({ kind: 'message', strict: true, said: 'asking about the maths hw', message: 'ping ekamveer asking about the maths hw' });
   ok(g.ok && g.text === 'what about the maths hw?', 'a real rewrite of the reader\'s body is the draft');
 }
 
@@ -398,12 +398,12 @@ head('H · loop: recovery genuinely changes the next decision');
 head('I · loop: transcript hygiene');
 {
   // A path must reach the model intact — a clipped one gets pasted back as a real filename.
-  const d = drive((i) => i === 0 ? { tool: 'create_file', args: { path: '/Users/you/Desktop/some_long_folder_name/notes.txt', content: 'x' } }
+  const d = drive((i) => i === 0 ? { tool: 'create_file', args: { path: '/Users/atharv/Desktop/some_long_folder_name/notes.txt', content: 'x' } }
     : { tool: 'done', say: 'ok' },
     { create_file: async () => ({ ok: true, say: 'Created' }), read: async () => ({ ok: true, data: 'x' }) });
   await A.runGoal('x');
   const second = d.prompts[1] && d.prompts[1].messages[0].content;
-  ok(second && second.includes('/Users/you/Desktop/some_long_folder_name/notes.txt'),
+  ok(second && second.includes('/Users/atharv/Desktop/some_long_folder_name/notes.txt'),
     'the full path is present in the next prompt, never truncated mid-value');
 }
 {
@@ -690,7 +690,7 @@ head('P · bugs found by driving the LIVE server (regressions)');
     ok(HR.test(q), 'how-to detected: "' + q + '"');
   }
   for (const q of ['read stress_b.txt on my desktop', 'create a folder called x', 'list my desktop',
-                   'how are you', 'how many leads do i hand kunal']) {
+                   'how are you', 'how many leads do i hand parth']) {
     ok(!HR.test(q), 'NOT a how-to: "' + q + '"');
   }
 
@@ -856,7 +856,7 @@ head('Z2 · lessons: the same wall is not walked into twice');
   eq(H.pickLessons('play music on spotify', [], 3).length, 0, 'an empty store yields no lessons');
   const store = [{ goal: 'play music on spotify', tool: 'open_app', target: 'Spotifi', why: 'unknown app', hits: 1 }];
   ok(H.pickLessons('play music on spotify', store, 3).length === 1, 'a matching goal recalls its lesson');
-  eq(H.pickLessons('what is the weather in kolhapur', store, 3).length, 0, 'an unrelated goal recalls nothing');
+  eq(H.pickLessons('what is the weather in chandigarh', store, 3).length, 0, 'an unrelated goal recalls nothing');
   ok(/LEARNED/.test(H.lessonLines(store)[0]), 'the line is phrased as a constraint');
   ok(/\. Do not start/.test(H.lessonLines(store)[0]), 'and is punctuated, not run together');
 

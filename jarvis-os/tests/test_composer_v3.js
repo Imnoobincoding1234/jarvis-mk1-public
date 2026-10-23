@@ -65,11 +65,11 @@ const run = (body, extra) => A.compose(Object.assign({ kind: 'message', strict: 
 
   console.log('— C2 (JARVIS_COMPOSE_V3=c2) —');
   // stands in for intent.isHinglish (no model): the fixture's own Hinglish sentences by identity — no words are matched
-  const HINGLISH_FIXTURE = new Set(['usne chart banaya kya', 'ira se puch ki usne chart banaya kya']);
+  const HINGLISH_FIXTURE = new Set(['usne chart banaya kya', 'harsimran se puch ki usne chart banaya kya']);
   const hing = t => HINGLISH_FIXTURE.has(t);
   s = setup({ on: 'c2', isHinglish: async t => hing(t), draft: { text: 'tune chart banaya?', logprobs: lps(-0.01) } });
-  r = await A.compose({ kind: 'message', strict: true, said: 'usne chart banaya kya', message: 'ira se puch ki usne chart banaya kya', recipient: 'Ira', reported: true });
-  eq('a reported Hinglish body is asked — the drafter is never called', [r.ok, r.say, r.data.hinglish, s.draft.length], [false, 'What should the message to Ira say, Sir?', true, 0]);
+  r = await A.compose({ kind: 'message', strict: true, said: 'usne chart banaya kya', message: 'harsimran se puch ki usne chart banaya kya', recipient: 'Harsimran', reported: true });
+  eq('a reported Hinglish body is asked — the drafter is never called', [r.ok, r.say, r.data.hinglish, s.draft.length], [false, 'What should the message to Harsimran say, Sir?', true, 0]);
   s = setup({ on: 'c2', isHinglish: async t => hing(t), draft: { text: 'did you eat dinner?', logprobs: lps(-0.1) } });
   r = await run('if he ate dinner', { reported: true });
   eq('a reported English body takes the sure-draft path', [r.ok, r.text, s.draft.length], [true, 'did you eat dinner?', 1]);

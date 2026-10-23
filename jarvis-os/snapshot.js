@@ -16,7 +16,7 @@
 //   # Create your account
 //   [form "Sign up"]
 //     [4] textbox "Your name" required
-//     [5] combobox "City" = "Delhi" {Pick, Kolhapur, Delhi}
+//     [5] combobox "City" = "Delhi" {Pick, Chandigarh, Delhi}
 //     [6] checkbox "Send me news" checked
 //     [7] button "Save"
 //

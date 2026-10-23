@@ -41,32 +41,32 @@ function eq(label, got, want) {
   }
 
   console.log('\n— and neither is a command or a fact about the world —');
-  for (const s of ['open the calculator', 'send kunal a message',
+  for (const s of ['open the calculator', 'send parth a message',
                    'delhi is the capital of india', 'play something by drake']) {
     eq('"' + s + '" is not stored', await sf.isSelfFact(s), false);
   }
 
   console.log('\n— the right fact answers the question —');
   const FACTS = [
-    'Mihir hates being woken up early, hates phone calls, and hates people being late.',
-    'Mihir hates summer and enjoys winters.',
-    'Mihir is allergic to peanuts.',
-    'Mihir lives in Nagpur.',
-    "Mihir's favourite colour is teal.",
-    "Mihir's sister is called Anaya.",
+    'Atharv hates being woken up early, hates phone calls, and hates people being late.',
+    'Atharv hates summer and enjoys winters.',
+    'Atharv is allergic to peanuts.',
+    'Atharv lives in Ludhiana.',
+    "Atharv's favourite colour is teal.",
+    "Atharv's sister is called Anaya.",
   ];
   const top = async q => { const r = await fm.rank(q, FACTS, 3); return r.length ? r[0].text : null; };
   // THE ONE FROM HIS SCREENSHOT: this returned the hates-list, on the word "hate".
   eq('"do i hate summer" finds the summer fact', await top('do i hate summer'),
-     'Mihir hates summer and enjoys winters.');
+     'Atharv hates summer and enjoys winters.');
   eq('"do i hate phone calls" still finds the hates-list', await top('do i hate phone calls'),
-     'Mihir hates being woken up early, hates phone calls, and hates people being late.');
+     'Atharv hates being woken up early, hates phone calls, and hates people being late.');
   // RECOVERED BY STAGE TWO. This pulls its own fact to only 0.520 — below two of the adversarial
   // pairs — so no cosine floor can have it and refuse them. The numbered-selection pass picks it.
   eq('"where do i live" is recovered from under the floor', await top('where do i live'),
-     'Mihir lives in Nagpur.');
-  eq('"am i allergic to anything"', await top('am i allergic to anything'), 'Mihir is allergic to peanuts.');
-  eq('"what is my sister called"', await top('what is my sister called'), "Mihir's sister is called Anaya.");
+     'Atharv lives in Ludhiana.');
+  eq('"am i allergic to anything"', await top('am i allergic to anything'), 'Atharv is allergic to peanuts.');
+  eq('"what is my sister called"', await top('what is my sister called'), "Atharv's sister is called Anaya.");
 
   console.log('\n— sharing a word with a fact is not the same as being answered by it —');
   // The adversarial half. Each of these shares its subject with a stored fact and differs in the

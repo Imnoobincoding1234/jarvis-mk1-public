@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Round 5's rows for the SHAPES round 4 got wrong or was unsure of — new sentences in Mihir's style, never the failing lines.
+"""Round 5's rows for the SHAPES round 4 got wrong or was unsure of — new sentences in Atharv's style, never the failing lines.
     gen_round5_miss.py       # writes data/round5_batches/round5-miss.tsv
     then: synth_add.py round5-miss < data/round5_batches/round5-miss.tsv
 

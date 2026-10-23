@@ -445,7 +445,7 @@ async function cloud_action(args) {
 }
 
 // Reading mail deterministically: the agentic loop guessing a tool slug is far less reliable than
-// calling the known one, and this is the request Mihir actually makes.
+// calling the known one, and this is the request Atharv actually makes.
 // Unread count only — used by the opening greeting, which must not stall. Returns null (rather
 // than an error) whenever Gmail is not connected or the call is slow, so the greeting simply omits
 // the mail clause instead of claiming a count it does not have.

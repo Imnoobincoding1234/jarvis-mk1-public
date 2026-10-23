@@ -125,7 +125,7 @@ const NVIDIA = [
   r = await C.standsFor('search him up on brave', NVIDIA);
   ok('the antecedent came from an assistant turn', r.ok && r.value === 'Jensen Huang');
   ok('the prompt showed the assistant turn', /JARVIS: The CEO of Nvidia is Jensen Huang\./.test(seen[0]));
-  ok('the prompt did NOT include the turn being resolved', !/Mihir: search him up on brave/.test(seen[0]));
+  ok('the prompt did NOT include the turn being resolved', !/Atharv: search him up on brave/.test(seen[0]));
 
   console.log('\n— the transcript handed to the model is bounded —');
   const many = [];

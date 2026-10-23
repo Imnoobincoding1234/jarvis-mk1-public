@@ -2,7 +2,7 @@
 # Off switch — stop and remove the clap listener launch agent.
 set -euo pipefail
 
-LABEL="com.jarvis.claplistener"
+LABEL="com.atharv.claplistener"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 
 echo "→ Stopping launch agent"

@@ -354,7 +354,7 @@ const TASKS = [
   // Both media tasks above smuggle in a trigger word — "on SPOTIFY" and "latest SONG" — and the
   // spotify-play playbook's `must` required one of spotify/song/track/album/playlist/music. So
   // "play judas by lady gaga" scored 0, never reached the playbook, and was handed to the 3B, which
-  // OPENED SAFARI and reported success. Reported by Mihir from real use while this suite read
+  // OPENED SAFARI and reported success. Reported by Atharv from real use while this suite read
   // 42/42, twice, because every media task it contained was phrased the way the router wanted.
   //
   // That is the failure this file exists to prevent, and it happened anyway: a suite can only ever
@@ -471,8 +471,8 @@ const TASKS = [
   // whole files that way. Round-tripping one through the model and onto disk is
   // the cheapest possible guard against it happening again.
   { id: 'file-apostrophe', cat: 'files', approveAll: true,
-    goal: 'create a file called quote.txt on my desktop saying It is Mihir’s machine, don’t touch it',
-    verify: async () => /Mihir’s|Mihir's/.test(readf(HOME + '/Desktop/quote.txt')) &&
+    goal: 'create a file called quote.txt on my desktop saying It is Atharv’s machine, don’t touch it',
+    verify: async () => /Atharv’s|Atharv's/.test(readf(HOME + '/Desktop/quote.txt')) &&
                         /don’t|don't/.test(readf(HOME + '/Desktop/quote.txt')),
     why: 'apostrophes survive the round trip to disk' },
   { id: 'file-nested', cat: 'files', approveAll: true,
@@ -967,7 +967,7 @@ async function audit(list) {
     // `rem-add` creates a real reminder in Reminders.app and `mem-remember` writes a real fact into
     // the profile store. Neither was ever cleaned, so both accumulated one per run. Measured on the
     // live machine: 30 identical "drink water in 3 hours" reminders, 30 runs deep, each carrying a
-    // due date and firing a notification at Mihir — 30 of the 32 open reminders on his list were
+    // due date and firing a notification at Atharv — 30 of the 32 open reminders on his list were
     // this suite talking to itself. That is the same fault the sandbox wipe above exists to fix,
     // left standing in the two tasks that write state instead of files, and it went unseen because
     // the scorecard said 38/38 and nobody looked past it.
@@ -1001,7 +1001,7 @@ async function audit(list) {
     // TWO forgets, because one does not reach everything the codeword touches.
     //
     // FORGET_FACT_RE (server.js) drops the `profile` entry — the one that matters, since `profile`
-    // is in PASSIVE_KINDS and would otherwise be recited back at Mihir as a fact about himself.
+    // is in PASSIVE_KINDS and would otherwise be recited back at Atharv as a fact about himself.
     // It deliberately touches nothing else. That leaves the `did` breadcrumb ("Remembered: my eval
     // codeword is zephyr seven"), which no fact-forget will ever reach.
     //

@@ -42,7 +42,7 @@ echo 'JARVIS_TAILNET=1' >> ~/"JARVIS MK-1/.env"
 4. Restart JARVIS OS:
 
 ```bash
-launchctl kickstart -k gui/$(id -u)/com.jarvis.jarvisos
+launchctl kickstart -k gui/$(id -u)/com.atharv.jarvisos
 ```
 
 5. Check the log — it prints the reachable address, or says why it could not:

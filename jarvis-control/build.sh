@@ -2,7 +2,7 @@
 # Build JarvisControl.app — accessory app (needs Accessibility for CGEvents).
 set -euo pipefail
 cd "$(dirname "$0")"
-APP="JarvisControl.app"; BID="com.jarvis.jarviscontrol"
+APP="JarvisControl.app"; BID="com.atharv.jarviscontrol"
 echo "→ Assembling $APP"; rm -rf "$APP"; mkdir -p "$APP/Contents/MacOS"
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>

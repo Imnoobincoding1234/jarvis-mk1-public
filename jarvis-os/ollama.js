@@ -122,7 +122,7 @@ async function ensureUp() {
       // HOW MANY MODELS MAY BE LOADED — his rule. Until 2026-10-09: one (the default of three — reader +
       // 3B + an embedder — had frozen his 8 GB Mac). Since then four, because makeRoomFor keeps a heavy model
       // alone and the light ones within a memory budget. Ollama.app gets the same number from launchd
-      // (install.sh, com.jarvis.ollamaonemodel); a server started here must use it too.
+      // (install.sh, com.atharv.ollamaonemodel); a server started here must use it too.
       const env = Object.assign({}, process.env, { OLLAMA_HOST: ep.host + ':' + ep.port, OLLAMA_MAX_LOADED_MODELS: MAX_LOADED });
       // Detached and fully decoupled: this outlives the request that triggered it, and must never
       // hold the parent's stdio open or inherit its lifetime.

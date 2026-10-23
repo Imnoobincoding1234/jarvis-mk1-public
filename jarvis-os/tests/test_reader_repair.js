@@ -26,7 +26,7 @@ const ask = out => out && out.ask;
 
 console.log('— switches off: exactly the old behaviour —');
 withEnv(OFF, () => {
-  eq('a `when` on a message is refused', RM.build('ping rehaan saying cya at practice', { act: 'message', to: 'rehaan', body: 'cya', when: 'at practice' }), null);
+  eq('a `when` on a message is refused', RM.build('ping sidhu saying cya at practice', { act: 'message', to: 'sidhu', body: 'cya', when: 'at practice' }), null);
   eq('a left-out number is refused', RM.build('search what is chatgpt 5', { act: 'search_web', query: 'what is chatgpt' }), null);
   eq('a value not quite copied is refused', RM.build('quiz me on electrostatics', { act: 'quiz_me', topic: 'electstatics' }), null);
   const q = RM.build('text bhai saying gg', sure({ act: 'message', to: 'bhai', body: 'gg' }, 0.5));
@@ -35,9 +35,9 @@ withEnv(OFF, () => {
 
 console.log('\n— fix 2: a `when` that runs straight on from his free words joins them —');
 withEnv(ON, () => {
-  let a = act(RM.build('ping rehaan saying cya at practice', { act: 'message', to: 'rehaan', body: 'cya', when: 'at practice' }));
+  let a = act(RM.build('ping sidhu saying cya at practice', { act: 'message', to: 'sidhu', body: 'cya', when: 'at practice' }));
   eq('message body takes it back', [a && a.type, a && a.body, a && 'later' in a], ['reader_message', 'cya at practice', false]);
-  a = act(RM.build('send yuvan omw 5 min', { act: 'message', to: 'yuvan', body: 'omw', when: '5 min' }));
+  a = act(RM.build('send ekamveer omw 5 min', { act: 'message', to: 'ekamveer', body: 'omw', when: '5 min' }));
   eq('…"omw 5 min"', a && a.body, 'omw 5 min');
   a = act(RM.build('search flights to goa for next month', { act: 'search_web', query: 'flights to goa', when: 'for next month' }));
   eq('search query takes it back', !!a && JSON.stringify(a).includes('flights to goa for next month'), true);

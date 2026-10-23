@@ -1,5 +1,5 @@
 'use strict';
-// MEASUREMENT SCRIPT — the reply-claim check, alone vs. with jarvis as a second judge (2026-10-10, Mihir away).
+// MEASUREMENT SCRIPT — the reply-claim check, alone vs. with jarvis as a second judge (2026-10-10, Atharv away).
 // Held-out: finetune/data/replyclaim_heldout6.json (written before this ran; candidate and bar pre-registered in its builder,
 // finetune/build_replyclaim_heldout6.js). For every [his message, reply]: the live claim reader (replyclaim.js) and jarvis asked
 // about its own reply in context — the same follow-up-turn, token-probability protocol as the Wikipedia answer check

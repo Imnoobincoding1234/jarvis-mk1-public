@@ -136,7 +136,7 @@ const HELDOUT = [
   ['open my github stars', 'ask'],
   ['open youtube and search for cats', null],
   ['open the pod bay doors', null],
-  ['close the deal with kunal', null],
+  ['close the deal with parth', null],
   ['open spotify premium plans', 'ask'],
   ['open youtube shorts', 'ask'],
   ['open safari history', 'ask'],
@@ -189,7 +189,7 @@ const ROLE_HELDOUT = [
   ['premium plans', 'content'], ['stars', 'content'], ['account', 'content'], ['messages', 'content'],
   ['trending', 'content'], ['library', 'content'], ['the second tab', 'content'], ['reels', 'content'],
   ['dms', 'content'], ['music videos', 'content'], ['playlists', 'content'], ['downloads', 'content'],
-  ['search', 'content'], ['login page', 'content'], ['tomorrow morning', 'content'], ['for kunal', 'content'],
+  ['search', 'content'], ['login page', 'content'], ['tomorrow morning', 'content'], ['for parth', 'content'],
 ];
 // Written blind AFTER the first role set had been used to set the cuts, so this is the honest number.
 const ROLE_HELDOUT2 = [
@@ -201,7 +201,7 @@ const ROLE_HELDOUT2 = [
   ['watch history', 'content'], ['channel', 'content'], ['cart items', 'content'], ['profile page', 'content'],
   ['inbox', 'content'], ['sent mail', 'content'], ['photos', 'content'], ['album', 'content'],
   ['the latest episode', 'content'], ['my uploads', 'content'], ['comments', 'content'], ['for mama', 'content'],
-  ['with kunal', 'content'], ['about cats', 'content'], ['billing', 'content'], ['storage', 'content'],
+  ['with parth', 'content'], ['about cats', 'content'], ['billing', 'content'], ['storage', 'content'],
   ['wallet', 'content'], ['friends list', 'content'], ['saved', 'content'], ['live stream', 'content'],
 ];
 

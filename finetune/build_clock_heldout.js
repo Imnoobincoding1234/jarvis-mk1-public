@@ -1,5 +1,5 @@
 'use strict';
-// FRESH held-out for the clock lane (2026-10-10, Mihir away on a trek), written BEFORE clockintent.js existed.
+// FRESH held-out for the clock lane (2026-10-10, Atharv away on a trek), written BEFORE clockintent.js existed.
 // Why: time questions were answered by the chat model reading the prompt's clock line, and half of them failed across the
 // casual dev set and the one judged v2 run — the web lane took "whats the date today" and answered from search results
 // with a wrong date (2023-09-28), "time in london" went to the web too, and Hinglish "kitne baje" was misread.

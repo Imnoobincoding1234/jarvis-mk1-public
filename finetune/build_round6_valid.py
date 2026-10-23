@@ -27,7 +27,7 @@ ROWS = [
     ('aaj monday hai na', T()),
     ('time in dubai rn', T(where='dubai')), ('what time is it in new york', T(where='new york')), ('tokyo mein kya time hai', T(where='tokyo')),
     ('is it morning in toronto rn', T(where='toronto')), ('singapore time batao', T(where='singapore')),
-    ('whats the time back home in nashik', T(where='nashik')), ('paris mein abhi kitne baje hain', T(where='paris')),
+    ('whats the time back home in mohali', T(where='mohali')), ('paris mein abhi kitne baje hain', T(where='paris')),
     # ---- mentions time, is not it (10)
     ('wake me up at 6 tmrw', {'act': 'none'}), ('what time does the ipl final start', {'act': 'none'}),
     ('what time is my physics tuition tmrw', {'act': 'calendar', 'when': 'tmrw'}), ('how long till 5 pm', {'act': 'none'}),

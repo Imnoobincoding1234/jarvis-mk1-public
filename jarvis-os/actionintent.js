@@ -107,7 +107,7 @@ const ACTION_EXEMPLARS = {
   // ADDRESSED TO SOMEONE, OR ABOUT TIME — both are instructions, so they cannot sit with `talk`,
   // and both belong to lanes that run before quickAction ever sees them.
   reach: [
-    'message mama on whatsapp', 'text kunal that i am late', 'call dad',
+    'message mama on whatsapp', 'text parth that i am late', 'call dad',
     'remind me to call the dentist', 'set a timer for ten minutes',
     'order me a pizza', 'play judas', 'play something by drake',
   ],

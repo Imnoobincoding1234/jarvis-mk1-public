@@ -24,17 +24,17 @@
 //
 // PROPER NOUNS ARE NEUTRAL, NOT EVIDENCE, AND THE SYSTEM ALREADY KNOWS WHICH THEY ARE.
 //
-// "spotify", "notes", "kunal" are in no English dictionary and in no Hindi one either, so counting
+// "spotify", "notes", "parth" are in no English dictionary and in no Hindi one either, so counting
 // them as non-English makes every sentence that names an app or a person look Hindi. A first version
 // tried to spot them by LENGTH — unknown and longer than seven characters — and it was measured and
 // it failed, because the names he actually uses are short:
 //
 //     open spotify   → HINGLISH      open notes   → HINGLISH
-//     message kunal  → HINGLISH      call mama    → HINGLISH
+//     message parth  → HINGLISH      call mama    → HINGLISH
 //
 // None of those is Hinglish. The repair is not a list of names — that is the same trap wearing a
 // different hat — but the REGISTRIES this system already owns and already trusts for exactly this
-// question: config/sites.json knows spotify, the app index knows Notes, Contacts knows Kunal. A
+// question: config/sites.json knows spotify, the app index knows Notes, Contacts knows Parth. A
 // token any of them recognises is a name, and a name says nothing about which language surrounds it.
 // The length rule survives underneath as a last resort for names no registry has heard of.
 //

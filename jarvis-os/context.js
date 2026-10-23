@@ -249,7 +249,7 @@ async function wordsFor(text, refers) {
 // come back NONE. Those two need opposite handling: one is a fresh command, the other must not be
 // acted on as written. Measured, that distinction defeats the 3B in both framings tried — asking it
 // for an UNCLEAR label, and asking it which words are standing in (11/15, and it flagged "message
-// kunal on whatsapp that i am late" as incomplete, which would have blocked a real message).
+// parth on whatsapp that i am late" as incomplete, which would have blocked a real message).
 //
 // The embedder does it cleanly: 17/17 with no false positives. That is not surprising in hindsight.
 // "search it up", "buy it", "delete them" and "show me that one" share a SHAPE — a request with a
@@ -265,7 +265,7 @@ const LEANING_EXEMPLARS = {
   ],
   self_contained: [
     'search for pizza recipes on brave', 'open spotify', 'play judas', 'what is the weather',
-    'order me some grapes', 'close textedit', 'message kunal on whatsapp that i am late',
+    'order me some grapes', 'close textedit', 'message parth on whatsapp that i am late',
     'who is the ceo of nvidia', 'what is my name', 'order me a pizza',
     'play the latest mrbeast video', 'buy me a phone charger', 'look up rust on brave',
     'what is on my calendar',

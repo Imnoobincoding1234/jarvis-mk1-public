@@ -108,7 +108,7 @@ function eq(label, got, want) {
   // one of four indistinguishable strings — a one-in-four chance of installing a competitor's app.
   const SCREEN = [
     { i: 17, role: 'AXButton', label: 'Field' },
-    { i: 18, role: 'AXButton', label: 'Mihir Kapoor' },
+    { i: 18, role: 'AXButton', label: 'Atharv Mahendru' },
     { i: 19, role: 'AXRadioButton', label: 'Mac Apps' },
     { i: 22, role: 'AXGroup', label: 'Instapaper, News, four and three quarters stars' },
     { i: 23, role: 'AXButton', label: 'Get, In-App Purchases' },
@@ -133,7 +133,7 @@ function eq(label, got, want) {
     { i: 1, role: 'AXCell', label: 'Categories' },
     { i: 2, role: 'AXButton', label: 'Categories' },
     { i: 3, role: 'AXButton', label: 'Games' },
-    { i: 4, role: 'AXButton', label: 'Mihir Kapoor' },
+    { i: 4, role: 'AXButton', label: 'Atharv Mahendru' },
     { i: 5, role: 'AXButton', label: 'Open' },
   ];
   eq('no acquire button means no press', await a.pickInstallControl('Instapaper', FURNITURE), null);

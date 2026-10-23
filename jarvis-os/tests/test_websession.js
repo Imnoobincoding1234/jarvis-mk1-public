@@ -18,7 +18,7 @@ const FORM = `<!doctype html><html><head><title>Sign up &amp; more</title></head
   <input type="hidden" name="token" value="t0k">
   <label for="nm">Your name</label><input id="nm" name="name" required>
   <label>Email <input type="email" name="email" value="a@b.c"></label>
-  <select name="city"><option value="">Pick</option><option value="chd">Kolhapur</option><option value="del" selected>Delhi</option></select>
+  <select name="city"><option value="">Pick</option><option value="chd">Chandigarh</option><option value="del" selected>Delhi</option></select>
   <input type="radio" name="plan" value="free" checked><input type="radio" name="plan" value="pro">
   <input type="checkbox" name="news" value="yes">
   <textarea name="msg" maxlength="20">hi &lt;there&gt;</textarea>
@@ -99,9 +99,9 @@ const server = http.createServer((req, res) => {
   ok(f.field('outside') && f.field('name').label === 'Your name' && f.field('email').label.startsWith('Email'), 'form="id" fields included; labels from for= and wrapping <label>');
   const r0 = f.request();
   ok(r0.body === 'token=t0k&name=&email=a%40b.c&city=del&plan=free&msg=hi+%3Cthere%3E&pw=&act=save&outside=o', 'default request: hidden kept, selected option, checked radio, unchecked box and disabled field left out, first submit button — ' + r0.body);
-  f.set('name', 'Mihir').set('city', 'Kolhapur').set('plan', 'pro').set('news', true).set('msg', 'hello');
+  f.set('name', 'Atharv').set('city', 'Chandigarh').set('plan', 'pro').set('news', true).set('msg', 'hello');
   const r1 = f.request('Send');
-  ok(r1.url === base + '/send' && /name=Mihir/.test(r1.body) && /city=chd/.test(r1.body) && /plan=pro/.test(r1.body) && /news=yes/.test(r1.body) && /act=send/.test(r1.body),
+  ok(r1.url === base + '/send' && /name=Atharv/.test(r1.body) && /city=chd/.test(r1.body) && /plan=pro/.test(r1.body) && /news=yes/.test(r1.body) && /act=send/.test(r1.body),
     'set by option text, radio, checkbox; formaction of the chosen button — ' + r1.body);
   await throwsLike(() => f.set('pw', 'hunter2'), /password/, 'password field refused');
   await throwsLike(() => f.set('token', 'x'), /hidden/, 'hidden field refused');

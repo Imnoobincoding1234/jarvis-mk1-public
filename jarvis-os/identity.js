@@ -1,10 +1,10 @@
 'use strict';
 // ---------------------------------------------------------------------------
-// JARVIS identity — who is actually sitting in front of the machine, and how much of Mihir's life
+// JARVIS identity — who is actually sitting in front of the machine, and how much of Atharv's life
 // they are allowed to see.
 //
 // THREE TIERS, in descending trust:
-//   root    Mihir. Everything: memory, profile, agentic work, actions, the lot. Today's behaviour.
+//   root    Atharv. Everything: memory, profile, agentic work, actions, the lot. Today's behaviour.
 //   known   A face he has enrolled. Chat + vision + BASIC agentic work. NOTHING personal: no
 //           memory, no profile facts, no action log, no habits, no settings.
 //   unknown Anyone else, and the default. A plain assistant. It answers general questions and
@@ -168,7 +168,7 @@ function buildPrompt(names) {
 // not NOFACE or MATCH fell through to "none", which DEMOTES. Measured: qwen3-vl:2b is a thinking
 // model and returns an EMPTY content field for every two-image comparison — it reasons for 800
 // tokens and 43 seconds and never reaches a conclusion. So the old parse turned "the model said
-// nothing" into "that is not Mihir", and every single check would have quietly demoted him to
+// nothing" into "that is not Atharv", and every single check would have quietly demoted him to
 // unknown on his own machine.
 //
 // Silence is now its own outcome, and the caller leaves the tier alone. Only an explicit, parseable
@@ -198,7 +198,7 @@ function parse(text) {
 // the browser in milliseconds, and it needs no LLM at all.
 //
 // THE BROWSER EXTRACTS, THE SERVER DECIDES. The client sends 128 floats, never a claimed identity —
-// a client that could say "I am Mihir" would defeat the entire feature. Matching happens here, on
+// a client that could say "I am Atharv" would defeat the entire feature. Matching happens here, on
 // numbers the client cannot usefully forge without already having his face.
 //
 // 0.5 is face-api's own conventional threshold and the one his prototype used. Lower is stricter.
@@ -386,7 +386,7 @@ function snapshot() {
   return { tier: tier(), name: state.name, fresh: fresh(), checks: state.checks,
     demotions: state.demotions,
     // `recognisable` is reported per person, because a photo without a descriptor is a face JARVIS
-    // can DISPLAY but never MATCH. Kunal sat in this roster as "known" for a day while actually
+    // can DISPLAY but never MATCH. Parth sat in this roster as "known" for a day while actually
     // being classified unknown, and nothing anywhere said so. A roster that cannot show that
     // distinction is a roster that lies by omission.
     enrolled: enrolled().map(e => ({

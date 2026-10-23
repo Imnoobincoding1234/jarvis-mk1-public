@@ -134,7 +134,7 @@ function runRedactTests() {
 
   // THE OTHER HALF, and the one that decides whether this is usable: ordinary
   // sentences must survive untouched, or he turns it off.
-  masked('an ordinary sentence', 'remind me to call Kunal at 6pm about the AdMax invoice', false);
+  masked('an ordinary sentence', 'remind me to call Parth at 6pm about the AdMax invoice', false);
   masked('a ten-digit phone number', 'call me on 9876543210', false);
   masked('a year and a count', 'in 2026 we had 100000 users', false);
   masked('a plain six-digit number', 'the flat costs 450000 rupees', false);
@@ -172,7 +172,7 @@ function runJournalTests() {
   const dir = tmpdir();
   const recall = require('../recall.js');
   recall.init({ jlog: () => {}, stateDir: dir });
-  recall.log('turn', 'Mihir asked: use the key sk-ant-api03-' + 'z'.repeat(40) + ' for the call');
+  recall.log('turn', 'Atharv asked: use the key sk-ant-api03-' + 'z'.repeat(40) + ' for the call');
   recall.flush();
   const raw = fs.readFileSync(path.join(dir, 'episodes.json'), 'utf8');
   eq('the key is not on disk', /sk-ant-api03-zzzz/.test(raw), false);

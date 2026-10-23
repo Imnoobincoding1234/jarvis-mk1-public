@@ -1,10 +1,10 @@
 'use strict';
 // ---------------------------------------------------------------------------
-// JARVIS business finder — "find bakeries in Kolhapur without a website and give me their numbers".
+// JARVIS business finder — "find bakeries in Chandigarh without a website and give me their numbers".
 //
 // LIVE AND MULTI-SOURCE, his call (2026-10-01): an offline OpenStreetMap copy was "worse, way worse" —
 // stale, and one source. So every search asks, at that moment:
-//   1. OpenStreetMap — Nominatim turns "bakeries in kolhapur" into the area AND the map category
+//   1. OpenStreetMap — Nominatim turns "bakeries in chandigarh" into the area AND the map category
 //      (shop=bakery) using OSM's own special phrases, so no word list of ours decides what a "bakery"
 //      is; then Overpass lists every mapped place of that category in the area (several mirrors, the
 //      first that answers wins). Open data, allowed to query, but thin on phone numbers in India.

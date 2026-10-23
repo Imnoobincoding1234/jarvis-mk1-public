@@ -64,7 +64,7 @@ const ITEMS = [
   { q: 'who painted guernica', must: ['picasso'] },
   { q: 'who painted the birth of venus', must: ['botticelli'] },
   { q: 'who sculpted the statue of liberty', must: ['bartholdi'] },
-  { q: 'who designed kolhapur', must: ['corbusier', 'mayer'] },
+  { q: 'who designed chandigarh', must: ['corbusier', 'mayer'] },
   { q: 'who invented the stethoscope', must: ['laennec', 'laënnec'] },
   { q: 'who wrote the exorcist', must: ['blatty'] },
   { q: 'who wrote psycho', must: ['bloch'] },

@@ -11,7 +11,7 @@
 // Backends, as probed 2026-10-01 from his Mac:
 //   web        websession + a readability pass (local; Jina Reader sits behind Cloudflare now — 403)
 //   search     the server's own provider (Composio) → DuckDuckGo Lite (no key). Bing's RSS was tried
-//              and dropped: it answers on the first word only ("best cafes in kolhapur" → dictionaries)
+//              and dropped: it answers on the first word only ("best cafes in chandigarh" → dictionaries)
 //   youtube    oEmbed + the watch page's player data (title, channel, length, description);
 //              search from the results page. TRANSCRIPTS: the timedtext URL answers empty without
 //              YouTube's proof-of-origin token, so the transcript is read through Brave.
@@ -335,7 +335,7 @@ async function doctor(opts) {
     t('rss', async () => ({ ok: (await readFeed('https://hnrss.org/frontpage')).items.length > 0 }), 'feed did not parse'),
     t('github (no token)', async () => ({ ok: (await githubRepo('Panniantong/Agent-Reach')).ok }), 'GitHub refused — likely the 60/hour limit'),
     t('hacker news', async () => ({ ok: (await hnSearch('llm', 2)).length > 0 }), 'Algolia did not answer'),
-    t('wikipedia', async () => ({ ok: (await wikipedia('Kolhapur')).ok }), 'Wikipedia did not answer'),
+    t('wikipedia', async () => ({ ok: (await wikipedia('Chandigarh')).ok }), 'Wikipedia did not answer'),
   ]);
   // the logged-in platforms open real tabs in his Brave, so they are probed only when asked
   if (opts.brave) for (const [name, url] of [['x (Brave)', 'https://x.com/home'], ['reddit (Brave)', 'https://www.reddit.com/'], ['linkedin (Brave)', 'https://www.linkedin.com/feed/'], ['instagram (Brave)', 'https://www.instagram.com/']]) {

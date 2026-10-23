@@ -23,7 +23,7 @@ const LEANING = [
   'open his youtube channel', 'ok search him up',
   'look her up on instagram', 'play that song again', 'open it in chrome', 'close that app', 'delete those files',
   'send it to mama', 'order the same thing again', 'buy that one', 'what about the second one', 'add it to my cart',
-  'open the one you just mentioned', 'save that as a note', 'read it out loud', 'email that to kunal',
+  'open the one you just mentioned', 'save that as a note', 'read it out loud', 'email that to parth',
   'find more videos like that', 'open their website', 'search for that on amazon', 'book it for tomorrow',
   'remind me about that tonight', 'tell me more about him', 'who founded it', 'how old is she', 'where is that place',
   'play it on spotify', 'compare it with the pixel 9', 'share this with dad', 'go back to that page',

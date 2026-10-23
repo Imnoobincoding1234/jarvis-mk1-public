@@ -20,8 +20,8 @@ const head = t => console.log('\n— ' + t + ' —');
 // HELD OUT. The English half is deliberately full of the shape that broke the first detector: short
 // commands whose only unusual token is the name of an app, a site or a person.
 const ENGLISH = [
-  'open spotify', 'open notes', 'message kunal', 'call mama', 'open zomato',
-  'play judas', 'play drake', 'open brave', 'follow lady gaga', 'text kunal saying hi',
+  'open spotify', 'open notes', 'message parth', 'call mama', 'open zomato',
+  'play judas', 'play drake', 'open brave', 'follow lady gaga', 'text parth saying hi',
   'who is mrbeast', 'open the app store and find chess', "play yessmartypie's latest video",
   'what is the diameter of jupiter', 'remind me what I told you last week',
   'is my laptop charging', 'star the jarvis repo on github',
@@ -42,19 +42,19 @@ const HINGLISH = [
   }
 
   // CONTACTS WARM ASYNCHRONOUSLY, and the detector asks them whether a token is a name. Asking
-  // before the address book is cached makes "message kunal" look like Hinglish — which is a race in
+  // before the address book is cached makes "message parth" look like Hinglish — which is a race in
   // this SUITE, not in the server, where the warm runs at boot long before a request arrives. Waited
   // for explicitly rather than slept on, so a slow address book cannot make this flaky.
   const agent = require('../agent.js');
   try { await agent.warmContacts(); } catch (e) {}
-  for (let i = 0; i < 40 && !agent.personIn('kunal'); i++) await new Promise(r => setTimeout(r, 250));
+  for (let i = 0; i < 40 && !agent.personIn('parth'); i++) await new Promise(r => setTimeout(r, 250));
 
   head('a name is not a language signal');
   // THE FAILURE THAT KILLED THE FIRST VERSION. It spotted proper nouns by LENGTH, and the names he
-  // uses are short — so "open spotify", "open notes", "message kunal" and "call mama" all read as
+  // uses are short — so "open spotify", "open notes", "message parth" and "call mama" all read as
   // Hinglish. The registries answer this properly: the site registry knows spotify, the app index
-  // knows Notes, Contacts knows Kunal.
-  for (const n of ['spotify', 'notes', 'kunal', 'zomato']) {
+  // knows Notes, Contacts knows Parth.
+  for (const n of ['spotify', 'notes', 'parth', 'zomato']) {
     ok(lang.isKnownName(n) === true, '"' + n + '" is a name the system already knows');
   }
 

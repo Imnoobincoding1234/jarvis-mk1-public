@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 APP="../JARVIS OS.app"
-BUNDLE_ID="com.jarvis.jarvisos.shell"
+BUNDLE_ID="com.atharv.jarvisos.shell"
 
 echo "→ Assembling JARVIS OS.app"
 rm -rf "$APP"

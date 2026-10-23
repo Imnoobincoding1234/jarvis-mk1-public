@@ -317,7 +317,7 @@ async function runJob(j) {
 
     // ---- final synthesis ----
     // With no findings there is nothing to synthesise, and asking anyway is how you get a
-    // confident invention: a real run with 9 sources but 0 usable findings produced "Mihir should
+    // confident invention: a real run with 9 sources but 0 usable findings produced "Atharv should
     // be credited with the development of the arc reactor" — a fabrication about the user himself.
     // An honest empty-handed answer is worth more than a fluent false one.
     if (!j.cancelled && !j.findings.length) {

@@ -99,7 +99,7 @@ async function main() {
   const W = (f, x) => fs.writeFileSync(path.join(dir, f), typeof x === 'string' ? x : JSON.stringify(x));
   const held = [
     { id: 'f1', lang: 'en', text: 'dm bhai asking if he ate dinner', to: 'bhai', body: 'if he ate dinner', reported: true },
-    { id: 'f2', lang: 'en', text: 'text rehaan asking when the bus leaves', to: 'rehaan', body: 'when the bus leaves', reported: true },
+    { id: 'f2', lang: 'en', text: 'text sidhu asking when the bus leaves', to: 'sidhu', body: 'when the bus leaves', reported: true },
     { id: 'f3', lang: 'hinglish', text: 'nanu se puch ki chai piyogi kya', to: 'nanu', body: 'chai piyogi kya', reported: true },
   ];
   W('held.jsonl', held.map(x => JSON.stringify(x)).join('\n') + '\n');

@@ -20,7 +20,7 @@ let seed = 43043;
 const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
 const pick = a => a[Math.floor(rnd() * a.length)];
 const sh = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-const nm = () => pick(['Sir', 'Mihir', 'Boss']);
+const nm = () => pick(['Sir', 'Atharv', 'Boss']);
 const D = f => path.join(__dirname, 'data', f);
 const readJsonl = f => fs.existsSync(f) ? fs.readFileSync(f, 'utf8').split('\n').filter(Boolean).map(l => JSON.parse(l)) : [];
 const readJson = f => JSON.parse(fs.readFileSync(D(f), 'utf8'));
@@ -30,7 +30,7 @@ const GR = require('./data/v42_parts/greetings.js')({ pick });
 // ---- hello inputs (any clock unless the words name a time of day) ----
 const HELLO_ANY = ['hey', 'hi', 'hello', 'yo', 'sup jarvis', 'hey jarvis', 'hi jarvis', 'hello jarvis', 'heyyy', 'yo yo', 'howdy partner',
   'hey you', 'hi hi', 'heya j', 'yo j', 'ello', 'wassup j', 'hey there buddy', 'hii', 'hiiii jarvis', 'greetings', 'yo whats up',
-  'hey, im back at my desk', 'just opened my laptop, hey', 'hey its mihir', 'hello again jarvis', 'hey jarvis, ready?', 'hey boss',
+  'hey, im back at my desk', 'just opened my laptop, hey', 'hey its atharv', 'hello again jarvis', 'hey jarvis, ready?', 'hey boss',
   'jarvis!', 'knock knock, its me', 'hey hey hey', 'hello there my friend', 'yo jarvis lets go', 'hi there j',
   'namaste jarvis', 'jarvis ji', 'haan jarvis', 'oye', 'kiddan jarvis', 'ram ram ji', 'salaam', 'jai hind jarvis', 'pranaam',
   'aur bhai', 'arey jarvis', 'jarvis bhai', 'aa gaya jarvis', 'chalo shuru karein', 'hello jarvis ji', 'kya haal jarvis bhai',
@@ -59,7 +59,7 @@ const OFFER_LATE = ['What do you need?', 'Anything I can help with before you sl
   'How can I help this late?'];
 const OFFER_HI = ['Bataiye, kya karna hai?', 'Kya madad karun?', 'Bolo, kya karna hai?', 'Aaj kya plan hai?', 'Kya karein aaj?'];
 const HERE = ['Here, {n}.', 'Right here, {n}.', 'Yes, {n}, I am here.', 'Always, {n}.', 'Here and listening, {n}.', 'Haan, yahin hoon, {n}.', 'At your service, {n}.'];
-// Hinglish input = his words carry Hindi/Marathi — marked here by hand, as data (this list is training material, never read at runtime)
+// Hinglish input = his words carry Hindi/Punjabi — marked here by hand, as data (this list is training material, never read at runtime)
 const HING = new Set(['namaste jarvis', 'jarvis ji', 'haan jarvis', 'oye', 'kiddan jarvis', 'ram ram ji', 'salaam', 'jai hind jarvis', 'pranaam',
   'aur bhai', 'arey jarvis', 'jarvis bhai', 'aa gaya jarvis', 'chalo shuru karein', 'hello jarvis ji', 'kya haal jarvis bhai', 'good morning ji',
   'utth gaya main', 'subah subah hello', 'lunch ke baad hello', 'shaam ho gayi, hello', 'good evening jarvis ji', 'jarvis online hai?',
@@ -128,7 +128,7 @@ const FEEL_REPLY = {
   const kindN = {}; for (const r of rows) kindN[r.kind] = (kindN[r.kind] || 0) + 1;
   const used = {}, patch = []; let capped = 0;
   for (const r of rows.filter(r => !held.has(userOf(r)))) {
-    const a = r.kind + '\u0000' + r.messages[2].content.replace(/\b(Sir|Mihir|Boss)\b/g, '{n}');
+    const a = r.kind + '\u0000' + r.messages[2].content.replace(/\b(Sir|Atharv|Boss)\b/g, '{n}');
     if ((used[a] = (used[a] || 0) + 1) > Math.max(3, Math.ceil(kindN[r.kind] * 0.03))) { capped++; continue; }
     patch.push(r);
   }
@@ -149,7 +149,7 @@ const FEEL_REPLY = {
   const by = {}; for (const r of patch) (by[r.kind] = by[r.kind] || []).push(r);
   for (const [k, rs] of Object.entries(by)) {
     const qs = new Set(rs.map(userOf)), as = {};
-    for (const r of rs) { const a = r.messages[2].content.replace(/\b(Sir|Mihir|Boss)\b/g, '{n}'); as[a] = (as[a] || 0) + 1; }
+    for (const r of rs) { const a = r.messages[2].content.replace(/\b(Sir|Atharv|Boss)\b/g, '{n}'); as[a] = (as[a] || 0) + 1; }
     console.log(k.padEnd(9) + ' rows ' + String(rs.length).padStart(4) + '  inputs ' + String(qs.size).padStart(4) + '  replies ' + String(Object.keys(as).length).padStart(4) + '  top ' + (Math.max(...Object.values(as)) / rs.length * 100).toFixed(1) + '%');
   }
 

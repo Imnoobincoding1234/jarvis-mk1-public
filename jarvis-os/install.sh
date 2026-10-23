@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-LABEL=com.jarvis.jarvisos
+LABEL=com.atharv.jarvisos
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 NODE="$(command -v node || echo /opt/homebrew/bin/node)"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"

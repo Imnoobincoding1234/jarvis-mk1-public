@@ -8,7 +8,7 @@
 //   2. /usr/share/zoneinfo/iso3166.tab (country names) → zone.tab (that country's zones): India has one, so it is answered;
 //      Canada has several, so he is asked for a city instead of being given a guess.
 // A registry name counts only as WHOLE WORDS inside his `where` ("the uk" holds "uk"), the longest match winning.
-// A place no registry knows ("nashik", "california") gets an honest answer, never a web guess.
+// A place no registry knows ("mohali", "california") gets an honest answer, never a web guess.
 // ---------------------------------------------------------------------------
 const fs = require('fs');
 

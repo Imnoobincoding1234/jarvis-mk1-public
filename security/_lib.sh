@@ -27,5 +27,5 @@ emit_critical_files() {
   # runs every chat reply is watched like the .app executables are.
   find "$ROOT/runtime" -type f -print0 2>/dev/null
   # Installed launchd login agents that drive the whole fleet.
-  find "$LA" -maxdepth 1 -type f -name 'com.jarvis.*.plist' -print0 2>/dev/null
+  find "$LA" -maxdepth 1 -type f -name 'com.atharv.*.plist' -print0 2>/dev/null
 }

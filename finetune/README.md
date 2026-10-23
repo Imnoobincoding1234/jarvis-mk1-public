@@ -857,7 +857,7 @@ through the sandbox (`sweeps/sweep_casual.js`) at the casual-v2 bar (≥ 98%, 0 
 the claim-guard and chat fixes — the reader alone is also reported — and 0 WRONG on the exam group through
 `sweeps/sweep_his.js`, as every earlier round. Needs readmodel.js / server.js wiring for the new acts before either.
 
-**Reminder times (decided 2026-09-27, Mihir):** no time parser. Open-source parsers were surveyed (chrono MIT/JS,
+**Reminder times (decided 2026-09-27, Atharv):** no time parser. Open-source parsers were surveyed (chrono MIT/JS,
 dateparser BSD/Python, Microsoft Recognizers-Text MIT, Duckling BSD/Haskell) — none reads Romanized Hindi, all are
 word lists inside, and he wants no dependencies. Reminders keep his time words in the title ("call the dentist — tmrw")
 and JARVIS says it did not set an alert time. Revisit only on his word.
@@ -940,9 +940,9 @@ the live `jarvis-reader` is untouched until the go-live bar and his live test.
 ### Reader round 5 — the dev set's shapes (2026-10-10, written before training; he is away on a trek)
 
 Why: the casual dev set (v1) in the sandbox with round 4 + veto scored 216/325 (hand-graded). Of the automatic failures, 25 were
-round 4 ASKING about a reading it had right (confidence 0.47–0.75: "send rehaan a text saying bro where u at" 0.47), and others
+round 4 ASKING about a reading it had right (confidence 0.47–0.75: "send sidhu a text saying bro where u at" 0.47), and others
 misreads ("gtg ttyl" → message "ttyl", "kya chal rha hai aajkal" → weather, "kill brave its lagging" → close + a text to brave,
-"whatsapp kunal saying wtf was that goal lmao" at 0.002). Lowering the confidence gate instead was MEASURED and refused: on the
+"whatsapp parth saying wtf was that goal lmao" at 0.002). Lowering the confidence gate instead was MEASURED and refused: on the
 calibration sets (exam, patterns, negatives, clean) WRONG rises 12 → 24 from cut 0.8 to 0.5 (runs/conf_sweep_r4_20261010.log).
 
 **Data:** `gen_round5_miss.py` → 256 NEW sentences for those shapes (other people, apps, words; refuses any line of either stress
@@ -993,7 +993,7 @@ bar (≥ 98% PASS, 0 CLAIM, 0 WRONG on no_act), English and Hinglish apart; its 
 **Stress set v3 — the ONE judged run (2026-10-11 18:13, reader round 5 + veto, live jarvis v4.2, sandbox,
 `casual_runs/v3-20261011-r5veto`): 226 / 325 = 69.5% — FAILS the bar (≥ 98%, 0 CLAIM, 0 WRONG on no_act).** English 205/283 =
 72.4%, Hinglish 21/42 = 50.0%. Scorer 225 PASS / 96 FAIL / 2 WRONG / 2 CLAIM; by hand (grades in `v3-20261011-r5veto.grades.json`):
-v3u13 "close all my apps" asked first ("Quit my apps, sir? Please confirm.") → PASS; v3z08 "ira says hi" offered a send
+v3u13 "close all my apps" asked first ("Quit my apps, sir? Please confirm.") → PASS; v3z08 "harsimran says hi" offered a send
 (asked, did not act) → FAIL; **v3b08 "itna tez mat chala, kam kar" → WRONG** (read as play, opened Spotify search in Brave
 instead of lowering the volume); CLAIMs confirmed: v3o16 "Opening ChatGPT.", v3o18 "Opening Mail." (chat route, nothing opened).
 0 WRONG on no_act lines. Trajectory on fresh sets: v2 65.5% → v3 69.5%; English 65.6 → 72.4, Hinglish 62.8 → 50.0 (42 lines —
@@ -1003,7 +1003,7 @@ noisy, but the weak side). v3 is now read; the next judged run needs a fresh v4.
 open_site and answered "Noted, Sir — I will remember that." by the self-fact lane, which sat ahead of the action lane without a
 `!readerOwns` check. Across the dev, v2 and v3 runs 2 of 18 self-fact stores happened under a reader hold (that one, and dev
 b40 "quit everything except brave"), none of them a fact. Sandbox after the gate: "take me to reddit" → opens reddit; "quit
-everything except brave" → asks first; "i live in nashik btw" still stored. Seen on the way (unchanged, the live V2 classifier):
+everything except brave" → asks first; "i live in mohali btw" still stored. Seen on the way (unchanged, the live V2 classifier):
 "my favourite pizza is margherita" → none of these, "remember that my locker code is 4412" → margin 0.015 < 0.02 — not stored.
 
 **Fixed straight away — forget asks first (2026-10-10):** both forget lanes (facts and episodes) now count what would go, show
@@ -1014,7 +1014,7 @@ v2z17 is now safe but still not the ideal reply ("ok, dropped") — recorded as 
 previews and deletes nothing (`tests/test_reflective.js`); `tests/test_eval.js` sends "forget" after each forget request.
 
 **Self-fact regions for casual chat — FAILED its bar (2026-10-10).** The dev set showed "Noted, Sir — I will remember that." for
-news of the day, compliments, a Marathi greeting, a how-to question (b25, e05, e08, g16, g27; v2's "need some arijit on rn").
+news of the day, compliments, a Punjabi greeting, a how-to question (b25, e05, e08, g16, g27; v2's "need some arijit on rn").
 Held-out #3 in his register (`build_selffact_heldout3.js`, 30 facts / 40 not, written first) and a candidate with new regions
 (news of the day, advice questions, casual chat and requests) were fixed before the run. Result (`runs/selffact3_20261010.log`):
 V2 (live) 27/30 facts, 0/40 junk; candidate 24/30, 0/40 — and on #1+#2 22 vs 25 facts. Fails "facts ≥ V2 − 2" and "#1+#2 facts
@@ -1027,8 +1027,8 @@ pattern test) refused "google how to fix a squeaky door" after the reader had re
 requests ("am i free at 2", "Tell didi i found her earrings", weather questions), and never stopped a wrong reading; the casual
 runs add 3 more refusals, all searches (dev s09, s10; v2s12). Now exempt exactly like the statement guard beside it.
 
-**Message playbook names its tools (2026-10-10, shipped).** "ping yuvan on whatsapp asking about the maths hw" went to the
-3B agent loop, which ran find_contact → compose and stopped: "Found Yuvan. Drafted." — a draft he never sees. The procedure
+**Message playbook names its tools (2026-10-10, shipped).** "ping ekamveer on whatsapp asking about the maths hw" went to the
+3B agent loop, which ran find_contact → compose and stopped: "Found Ekamveer. Drafted." — a draft he never sees. The procedure
 said "show him the draft" without naming the tool that does it; it now says compose, then send_message (which asks before
 sending). That alone was not enough (sandbox): the 3B called send_message with no body, and its compose, handed the whole
 command, ECHOED it word for word (measured with qwen2.5:3b at temperature 0 and 0.7). So the loop now threads its own results
@@ -1360,7 +1360,7 @@ compare the two there). As a drop-in it ties the claim reader (21 vs 21, Hinglis
 23: margins tuned for nomic v1 drop 12 real facts) — a re-thresholding would need its own pre-registered trial.
 Baseline confirmed round 5's wrong-action class on a fresh line: "tum gaana gaate ho kya" → play. The live claim reader
 also flagged "Nice, glad school was fun today!" and "Your last reminder was set on Monday…" as done-claims, and missed
-seven real claims ("Messaging Ira right now.", "Okay — opening your Downloads folder." …). This set has now been read.
+seven real claims ("Messaging Harsimran right now.", "Okay — opening your Downloads folder." …). This set has now been read.
 Both removed 2026-10-14 on his word: the reranker to the Trash, `ollama rm nomic-embed-text-v2-moe` (the web-lane wiring trial re-pulls it, 958 MB).
 
 ## Casual push — scorer v2, read-only acts without a question, and plain bugs (2026-10-14, written BEFORE the scorer change, before any count in the item-2 measurement was looked at, and before any v4 line exists)
@@ -1373,7 +1373,7 @@ trajectory stays comparable. The bar for the push is unchanged: ≥ 98% on a FRE
 Artifacts found reading every v3 miss:
 - **CLAIM was decided by an English verb regex** (`claims()`): a word list, which his rule forbids in sweeps too. It only
   ran when NO decision at all was recorded, so a soft non-acting decision (a recall) hid "Opening GitHub." (v3o21) and
-  "Sure, FaceTime with Kunal." (v3c02), and it never matched paraphrase or Hinglish ("Theek hai, safari khol raha hoon.",
+  "Sure, FaceTime with Parth." (v3c02), and it never matched paraphrase or Hinglish ("Theek hai, safari khol raha hoon.",
   "Sure, battery check.", "Snapping a pic of what is on your screen."). Those five were scored FAIL.
 - **A compound line whose first step asked a confirm counted FAIL** although JARVIS held the rest for his yes — a
   one-turn sandbox cannot answer the confirm (v3k02/k05/k06/k09).
@@ -1428,7 +1428,7 @@ asking which file (v3f03/f04 — first check the sandbox has the file; if not, i
 **RESULT 1 · scorer v2 (2026-10-14):** v3 re-scored with every claim read by hand (193 rows; grades in
 `v3-20261011-r5veto.grades.json`, old scored/grades files in `backups/finetune/data/casual_runs/*.bak-scorer-v1-*`):
 **229 / 325 = 70.5%** (English 73.1, Hinglish 52.4) · **CLAIM 9** · **WRONG 2** — was 226 = 69.5%, CLAIM 2, WRONG 1.
-Claims read: v3c02 "Sure, FaceTime with Kunal.", v3o16 "Opening ChatGPT.", v3o18 "Opening Mail.", v3o21 "Opening GitHub.",
+Claims read: v3c02 "Sure, FaceTime with Parth.", v3o16 "Opening ChatGPT.", v3o18 "Opening Mail.", v3o21 "Opening GitHub.",
 v3o24 "Theek hai, safari khol raha hoon.", v3y01 "Sure, battery check.", v3f07 "Snapping a pic of what is on your screen.",
 v3u09 "I will put it in the form of a chat message … until you say send" (nothing pending), v3z20 "Okay, forgetting."
 (borderline — he meant drop it — counted strictly). WRONG: v3b08 (hand) + v3f08 "ss the screen" → display slept. Held
@@ -1574,7 +1574,7 @@ switch then goes through the gate (message lines must not lose; 0 NEW-WRONG).
 faithful qwen2.5:3b **19 / 30** (invented nothing 27, Hinglish 8/10, median 1.4 s) · phi4-mini 18 (26, 8, 2.1 s) · jarvis 15 (24, 7,
 1.0 s). No candidate beats qwen by ≥ 5 → **nothing changes**. What the failures are: mostly the fallback that keeps his reported
 words as they are ("if she finished the english essay", "whether the new specs are comfy" — indirect, third person; qwen 11
-verbatim), then wrong person ("Can he return my charger by Friday?"), questions turned into claims ("Tell Kunal the match got
+verbatim), then wrong person ("Can he return my charger by Friday?"), questions turned into claims ("Tell Parth the match got
 postponed."). A model swap does not fix it; the reported-speech fallback is the thing to change (next idea: when the reader marked
 the body `reported` and the rewrite failed, ask what the message should say instead of sending indirect words — measure first).
 
@@ -1582,7 +1582,7 @@ the body `reported` and the rewrite failed, ask what the message should say inst
 
 "Quick answer, Sir, or shall I go away and research that properly for twenty minutes?" was asked on 8 corpus lines and none
 wanted deep research: "who wrote dracula", "who wrote the hunger games", "which scientist figured out gravity", and chat —
-"ill text kunal later", "exams r killing me", "bhai took my charger", "kya baat hai tu toh genius hai", "idk what to do with my
+"ill text parth later", "exams r killing me", "bhai took my charger", "kya baat hai tu toh genius hai", "idk what to do with my
 life lol". researchintent's scores on them are flat — every region within ~0.01–0.03 (dracula: deep 0.460, quick-lookup 0.453);
 the case the 0.01 band was built for ("really investigate whether creatine does anything": quick 0.554, deep 0.552) is just as
 flat, so no threshold separates them honestly (and tuning on read lines is fitting). **Change:** `maybe-deep` no longer asks; the
@@ -1599,7 +1599,7 @@ His word: "just get it fixed" (one targeted round, after "stop spamming training
 "open github i wanna push my code" (v3o21/lb10), "open chatgpt i got a doubt" (v3o16), Hinglish "jaldi se safari khol" (v3o24),
 "mere notes khol do zara" (v3o25) — the veto then blocks act-instead and the chat model claims "Opening X."; talk about music
 read as play — "lol that song slaps" (lb04), "tum gaana gaate ho kya" (lb07), "kya tum gaana gaa sakte ho" (lb08); Hinglish volume
-"itna tez mat chala, kam kar" → play (v3b08, the one WRONG); statements read as a message — "ira says hi" (v3z08), "chal bye
+"itna tez mat chala, kam kar" → play (v3b08, the one WRONG); statements read as a message — "harsimran says hi" (v3z08), "chal bye
 kal baat karte" (v3j08); "ss the screen" → sleep_display (v3f08); "close the notes app" refused (an `as` on close — not allowed);
 asks on readings it had right (casual weather/calendar, artist + song, "previous song"); and timed requests with nowhere to go —
 "open notes in 2 minutes" (refused: "it leaves out 2"), "open the app store in about a minute" (read none). B (embedder + 3B)
@@ -1687,7 +1687,7 @@ Base verdicts moved on 12 rows, all PASS→FAIL, none the other way:
   "no information" reply).
 - length check MISSED 7 invented bodies, flagged 0: "dm mama asking what time dinner is" → "Let's grab dinner at 7?" / "Let's set
   a time for dinner?"; "…what time the movie starts" → "…so I can plan my day."; "asking if he got/finished X" → "send me X" ×3;
-  "text her instead saying im busy" → "text ira it's busy here". Verbatim reported-speech fallbacks ("if he ate dinner") are
+  "text her instead saying im busy" → "text harsimran it's busy here". Verbatim reported-speech fallbacks ("if he ate dinner") are
   noted in `invented_note` but are not invention (composer bug, separate).
 - Gate base-20261014 → fix2-20261015 under v3: PASS 526 → 529, LOST 5, GAINED 8, NEW-WRONG 0. Newly visible LOST: v3m09 only (the
   composer invented "so I can plan my day" in the fix2 run — composer path untouched by fix2, the known flaky composer bug); the
@@ -1875,10 +1875,10 @@ GGUF Q8_0 was built with the 0.33.3 rollback app as a sandbox server (own port a
 (1.0 GB, llama.cpp runner, the same projector blob as round 5): 60 / 60 valid JSON with token probabilities, median 346 ms.
 **Gate vs the same code with round 5 (`prerestart2-20261016`): PASS 533 → 538, GAINED 55, LOST 50, NEW-WRONG 1.** Every LOST line re-run
 once (temperature 0): 6 came back (composer bodies v3m35 / m06 / m15 / m19, v2q20 wording, u11 a pending-quiz sandbox artifact); **44
-reproduce — 38 of them are round 7 ASKING ("Should I message yuvan “gg well played”? Say “message”", "Should I play “a cooking video”?",
+reproduce — 38 of them are round 7 ASKING ("Should I message ekamveer “gg well played”? Say “message”", "Should I play “a cooking video”?",
 "Should I open calendar?", "Should I set a reminder to email sir tmrw?") on plain requests round 5 just did**; the rest: why lane on
-"whatsapp kunal saying wtf was that goal lmao", self-fact "Noted" on "bhai ko whatsapp kar ki khana kha liya", the teach offer on "open netflix
-lets watch smth", an agent partial on "can you whatsapp yuvan saying thx for the help", lb20 dentists → a web search, k08 / v2k02
+"whatsapp parth saying wtf was that goal lmao", self-fact "Noted" on "bhai ko whatsapp kar ki khana kha liya", the teach offer on "open netflix
+lets watch smth", an agent partial on "can you whatsapp ekamveer saying thx for the help", lb20 dentists → a web search, k08 / v2k02
 compounds read as one message. **NEW-WRONG b40 "quit everything except brave" → "Quit Brave Browser?" (reproduces).** The gains are the
 round-7 targets (time 8 — the clock answers in ~250 ms, opens 7, music 8, messages 9 where round 5 had asked).
 What it shows: round 7 asks on DIFFERENT lines — its token-probability confidence on everyday message / play / open lines fell under the
@@ -1923,7 +1923,7 @@ every LOST / NEW-WRONG line re-run once as `r7calrerun-20261016`; time/weather a
 PASS 533 → 542 (round 7 at 0.75 was 538). First run 46 LOST + 2 NEW-WRONG; after the re-run **40 LOST + 2 NEW-WRONG reproduce → FAILS** the ship
 rule (prediction ≈ 36 LOST + b40). Did not reproduce (drift): v2m04, m02, m06, m19 (message bodies), v2q06 (chat fact), u11 (food order).
 - 30 of the 40 are asks ("Should I …? Say …") on plain requests with the right reading in the question (38 at 0.75 → 30 at 0.70, as predicted).
-- 10 are not about the bar: lb20 (business finder → web search), v2m14 ("send yuvan wya" → asks what to say), v2m37 (→ "Noted"), m12
+- 10 are not about the bar: lb20 (business finder → web search), v2m14 ("send ekamveer wya" → asks what to say), v2m37 (→ "Noted"), m12
   (→ "why"), m27 (→ agent), o14 (→ "I have not done this before"), k08 (the "+ call mama" clause swallowed into the body), and three message
   bodies rewritten with words he never gave (v3m35 greeting + reason, m15 "send me the notes", m11 garbled "ime for dinner?").
 - NEW-WRONG: b40 "quit everything except brave" → quit Brave (as before) and v2j07 "kuch mazedaar suna de" → plays music (round 5 asked).
@@ -2217,7 +2217,7 @@ gate runs at **0.70** (round 7's gate bar, so the two gates compare). Live confi
 non-requests, 16 were at ≥ 0.7 ("spotify mat kholna" → open 0.90, "chrome mat band karna" → close 0.77, "mama ko baad mein call
 karunga" → call 0.97, "ek chutkula suna de yaar" → play 0.82) — a confidence gate cannot catch most of them.
 **PREDICTION (written before the gate):** on the r7cal gate's 30 reproduced ask lines, round 8 at 0.70 acts on 27 and still asks on 3
-("quiz me on electrostatics" 0.44 with the topic garbled "electstatics", "msg rehaan asking for the notes from today" 0.50, "youtube pe
+("quiz me on electrostatics" 0.44 with the topic garbled "electstatics", "msg sidhu asking for the notes from today" 0.50, "youtube pe
 comedy video chala" 0.64); play lines now read at 0.98–0.999. "how many degrees is it" reads none (0.80) and "what does my day look like"
 reads calendar `when` "day". Expected: far fewer LOST than r7cal's 40, but round 7's 10 non-bar LOST, b40 / v2j07 and round 8's own new
 misreads (negations, statements) can still fail the 0-LOST / 0-NEW-WRONG rule.
@@ -2228,13 +2228,13 @@ The 24 LOST, by cause:
 - **The confidence bar — right reading, asked (12):** v3m09, v3m30, v2m19, b33 (messages — each would ALSO get the send-confirm card, so
   the reader's ask is a second ask), v3o02 "launch whatsapp desktop", v3v08 / v2v12 / p11 (play), v2s03 (search), v3r07 (remind), v3t04
   "day and date pls" (time), b04 (calendar).
-- **The checker refuses a mostly-right reading, the turn drops to chat (4):** v3m05 "ping rehaan saying cya at practice" (reader put "at
+- **The checker refuses a mostly-right reading, the turn drops to chat (4):** v3m05 "ping sidhu saying cya at practice" (reader put "at
   practice" in `when` → refused: later is off) → "I have not done this before"; v2s12 "search what is chatgpt 5" (query left out "5" →
   refused); v3n05 "jot down that the match is at 4 on sunday" → "Nothing was done"; v3o10 "open discord the server is popping".
 - **Misreads / routing (5):** lb20 dentists → web search (business finder never asked), v3u11 "quiz me on electrostatics" (topic garbled
   "electstatics", 0.44 → research lane), u06 "give me my briefing" → calendar, o14 "open netflix lets watch smth" → search netflix
   "smth", x06 "get rid of terminal" → delete (base: quit the app).
-- **Message bodies (3):** v2m14 "send yuvan wya" (no body read → "What should I say?"), v2m23 "if hes free sat" → composer wrote
+- **Message bodies (3):** v2m14 "send ekamveer wya" (no body read → "What should I say?"), v2m23 "if hes free sat" → composer wrote
   "let's hang", m15 "if he got the notes" → composer wrote "send me the notes".
 NEW-WRONG (3, each stops at a confirm or plays music): v2u13 "shut down every app thats open" → "Quit every app, sir? Please confirm.",
 b40 "quit everything except brave" → "Quit everything except brave, sir? Please confirm." (better than round 7's "Quit Brave"),
@@ -2398,7 +2398,7 @@ Any quant other than q8_0 still goes to `ollama create -q`. `gguf==0.19.0` (+ re
 Why: every gate loses 2–4 lines to message bodies, and composer v2 (above) showed the DRAFTS are the bottleneck — only 20 / 80
 qwen drafts faithful, mostly person conversion ("if he has the charger" kept about him, if-fragments, who-brings-what flipped);
 today's code sent a bad text for 30 / 40 reported bodies. Two causes found in the code: (1) the drafting model is shown only the
-fragment the reader cut ("if he has the charger"), never his request ("msg ira asking if he has the charger"); (2) a draft
+fragment the reader cut ("if he has the charger"), never his request ("msg harsimran asking if he has the charger"); (2) a draft
 is accepted by `invented()` — any 5+-letter word not in his words — a natural-language length check (his rule 1), blind to short
 invented words ("send me the charger", "grab", "hang", "eat at 7").
 
@@ -2462,7 +2462,7 @@ What it shows: (1) in ENGLISH the candidate works — 20 good, 1 bad ("who else 
 against today's 13 good / 19 bad. (2) phi4-mini cannot do Hinglish person conversion and is SURE when wrong: "usne project ka chart
 banaya kya?", "puch ki woh ghar kitne baje aayega?", "tera sabzi mein kya bana hai?" (to mama). Today's code scores 6 Hinglish sends
 only where his words were already direct ("Cycle theek hui ya nahi?"). (3) On plain statements phi flips the person with
-confidence ("tell bhai i took the car keys" → "bhai, you took the car keys.") or keeps the instruction ("dm yuvan, sorry, …").
+confidence ("tell bhai i took the car keys" → "bhai, you took the car keys.") or keeps the instruction ("dm ekamveer, sorry, …").
 (4) Today's code mangles 5 of 12 PLAIN bodies on the agent path (agent.js composes plain bodies; the reader path sends them as his
 words) — unmeasured as its own candidate. Ideas for a next try, each needs a fresh set and its own bars: C for English only
 (language by the Hinglish lane's own embedder, no word list); ask on Hinglish reported bodies, or the reader writing the direct
@@ -2510,8 +2510,8 @@ opened; composer_heldout_v4 now READ): C2 PASSES ALL 7 BARS → regression gate 
 | C2 | 16 / 23 / 1 ✓ | 16 / 7 / 1 ✓ | 0 / 16 / 0 | 20 / 0 ✓ | 0 ✓ | cold 3.6 s ✓, warm 0.17 s ✓ |
 
 Routing (intent.isHinglish on body or request): 24 / 24 English and 16 / 16 Hinglish reported rows right; one plain row ("lol same")
-read as Hinglish — plain bodies are never rewritten, so it costs nothing. The one bad send: "dm kunal asking if hes up for valorant
-tonight bro" → "bro, kunal up for valorant tonight?" (sure −1.09). Lost sends (today good, C2 not): 4 Hinglish by design (asked)
+read as Hinglish — plain bodies are never rewritten, so it costs nothing. The one bad send: "dm parth asking if hes up for valorant
+tonight bro" → "bro, parth up for valorant tonight?" (sure −1.09). Lost sends (today good, C2 not): 4 Hinglish by design (asked)
 and 3 English — two asks ("where did you keep the HDMI cable?", "how much did you pay for the shoes?" — drafts not sure) and the bad
 send above. Grading rule made explicit this round: spelling out an abbreviation ("tmrw" → "tomorrow") is faithful; dropping or
 swapping his word ("lol" → "lmao", "cool see you at 5" → "see you at 5") is not.
@@ -2565,7 +2565,7 @@ reader's confidences; not recommended). The gate runs C2-2k exactly as measured 
   scorer counts as passes ("if he ate dinner", "if hes coming tonight" sent to the person); v3m33 replaced a passable send ("where the
   party is tonight, bro?"). The pre-registered allowance named only Hinglish asks, so these count as LOST caused by C2 — by design of
   the ask-when-unsure policy, listed for him.
-- 1 real C2 bad send: m06 "ping yuvan on whatsapp asking about the maths hw" → "Hey Yuvan, can you help me with my maths
+- 1 real C2 bad send: m06 "ping ekamveer on whatsapp asking about the maths hw" → "Hey Ekamveer, can you help me with my maths
   homework? Thanks!" (adds "Thanks!", "help me with"; sure enough to send).
 GAINED (message bodies): "can you help me with the physics answers?", "do you need anything from the market?", "did you get my email?",
 "what time is dinner?", "did you finish the ppt?", "are you up right now?" (were invented: "send them my way?", "let me know what she
@@ -2579,8 +2579,8 @@ the Hinglish allowance); shipping is his call.
 **GATE c2kfix-20261022 (C2-2k + fixes 6/7/8/11; 21:36–22:49): 533 → 535 PASS, 0 NEW-WRONG, 7 LOST** — the same 4 composer lines
 as c2k-20261022 (asks on v3m16, v3m33, m02; the bad send m06), v3q06 and v2t04 (drift, proven 10-22), and v2q10 (a Wikipedia-lane
 answer that never reaches the composer — re-run with C2 on hedged again, with it off answered). Against c2k-20261022: c12 now asks
-once ("What should the message to ira say, Sir?", 17.9 s, was 4 retries and "ran out of retries"); "is it still morning" →
+once ("What should the message to harsimran say, Sir?", 17.9 s, was 4 retries and "ran out of retries"); "is it still morning" →
 "No — it is already 9:47 PM". **DEPLOYED 2026-10-22 22:51 (owner's "deploy fix"):** `JARVIS_COMPOSE_V3=c2` and
 `JARVIS_COMPOSE_CTX=2048` appended to .env (backup in backups/), integrity re-baselined, JARVIS restarted; checked through the sandbox
-with no overrides — "msg ira asking if he has the charger" → "have you got the charger?", a plain body stays his words.
+with no overrides — "msg harsimran asking if he has the charger" → "have you got the charger?", a plain body stays his words.
 Off switch: delete the two lines and restart.

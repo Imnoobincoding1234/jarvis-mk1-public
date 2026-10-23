@@ -87,13 +87,13 @@ const WEB_INTENT_EXEMPLARS = {
     'what is the population of Jakarta',
     'what is the capital of Kazakhstan',
     'how tall is the Burj Khalifa',
-    'how many people live in Kolhapur',
+    'how many people live in Chandigarh',
     'how far is the moon from earth',
     'how deep is the Mariana trench',
     'when is Diwali this year',
     'what year did the Berlin wall come down',
     'japan ki capital kya hai',
-    'kolhapur ki population kitni hai',
+    'chandigarh ki population kitni hai',
   ],
 
   // PRODUCTS: WHAT EXISTS, WHAT IT COSTS, WHETHER IT IS OUT YET. This is the region `machine` was

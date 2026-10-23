@@ -13,12 +13,12 @@ function eq(name, got, want) {
   if (ok) pass++; else fail++;
   console.log((ok ? '  ok   ' : '  FAIL ') + name + (ok ? '' : '  — got ' + JSON.stringify(got) + ', want ' + JSON.stringify(want)));
 }
-const HOME = { lat: 19.9975, lon: 73.7898, label: 'Nashik', ageDays: 1 };
+const HOME = { lat: 19.9975, lon: 73.7898, label: 'Mohali', ageDays: 1 };
 const realGeo = BF.geocode, realFind = BF.find;
 let asked = null;
 BF.find = async q => { asked = q; return { ok: true, places: [], say: 'none', notes: [] }; };
 const MAP = { 'around me': 'شارع الحولي, الدوّاية, Iraq', 'near me': 'near Felipe, Ciudad Obregón, Cajeme, Sonora, México',
-  'sector 70 nashik': 'Sector 70, Nashik, S.A.S. Nagar, Maharashtra, India', 'elante mall': 'Nexus Elante Mall, Purv Marg, Kolhapur' };
+  'sector 70 mohali': 'Sector 70, Mohali, S.A.S. Nagar, Punjab, India', 'elante mall': 'Nexus Elante Mall, Purv Marg, Chandigarh' };
 BF.geocode = async w => MAP[w] ? { name: MAP[w], bbox: [0, 0, 1, 1] } : null;
 A.init({ jlog: () => {}, audit: () => {}, lean: () => true, envVal: () => '', fuzzyApp: SC.fuzzyApp, whereAmI: async () => HOME });
 
@@ -30,8 +30,8 @@ async function main() {
   r = await A.TOOLS.find_businesses({ what: 'restaurants', where: 'near me' }, { goal: 'find resturants near me without a website' });
   eq('"near me" is in his words but the map’s match is a park in Mexico → around him', [asked.where, !!asked.near], ['', true]);
   eq('…and the reply says it could not find it on the map', /could not find "near me" on the map/.test(r.say || ''), true);
-  r = await A.TOOLS.find_businesses({ what: 'shops', where: 'sector 70 nashik' }, { goal: 'find shops in sector 70 nashik without a website' });
-  eq('a place he named that the map knows is kept', [asked.where, asked.near], ['sector 70 nashik', null]);
+  r = await A.TOOLS.find_businesses({ what: 'shops', where: 'sector 70 mohali' }, { goal: 'find shops in sector 70 mohali without a website' });
+  eq('a place he named that the map knows is kept', [asked.where, asked.near], ['sector 70 mohali', null]);
   r = await A.TOOLS.find_businesses({ what: 'restaurants', where: 'elante mall' }, { goal: 'restaurants in elante mall with no website' });
   eq('a named mall the map knows is kept', asked.where, 'elante mall');
   r = await A.TOOLS.find_businesses({ what: 'restaurants' }, { goal: 'restaurants around me' });

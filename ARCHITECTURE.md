@@ -1,7 +1,7 @@
 # JARVIS MK-1 — Architecture (recon 2026-07-16, brought up to date 2026-10-22)
 
 ## Stack
-- **JarvisOS backend** = `jarvis-os/server.js` — **zero-dependency Node.js** HTTP server, binds `127.0.0.1:8787`. No framework. Launchd agent `com.jarvis.jarvisos`.
+- **JarvisOS backend** = `jarvis-os/server.js` — **zero-dependency Node.js** HTTP server, binds `127.0.0.1:8787`. No framework. Launchd agent `com.atharv.jarvisos`.
 - **UI** = web view. `jarvis-os/public/index.html` + `app.js` (**vanilla JS**, no framework). Served by the Node server; also wrapped in a native WKWebView shell (`JARVIS OS.app`). This is "the JarvisOS app UI".
 - **State/logs**: `jarvis-os/state/*.json` (automations, watchers, memory, workflows, jobs), `jarvis-os/logs/jarvisos.log`.
 

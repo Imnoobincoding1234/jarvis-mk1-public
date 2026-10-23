@@ -65,7 +65,7 @@ const REASON_EXEMPLARS = {
     'create 4 folders on the desktop',
     'close the last 2 windows',
     'text mama that ill be home by 9',
-    'schedule a message to kunal at 8 pm',
+    'schedule a message to parth at 8 pm',
     'take a screenshot in 5 seconds',
     'open chrome and search top 5 phones under 30000',
     'delete files older than 30 days from downloads',

@@ -1,0 +1,41 @@
+{
+    "adapter_path": "adapters/reader_round5",
+    "batch_size": 1,
+    "clear_cache_threshold": 0,
+    "config": "runs/bal_a.yaml",
+    "data": "data/reader_round5",
+    "fine_tune_type": "lora",
+    "grad_accumulation_steps": 4,
+    "grad_checkpoint": true,
+    "iters": 7696,
+    "learning_rate": 3e-05,
+    "lora_parameters": {
+        "rank": 16,
+        "scale": 10.0,
+        "dropout": 0.05
+    },
+    "lr_schedule": null,
+    "mask_prompt": true,
+    "max_seq_length": 256,
+    "model": "models/Qwen3.5-0.8B-4bit",
+    "num_layers": 16,
+    "optimizer": "adam",
+    "optimizer_config": {
+        "adam": {},
+        "adamw": {},
+        "muon": {},
+        "sgd": {},
+        "adafactor": {}
+    },
+    "project_name": null,
+    "report_to": null,
+    "resume_adapter_file": "adapters/reader_round4_c/adapters.safetensors",
+    "save_every": 200,
+    "seed": 0,
+    "steps_per_eval": 1000,
+    "steps_per_report": 100,
+    "test": false,
+    "test_batches": 500,
+    "train": true,
+    "val_batches": 40
+}

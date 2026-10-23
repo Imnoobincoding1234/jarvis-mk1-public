@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 APP="FocusGuard.app"
-BUNDLE_ID="com.jarvis.focusguard"
+BUNDLE_ID="com.atharv.focusguard"
 
 echo "→ Assembling $APP"
 rm -rf "$APP"

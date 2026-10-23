@@ -179,7 +179,7 @@ async function find_contact(args) {
   // Confident only when there is exactly one usable candidate, OR exactly one candidate is an EXACT
   // name/nickname hit with no other equally-exact one — e.g. two contacts both literally saved as
   // "Mama" still stop and ask. Anything looser than that IS the "confused between similar names"
-  // failure mode Mihir flagged, so it stops and asks rather than silently picking the first result.
+  // failure mode Atharv flagged, so it stops and asks rather than silently picking the first result.
   const exactOnes = shaped.filter(c => c.exact);
   const confident = shaped.length === 1 ? shaped[0] : (exactOnes.length === 1 ? exactOnes[0] : null);
 
@@ -280,7 +280,7 @@ async function waPressSend() {
 }
 
 async function send_message(args, ctx) {
-  // WhatsApp is the default channel (Mihir's choice — more of his contacts are reachable there
+  // WhatsApp is the default channel (Atharv's choice — more of his contacts are reachable there
   // than iMessage). "on imessage" / "as a text" / "sms" in the request overrides it — see pickChannel.
   const channel = String(args.channel || 'whatsapp').toLowerCase();
   const body = String(args.body || args.text || args.message || '').trim();
@@ -291,7 +291,7 @@ async function send_message(args, ctx) {
     const digits = waDigits(args.phone || args.to || args.handle);
     if (!digits) return fail('I don’t have a usable WhatsApp number for ' + (who || 'them') + ', Sir — it needs a phone number with a country code, not an email.');
     if (!ctx.confirmed && !autoSend()) {
-      // The masked number lets Mihir actually VERIFY this resolved to the right person before
+      // The masked number lets Atharv actually VERIFY this resolved to the right person before
       // anything opens — the raw digits never reach the browser, only the last 4.
       return needsConfirm('send_message', { channel, phone: digits, body, name: who },
         'Send this to ' + who + ' on WhatsApp, Sir? I will press Send myself once you approve — say no and nothing opens.',
@@ -669,7 +669,7 @@ const cleanDraft = t => String(t || '').trim().replace(/^["'“”]+|["'“”]+
 
 // COMPOSER V3 — CANDIDATE, NOT WIRED (finetune/README "Composer v3", 2026-10-19). The v2 trial found the drafts themselves are
 // the bottleneck — and the drafting model was only ever shown the fragment the reader cut ("if he has the charger"), never his
-// request ("msg ira asking if he has the charger"), so it could not tell a question to Ira from an order. This
+// request ("msg harsimran asking if he has the charger"), so it could not tell a question to Harsimran from an order. This
 // shows the whole request, the part to pass on and who it goes to, and teaches the conversion by worked examples (names and
 // errands invented for this prompt, overlap-checked against every held-out) instead of listing kinds of words to drop.
 const DIRECT_EXAMPLES = [
@@ -1008,7 +1008,7 @@ async function realKey(spec, expectApp) {
   } finally { await uiEnd(); }
 }
 
-// Per-app search entry point. Most Mac apps focus their search field with ⌘F, but the ones Mihir
+// Per-app search entry point. Most Mac apps focus their search field with ⌘F, but the ones Atharv
 // actually asks for often differ, so the exceptions are listed rather than assumed.
 const SEARCH_KEY = {
   // Browsers: ⌘L focuses the address bar, which searches via the default engine.
@@ -1610,7 +1610,7 @@ function askNumber(prompt, max) {
 //      install control is a Button. On the Instapaper page that takes 37 elements down to 3.
 //   2. THEN MEANING, over the surviving labels, with a margin and the right to abstain — the same
 //      machinery as every other classifier here. "Get, In-App Purchases" belongs to one region and
-//      "Categories", "Filters", "Mihir Kapoor" belong to another, and no list of words decides
+//      "Categories", "Filters", "Atharv Mahendru" belong to another, and no list of words decides
 //      it; the labels are embedded and compared.
 //   3. AND THE PRESS IS VERIFIED, because a press is not an install. See install_app.
 const ACQUIRE_EXEMPLARS = {
@@ -1930,7 +1930,7 @@ function threadMessageArgs(tool, args, steps, results, goal, reading) {
     if (t) a.body = t;
   }
   // The recipient: from this run's lookup, when the model gave no number — and only if the name it gave (if any) IS that
-  // contact. c12: the 3B put "ira" in `to` after finding Ira; a name is not a WhatsApp number. A different name
+  // contact. c12: the 3B put "harsimran" in `to` after finding Harsimran; a name is not a WhatsApp number. A different name
   // is left alone, or the card would show one person's name over another person's number.
   const f = lastOk('find_contact'), fv = k => (f ? (f[k] != null ? f[k] : (f.data && f.data[k])) : null);
   const cname = String(fv('name') || '').toLowerCase().trim();
@@ -1969,12 +1969,12 @@ function resolveRefs(args, results) {
 }
 
 // ---------------- deterministic planners ----------------
-// These cover the shapes Mihir actually uses and need NO model — so they work
+// These cover the shapes Atharv actually uses and need NO model — so they work
 // with Ollama down and never suffer a 3B mis-plan. The LLM planner is the fallback.
 // Explicit "on/via/over whatsapp" is required to trigger the CALL feature (as opposed to messaging)
 // — a bare "call X" is too easily an ordinary sentence ("call it a day", "call me back") to hijack
 // safely, so this only fires when whatsapp is named outright.
-// WhatsApp is the default messaging channel (Mihir's choice); saying "imessage"/"text"/"sms"
+// WhatsApp is the default messaging channel (Atharv's choice); saying "imessage"/"text"/"sms"
 // explicitly switches it back. Kept as one function so server.js's capability prompt and this file
 // agree on exactly the same rule.
 const IMESSAGE_OVERRIDE_RE = /\b(?:imessage|i-message|apple\s*text|sms|text\s*message)\b/i;
@@ -2159,11 +2159,11 @@ const SHAPE_EXEMPLARS = {
     'compose a paragraph about rain', 'write me a short essay on tigers',
   ],
   message: [
-    'message mama on whatsapp that i am running late', 'text kunal that i am on my way',
+    'message mama on whatsapp that i am running late', 'text parth that i am on my way',
     'whatsapp my brother asking about dinner', 'send dad a message saying happy birthday',
-    'drop kunal a line about the trip', 'tell mama i will be late on whatsapp',
+    'drop parth a line about the trip', 'tell mama i will be late on whatsapp',
     // No platform named — the channel is chosen downstream, and this phrasing abstained.
-    'message mama asking about her health', 'text kunal saying happy birthday',
+    'message mama asking about her health', 'text parth saying happy birthday',
     'imessage mama asking about her health',
   ],
   reminder: [
@@ -2172,7 +2172,7 @@ const SHAPE_EXEMPLARS = {
     // app's NAME is the region's strongest word. The twoapps region carries that case explicitly.
     'remind me to call the dentist', 'set a reminder to take the bins out',
     'remind me to buy milk tomorrow', 'put a reminder on to water the plants',
-    'remind me to email kunal in the morning',
+    'remind me to email parth in the morning',
   ],
   twoapps: [
     'open spotify and notes', 'launch textedit and the calculator',
@@ -2183,7 +2183,7 @@ const SHAPE_EXEMPLARS = {
   call: [
     'call mama on whatsapp', 'ring mama on whatsapp', 'phone dad on whatsapp',
     'give mama a call on whatsapp', 'whatsapp call my brother',
-    'get mama on the phone', 'ring my sister', 'call kunal',
+    'get mama on the phone', 'ring my sister', 'call parth',
   ],
   calendar: [
     'what is on my calendar', 'what have i got on today', 'am i busy today',
@@ -2240,7 +2240,7 @@ const CLAUSE_SPLIT_RE = /\s*(?:,|;|—|–|\bthen\b|\band\b)\s+/i;
 // same argument as the particle handling in context.js — grammar, not vocabulary.
 const LEADING_PREP_RE = /^(?:for|up|to|at|in|on|about|into|down|out|over|through|that)\s+/i;
 // A REPORTED-SPEECH LEAD-IN, BY SHAPE RATHER THAN BY LIST. "text mama SAYING i am late", "whatsapp
-// dad ASKING about dinner", "message kunal TELLING him to wait" — the -ing form introducing the
+// dad ASKING about dinner", "message parth TELLING him to wait" — the -ing form introducing the
 // message is a morphological fact, so every verb nobody has thought of yet is covered by the same
 // line. This is the same trick learned.js already uses for participles.
 const GERUND_LEAD_RE = /^\w+ing\s+/i;
@@ -2758,7 +2758,7 @@ const IDENTIFIER_ARGS = ['phone', 'to', 'handle', 'number', 'recipient'];
 const isStepRef = v => /^\{\{\d+\.\w+\}\}$/.test(String(v || '').trim());
 
 // Plain-English narration of a step for the live progress feed. Deliberately present-tense and
-// short: this is read aloud, so "Looking up Kunal in Contacts" works and a JSON blob does not.
+// short: this is read aloud, so "Looking up Parth in Contacts" works and a JSON blob does not.
 function describeAgentStep(step) {
   const a = step.args || {};
   const v = x => { const s = String(x == null ? '' : x); return /^\{\{\d+\.\w+\}\}$/.test(s) ? '' : s; };
@@ -3474,7 +3474,7 @@ async function runAgentLoop(goal, opts) {
     // every compound file goal the local model was given.
     if (step.tool === 'append' && lastTool === 'create_file') {
       const prev = steps[steps.length - 1];
-      // Compared as RESOLVED paths, not raw strings: the model wrote "/Users/Mihir/Desktop/ok.txt"
+      // Compared as RESOLVED paths, not raw strings: the model wrote "/Users/Atharv/Desktop/ok.txt"
       // on one step and "~/Desktop/ok.txt" on the next, which are the same file but not the same
       // text, so a string comparison missed the duplicate and the content doubled anyway.
       const norm = p => { try { return deps.resolvePath ? deps.resolvePath(String(p || '')) : String(p || ''); } catch (e) { return String(p || ''); } };

@@ -89,7 +89,7 @@ corrected or invented — "vs code" stays "vs code", a misspelling stays misspel
 
 ### Round 3 (2026-09-27): messages, calls, reminders, calendar, notes, weather, the player
 
-- `to` is the words naming the person, copied — "mama", "mera bhai", "bhai", "kunal", "him", "usko", even a
+- `to` is the words naming the person, copied — "mama", "mera bhai", "bhai", "parth", "him", "usko", even a
   number. Never normalised; the machine resolves it against Contacts and WhatsApp.
 - `body` is the words to convey, without the word that introduces them: "saying wsg" → `wsg`; "that im late"
   → `im late`; "asking if hes coming tonight" → `if hes coming tonight` with `reported: true`. `reported` is
@@ -98,7 +98,7 @@ corrected or invented — "vs code" stays "vs code", a misspelling stays misspel
   ("saying wsg gng" → `wsg gng`). No body at all ("message mama") is fine — JARVIS asks what to say.
 - `where` for a message or call is the channel words: "on whatsapp" → `whatsapp`, "on imessage", "facetime"
   (then `video: true` too).
-- A filler lead-in is not part of any value: "eh let it be, just text kunal saying hi" → to `kunal`, body `hi`.
+- A filler lead-in is not part of any value: "eh let it be, just text parth saying hi" → to `parth`, body `hi`.
   "nvm" followed by a new request is that request; "nvm" alone is `none`.
 - Scheduled sends ("at 6pm message mama…") are `none` — they cannot be sent now.
 - `when` is the time words, copied: "tmrw", "at 6", "in an hour", "every hour", "kal subah".
@@ -114,7 +114,7 @@ corrected or invented — "vs code" stays "vs code", a misspelling stays misspel
 - The player: "pause the song", "gaana band kar" → `pause`; "skip this", "next song" → `next_track`; "turn it
   up" → `volume_up`. Setting an exact level ("volume to 40") is `none`.
 - STILL `none`, however casual: greetings and slang greetings ("wsg", "hyd", "sup", "kaisa hai"), thanks,
-  feelings, complaints that name an app or a person ("whatsapp keeps crashing wtf", "kunal is so annoying"),
+  feelings, complaints that name an app or a person ("whatsapp keeps crashing wtf", "parth is so annoying"),
   statements and plans ("calling mama later", "i texted bhai already", "mama said dinner is ready"), questions
   about what JARVIS did ("did u send that msg to mama", "did u open spotify") — those are never acts, and
   how-to questions ("how do i message someone on whatsapp"). Emergencies ("call an ambulance") are `none` too:
@@ -131,7 +131,7 @@ corrected or invented — "vs code" stays "vs code", a misspelling stays misspel
 - Words that are not requests are not steps: "yo wsg, open spotify" is ONE `open`. If only one act is left, it
   is that act, not `multi`.
 - Still `none`: a step that works on another step's result ("find my resume and send it to rahul", "take a
-  screenshot and send it to kunal"), a scheduled step, more than four requests, or any step that would be
+  screenshot and send it to parth"), a scheduled step, more than four requests, or any step that would be
   `none` on its own (a question in the middle of commands makes the whole message `none`).
 - Joiners in his style all count: "and", "and then", "then", "+", ",", "after that", "also", "aur", "phir".
 - `note` takes `write: true` when he asks for text to be WRITTEN — "write a passage about tea in notes", "write a
@@ -183,7 +183,7 @@ act on the bare word — that is how Brave was once told to search for "him up".
 - one named statistic (battery, RAM, CPU, disk) — those have their own lane
 - orders, research, memory, teaching (messages, calls, reminders, the calendar, notes and the weather are
   acts since round 3)
-- looking a person up ("look up kunal in contacts", "open contacts and search for nanu") — that is
+- looking a person up ("look up parth in contacts", "open contacts and search for nanu") — that is
   the contacts lane's job, which resolves against Contacts AND his WhatsApp contacts; a search typed
   into Contacts.app would miss WhatsApp (his call, 2026-09-16). Opening the app itself
   ("boot up contacts") is still `open`.
@@ -210,7 +210,7 @@ act on the bare word — that is how Brave was once told to search for "him up".
 - `as` (site / app) goes on close too: "close the notes app" → close `notes`, as `app`.
 - Talking ABOUT music is not a request to play it: "lol that song slaps", "tum gaana gaate ho kya", "kya tum gaana gaa sakte ho" →
   `none`. "itna tez mat chala, kam kar" (too loud, turn it down) → `volume_down`.
-- Someone's news is not a message to send: "ira says hi", "chal bye kal baat karte" → `none`.
+- Someone's news is not a message to send: "harsimran says hi", "chal bye kal baat karte" → `none`.
 - "ss the screen", "snap a pic of my screen" → `screenshot` (never sleep_display).
 
 ## Play — the words that name the thing, and `video` (2026-10-16, his OK: "keep the front words, video whenever he asks for a video

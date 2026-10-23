@@ -47,7 +47,7 @@ const int = (lo, hi) => lo + Math.floor(rnd() * (hi - lo + 1));
 const NORMAL = { batteryPct: 64, charging: false, cpu: 18, ramPct: 78, diskPct: 61 };
 const lowBatt = () => ({ batteryPct: pick([6, 8, 9, 11, 12, 13, 15, 16, 18, 19]), charging: false });
 const AGENTS = ['Clap Listener', 'Focus Guard', 'Self Heal', 'JARVIS Control', 'Canary'];
-const NAMES = ['Sir', 'Mihir', 'Boss'];
+const NAMES = ['Sir', 'Atharv', 'Boss'];
 const nm = () => pick(NAMES);
 
 // ------------------------------------------------------------------ greetings
@@ -233,7 +233,7 @@ const FEEL = [
 ];
 
 // ------------------------------------------------------------------ honesty
-const PEOPLE = ['mama', 'papa', 'bhai', 'didi', 'kunal', 'rohan', 'kavya', 'ishaan', 'nanu', 'aman', 'coach', 'meher'];
+const PEOPLE = ['mama', 'papa', 'bhai', 'didi', 'parth', 'rohan', 'kavya', 'ishaan', 'nanu', 'aman', 'coach', 'meher'];
 const BODIES = ['omw', 'running late', 'ill be home by 8', 'call me', 'reached', 'gn', 'bring my charger', 'the plan is off'];
 const HONEST_NONE = [
   p => ['did u send the msg to ' + p, 'I have no record of sending anything to ' + cap(p) + ', {n}. Nothing goes out without your OK — want me to send it now?'],
@@ -381,7 +381,7 @@ const ENT = [
   ['who wrote atomic habits', 'Atomic Habits was written by James Clear.', 'James Clear', ['find his newsletter', 'search his other books']],
   ['a good movie for tonight', 'Try Interstellar — it holds up on a rewatch.', 'Interstellar', ['play the trailer', 'is it on netflix']],
   ['who owns instagram', 'Instagram is owned by Meta.', 'Meta', ['open their site', 'search their stock price']],
-  ['whats a good cafe in kolhapur', 'Try Brew Estate in Sector 7.', 'Brew Estate', ['get directions there', 'check its reviews']],
+  ['whats a good cafe in chandigarh', 'Try Brew Estate in Sector 7.', 'Brew Estate', ['get directions there', 'check its reviews']],
   ['who is the richest person', 'Elon Musk is usually at the top of those lists.', 'Elon Musk', ['search his net worth', 'open his twitter']],
   ['recommend a podcast', 'The Diary of a CEO is a good one.', 'The Diary of a CEO', ['play the latest episode', 'open it on spotify']],
   ['whats the best code editor', 'VS Code is the most popular choice.', 'VS Code', ['open it', 'download it']],
@@ -403,9 +403,9 @@ const NONE_AMBIG = [
   [['who founded infosys', 'Infosys was founded by Narayana Murthy and six others.'], 'call him'],
   [['recommend two laptops', 'The MacBook Air or the ThinkPad X1 — both good.'], 'order that'],
 ];
-const SMALL = [['wsg', 'Not much, Sir. What is up?'], ['hyd', 'Doing well, Sir. You?'], ['yo', 'Hey, Mihir.'], ['gm', 'Morning, Sir.'], ['thanks', 'Anytime.'],
+const SMALL = [['wsg', 'Not much, Sir. What is up?'], ['hyd', 'Doing well, Sir. You?'], ['yo', 'Hey, Atharv.'], ['gm', 'Morning, Sir.'], ['thanks', 'Anytime.'],
   ['kya haal', 'Sab badhiya, Sir.'], ['bet', 'Bet.'], ['lol', 'Ha.'], ['hii', 'Hello, Sir.'], ['ok cool', 'Cool.'], ['im back', 'Welcome back, Sir.']];
-const AFTER_SMALL = ['open youtube', 'play some lofi', 'text kunal omw', 'whats the weather', 'close spotify', 'set a reminder for 6', 'search ipl schedule',
+const AFTER_SMALL = ['open youtube', 'play some lofi', 'text parth omw', 'whats the weather', 'close spotify', 'set a reminder for 6', 'search ipl schedule',
   'open notes', 'call mama', 'whats my battery', 'take a screenshot', 'play arijit'];
 
 (async () => {

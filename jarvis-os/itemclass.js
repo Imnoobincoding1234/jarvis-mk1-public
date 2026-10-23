@@ -13,7 +13,7 @@
 //   "order apples and bananas from instamart"-> nothing at all; produce is in no list
 //
 // The comment above FOOD_CATEGORY_RE says it plainly: "SAMOSA WAS NOT ON THIS LIST, on a machine in
-// Maharashtra." A list fails on the first word nobody thought of, and there is no end to that work.
+// Punjab." A list fails on the first word nobody thought of, and there is no end to that work.
 //
 // WHAT THIS DOES INSTEAD. Embed the item, compare it to a handful of exemplar prototypes per class,
 // take the nearest. An unseen word — anjeer, rasmalai, besan — gets a position in the same space as

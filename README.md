@@ -10,17 +10,6 @@
 
 ---
 
-> 🌍 **Public snapshot (2026-10-23).** This is a cleaned copy of a private working repository, published without its
-> history. Left out: the encrypted vault (`private/`), JARVIS's learned state (`jarvis-os/state/`), the reader model's
-> adapter (it was trained on the owner's own messages) and the owner's handoff notes. Every name, place, contact and path
-> that pointed at the owner has been replaced with a placeholder (the owner appears as "Mihir"). `install.sh` takes the
-> new-user path here: JARVIS runs, and requests fall back to the basic reader until a reader is trained (`finetune/`).
-> Test suites that read the owner's private data — learned state, Contacts, training data — fail or skip in a plain clone:
-> `test_parse`, `test_selffact`, `test_grounded`, `test_readmodel`, `test_intent`, `test_lang`, `test_clauses`
-> (and `test_loraserver`, `test_reasonintent`, `test_whyintent` skip without their models).
-
----
-
 Still under development. Local model, no cloud dependency for the things that matter, and **every capability wired to
 something it can actually verify afterwards**.
 
@@ -43,7 +32,7 @@ sampling (2026-09-17 → 09-24) — and the headline is that almost none of it i
 > **Since 2026-10-09 one gate decides what may share memory** (`jarvis-os/ollama.js` makeRoomFor, my rule): a
 > heavy model (1.5 GB or more on disk — the 3B, phi4-mini, vision) is always alone; the light ones (`jarvis`, the
 > reader) share only within `JARVIS_MODEL_BUDGET_GB` (default 0 = never two generation models at once); the
-> embedders may sit beside one. Ollama's own cap is 4 (`com.jarvis.ollamaonemodel`). It replaced 2026-09-23's
+> embedders may sit beside one. Ollama's own cap is 4 (`com.atharv.ollamaonemodel`). It replaced 2026-09-23's
 > `OLLAMA_MAX_LOADED_MODELS=1`, and paragraphs below that talk about models sharing the machine describe the
 > older setups. **Plain chat replies now come from `jarvis`** (Bonsai 4B, 1-bit, with my own LoRA — 601 MB on
 > disk), not the 3B. Details in HANDOFF.md.
@@ -115,7 +104,7 @@ Python and MLX, pinned in `requirements.txt`, run by hand and never part of the 
 | 🎛️ **Knows its own models** | Settings → Models shows which model does which job, read from the code that runs them; **Calibrate** measures any installed model on this Mac (speed, verbosity, cold start) and changes nothing until you press Keep |
 | 🔌 **Connections** | Settings → Connections: a Composio key for cloud apps, and MCP servers added by pasting a link — every tool behind an approval gate, picked per goal by meaning |
 | 🌍 **World Monitor** | A realistic live Earth (⌘⇧W) — NASA day and night imagery split at the real terminator, clouds, the sun where it actually is — with ~7,000 live flights, military aircraft, ~900 satellites (Starlink on demand), launches, cyclones, quakes, NASA events and GDACS alerts, as a globe or an accurate flat 2D map. Click anything for details. No API keys |
-| 📍 **Finds local businesses** | *"find bakeries in Kolhapur without a website"* — OpenStreetMap, Google Maps read in my own Brave, and the web for missing numbers |
+| 📍 **Finds local businesses** | *"find bakeries in Chandigarh without a website"* — OpenStreetMap, Google Maps read in my own Brave, and the web for missing numbers |
 
 > ### ⚠️ The vault passphrase has no recovery path.
 > Secrets, tokens, face enrolments, profile and memory
@@ -257,7 +246,7 @@ Everything should be green. It changes nothing — it only looks. Anything red t
 
 | What you see | What to do |
 |---|---|
-| `localhost:8787` does not open | Wait a minute after installing, then run `launchctl kickstart -k gui/$(id -u)/com.jarvis.jarvisos`. The log is `~/JARVIS MK-1/logs/com.jarvis.jarvisos.log`. |
+| `localhost:8787` does not open | Wait a minute after installing, then run `launchctl kickstart -k gui/$(id -u)/com.atharv.jarvisos`. The log is `~/JARVIS MK-1/logs/com.atharv.jarvisos.log`. |
 | JARVIS says it clicked, but nothing moved | Step 4 → Accessibility → JarvisControl. |
 | Web searches or YouTube fail with "Allow JavaScript from Apple Events" | Step 5. |
 | "Hey Jarvis" / claps do nothing | Step 4 → Microphone → ClapListener. On a Mac mini/Studio/Pro, plug in a microphone — it starts on its own. |
@@ -266,7 +255,7 @@ Everything should be green. It changes nothing — it only looks. Anything red t
 
 **To remove JARVIS completely:** stop its background agents, then delete the folder (and, if you like, the models):
 ```bash
-for p in ~/Library/LaunchAgents/com.jarvis.*.plist; do launchctl bootout gui/$(id -u) "$p"; rm "$p"; done
+for p in ~/Library/LaunchAgents/com.atharv.*.plist; do launchctl bootout gui/$(id -u) "$p"; rm "$p"; done
 ```
 Then drag `~/JARVIS MK-1` to the Bin, and remove the models with `ollama list` / `ollama rm <name>`.
 Full technical detail, including what is deliberately not in this repo: **[RESTORE.md](RESTORE.md)**.
@@ -480,9 +469,9 @@ individual test cases is fitting the test set and makes every number a lie.
 **💾 My memory was two keyword traps in a row, and they cancelled each other out.** Storing required a
 sentence BEGINNING with "my" and joined by "is" or "are" — `/^(?:jarvis[,\s]+)?(my\s+…\s+(?:is|are)\s+…)$/`
 — so "i hate summer and enjoy winters" was acknowledged warmly by the 3B and stored nowhere. Nor
-would "i am allergic to peanuts", "i live in nagpur", "call me mihir"; the frame AND the verb are
+would "i am allergic to peanuts", "i live in ludhiana", "call me atharv"; the frame AND the verb are
 both open classes. Retrieval was worse: one token of four characters or more found anywhere inside a
-fact claimed the turn, so "do i hate summer" came back with "Mihir hates being woken up early, hates
+fact claimed the turn, so "do i hate summer" came back with "Atharv hates being woken up early, hates
 phone calls, and hates people being late" — a question about summer answered with a fact about
 mornings, on the letters "hate" inside "hates". Lengthening the stop list cannot fix that; the word
 that matched was the word the question was about.
@@ -496,7 +485,7 @@ two stages, and the first attempt is instructive:
     3B asked to pick from a list    15/16, 0 wrong, 1 missed
     floor + selection in the band   16/16, 0 wrong, 0 missed
 
-The yes/no pass answered NO to all sixteen, including "do i prefer tea or coffee" against "Mihir
+The yes/no pass answered NO to all sixteen, including "do i prefer tea or coffee" against "Atharv
 prefers tea over coffee". Handed the same sixteen as a NUMBERED LIST with a "none of them" option it
 refused all six adversarial pairs and found the rest. A 3B chooses from a list reliably and judges a
 proposition badly — the same finding `playbook.js` records about procedures. Each stage is used only
@@ -574,8 +563,8 @@ model.
 The detector itself never lists a Hindi word, which would be the same trap in a new language. It asks
 how much of the sentence is ENGLISH, against the 236k-word dictionary macOS ships, with names removed
 by the registries the system already owns — the site registry knows spotify, the app index knows
-Notes, Contacts knows Kunal. A first version spotted names by LENGTH and was measured and failed,
-because my names are short: "open spotify", "open notes", "message kunal" and "call mama" all read
+Notes, Contacts knows Parth. A first version spotted names by LENGTH and was measured and failed,
+because my names are short: "open spotify", "open notes", "message parth" and "call mama" all read
 as Hinglish. The dictionary alone still cannot see Hindi that collides with English words — *safari
 band karo* is three English words — so a second signal embeds whole sentences as language regions.
 Measured on 36 held-out phrasings: dictionary 32/36, regions 35/36, the two together 36/36.
@@ -675,7 +664,7 @@ voice, because the page answers a 503 by speaking the line in the browser's own 
 what was asked. `POST /api/silent {mode:'on'|'off'|'auto'}` — `off` gets you spoken answers at 2am when you are working late,
 and overrides expire so one night's decision does not quietly govern next month.
 
-**🎙️ The recogniser is told the words it cannot know.** Speech recognition has a general English lexicon and no idea who Kunal
+**🎙️ The recogniser is told the words it cannot know.** Speech recognition has a general English lexicon and no idea who Parth
 is, that AdMax is a company, or that Swiggy and Instamart are different services — which are exactly the words carrying the
 meaning, so mangling one loses the sentence, silently, because a confident wrong transcript looks like a correct one.
 `config/vocabulary.json` is read on every microphone open and passed as `contextualStrings`: no model, no measurable time,

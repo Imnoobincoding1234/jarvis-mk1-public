@@ -147,7 +147,7 @@ const TRIVIAL_RE = /^(?:hi|hey|hello|yo|thanks?|thank you|ok(?:ay)?|yes|yeah|yep
 // ---------------- retrieval (tf-idf + recency) ----------------
 const STOP = new Set('the a an and or of to in is it for on with as at by from that this be are was were i you he she they we not but if then than so what which who how why when where all can will me my your jarvis sir asked answered'.split(' '));
 // Crudest possible stemming: fold a trailing plural/possessive "s". Applied to documents AND
-// queries, so the two still meet. Without it "whats parths role" retrieved nothing about Kunal —
+// queries, so the two still meet. Without it "whats parths role" retrieved nothing about Parth —
 // the apostrophe form already worked, since punctuation is stripped first and the orphaned "s" is
 // too short to survive. Guarded against "ss"/"us" so "business" and "status" stay themselves.
 const stem = w => (w.length > 3 && /s$/.test(w) && !/(?:ss|us|is)$/.test(w)) ? w.slice(0, -1) : w;
@@ -223,7 +223,7 @@ function retrieveScored(query, k) {
     }
     if (!s) continue;
     // Pivoted length normalisation. Without it, plain tf-idf rewards long episodes for being long:
-    // asked "how many leads do I hand Kunal", the two sprawling AdMax overview facts outranked the
+    // asked "how many leads do I hand Parth", the two sprawling AdMax overview facts outranked the
     // one short fact that actually carried the number ("usually 40 to 50"), which then fell outside
     // the attachment budget — the question was answerable and JARVIS said it did not know. The 0.6
     // pivot keeps this a tilt rather than a penalty on genuinely rich episodes.
@@ -248,7 +248,7 @@ function retrieveScored(query, k) {
 //   the two fused     recall@1 28%   recall@5 59%
 //
 // Swapping tf-idf out would have bought nothing. The gain is entirely in the disagreement: asked
-// "where exactly does Mihir live?" only the vectors found it, and asked about "the Vantage V2"
+// "where exactly does Atharv live?" only the vectors found it, and asked about "the Vantage V2"
 // only tf-idf did. Lexical matching and semantic matching fail on different questions, so the
 // honest move is to keep the working retriever and add a second opinion.
 //
@@ -504,7 +504,7 @@ function graph(opts) {
       c.n++; c.last = Math.max(c.last, ep.at);
       counts.set(key, c);
     }
-    // Co-occurrence in one episode = a real relationship (you messaged Kunal ABOUT AdMax).
+    // Co-occurrence in one episode = a real relationship (you messaged Parth ABOUT AdMax).
     for (let i = 0; i < uniq.length; i++) for (let j = i + 1; j < uniq.length; j++) {
       const k = [uniq[i], uniq[j]].sort().join('|');
       pairs.set(k, (pairs.get(k) || 0) + 1);
@@ -550,7 +550,7 @@ async function recall(args) {
   try {
     const r = await deps.llm({
       // The speaker labels have to be spelled out: a 3B model reliably flips them and reports
-      // "you asked Mihir about entropy", which inverts who did what in a memory feature — the
+      // "you asked Atharv about entropy", which inverts who did what in a memory feature — the
       // one place where being confidently backwards is worst.
       system: 'You are JARVIS. ' + profile.userRef() + ' is your user' + (profile.honorific() ? '; you address ' + profile.pronouns().obj + ' as ' + profile.honorific() : '') + '. In the episodes below, ' +
         '"' + profile.userLabel() + ' asked:" is ' + profile.pronouns().obj.toUpperCase() + ' speaking TO YOU, and "JARVIS answered:" is YOUR OWN past reply. ' +
@@ -654,12 +654,12 @@ function compact() {
 
 // ---------------- passive recall ----------------
 // Facts written by the profile were previously write-only: retrieve() ran ONLY behind RECALL_RE
-// ("do you remember…"), so an ordinary question like "what does Kunal do" never consulted memory
+// ("do you remember…"), so an ordinary question like "what does Parth do" never consulted memory
 // and JARVIS truthfully said it did not know something it had been told.
 //
 // The cost of getting this wrong is context, on every single turn, for the local 3B — so the bar is
 // deliberately high. Two distinct query terms must hit the same episode, or one genuinely rare term
-// (a name, a project), which is what makes "what does Kunal do for AdMax" match and "how are you"
+// (a name, a project), which is what makes "what does Parth do for AdMax" match and "how are you"
 // match nothing at all.
 // A lone term fires only if it is not in more than roughly a third of episodes. This is a low bar on
 // purpose: GENERIC below is what screens out everyday words, and a stricter rarity cut simply broke

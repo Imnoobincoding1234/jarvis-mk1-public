@@ -2,7 +2,7 @@
 // grounded.js — answering a factual question FROM A FETCHED SOURCE (2026-10-04, his call for jarvis v4.1).
 //
 // Why: the small chat model does not know when it does not know. Reading stock Bonsai's answers to 388 general
-// questions (finetune/data/v41_knowledge_review.json): 74 confidently wrong ("capital of Maharashtra is Nagpur",
+// questions (finetune/data/v41_knowledge_review.json): 74 confidently wrong ("capital of Punjab is Ludhiana",
 // "Für Elise by ABBA"), 3 "I don't know"s. So "search when unsure" cannot be left to the model — JARVIS fetches a
 // source for a factual question and the model answers from it, and says so when the source does not answer it.
 //

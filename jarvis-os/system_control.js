@@ -54,7 +54,7 @@ function resolvePath(input) {
   // The rule above only expands "~" when a slash or the end follows, which is correct — but it left
   // everything else starting with a tilde to be treated as an ordinary relative name. Measured in a
   // live eval: the 3B degraded across a long run and emitted "~ es/desktop/jarvis_eval/c.txt", which
-  // resolved to /Users/you/~ es/desktop/... and cheerfully created a directory literally called
+  // resolved to /Users/atharv/~ es/desktop/... and cheerfully created a directory literally called
   // "~ es" in his home folder. The write succeeded, so nothing downstream had any reason to complain.
   //
   // Repaired rather than refused: "~ es/desktop/x" plainly means "~/Desktop/x" with characters lost,
@@ -85,7 +85,7 @@ const PROTECTED_PREFIXES = ['/System', '/Library', '/usr', '/bin', '/sbin', '/et
 // desktop came back through the normaliser as "/Users/yourUsername/Desktop/…", a placeholder the
 // model made up, and it went straight to the filesystem. On this single-user Mac nothing legitimate
 // lives outside HOME, so anything under another /Users/<name> is refused rather than attempted.
-// Case-INSENSITIVE, because macOS volumes are: "/Users/Mihir" and "/Users/you" are the same
+// Case-INSENSITIVE, because macOS volumes are: "/Users/Atharv" and "/Users/atharv" are the same
 // directory. A case-sensitive comparison here blocked a perfectly ordinary write to the user's own
 // Desktop the moment the model capitalised his name — a guard that fires on the owner is worse
 // than no guard, because it makes the real thing unusable.

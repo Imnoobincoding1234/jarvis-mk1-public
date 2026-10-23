@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 
 DIR="$(pwd)"
 BIN="$DIR/ClapListener.app/Contents/MacOS/ClapListener"
-LABEL="com.jarvis.claplistener"
+LABEL="com.atharv.claplistener"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 LOG="$DIR/clap.log"
 
@@ -43,7 +43,7 @@ cat > "$PLIST" <<PLISTEOF
         <key>CLAP_FLOOR</key><string>4.5</string>
         <key>CLAP_RATIO</key><string>8</string>
         <key>CLAP_TARGET_PATH</key><string>$HOME/JARVIS MK-1/jarvis-os/JARVIS OS.app</string>
-        <key>CLAP_TARGET_BUNDLE</key><string>com.jarvis.jarvisos.shell</string>
+        <key>CLAP_TARGET_BUNDLE</key><string>com.atharv.jarvisos.shell</string>
         <!-- The wake word's off switch. Set to 0 and restart the agent to silence "hey jarvis"
              while keeping claps: launchctl kickstart -k gui/\$(id -u)/$LABEL -->
         <key>JARVIS_WAKE</key><string>1</string>

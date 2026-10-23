@@ -27,7 +27,7 @@ const PLAY = [
   [H, 'koi garhwali gaana bajao', p('koi garhwali gaana')],
   [H, 'kuch slow songs chala de yaar', p('kuch slow songs')],
   [H, 'ek gazal laga do', p('ek gazal')],
-  [H, 'kuch naya marathi sunao', p('kuch naya marathi')],
+  [H, 'kuch naya punjabi sunao', p('kuch naya punjabi')],
   [H, 'koi old school hip hop laga', p('koi old school hip hop')],
   // a video, no platform named
   [E, 'play a 20 minute pilates video', p('a 20 minute pilates video', V)],
@@ -114,11 +114,11 @@ const OTHER = [
   [E, 'quit vlc player', { act: 'close', thing: 'vlc player' }],
   [E, 'search youtube for guitar lessons for beginners', { act: 'search_web', query: 'guitar lessons for beginners', where: 'youtube' }],
   [H, 'youtube pe tabla tutorial dhundo', { act: 'search_web', query: 'tabla tutorial', where: 'youtube' }],
-  [E, 'text kunal saying put on some music', { act: 'message', to: 'kunal', body: 'put on some music' }],
+  [E, 'text parth saying put on some music', { act: 'message', to: 'parth', body: 'put on some music' }],
   [H, 'bhai ko bol gaana band kar', { act: 'message', to: 'bhai', body: 'gaana band kar' }],
   [E, 'remind me to restring my ukulele at 6', { act: 'remind', what: 'restring my ukulele', when: 'at 6' }],
   [H, 'shaam 7 baje yaad dilana ki dance class hai', { act: 'remind', what: 'dance class hai', when: 'shaam 7 baje' }],
-  [E, 'call rehaan on facetime', { act: 'call', to: 'rehaan', where: 'facetime', video: true }],
+  [E, 'call sidhu on facetime', { act: 'call', to: 'sidhu', where: 'facetime', video: true }],
   [E, 'note down songs for the party playlist', { act: 'note', content: 'songs for the party playlist' }],
   [E, 'whats the time in seoul', { act: 'time', where: 'seoul' }],
 ];

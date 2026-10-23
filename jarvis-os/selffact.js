@@ -12,14 +12,14 @@
 // and thrown away. Reported live, from his terminal:
 //
 //     ◆ i hate summer and enjoy winters
-//       "Understood, Mihir enjoys the cooler temperatures…"        ← nothing stored
+//       "Understood, Atharv enjoys the cooler temperatures…"        ← nothing stored
 //     ◆ do i hate summer
-//       "You told me: Mihir hates being woken up early, hates phone calls, and hates people
+//       "You told me: Atharv hates being woken up early, hates phone calls, and hates people
 //        being late, Sir."                                          ← answered from older facts
 //
 // The sentence starts with "i" and its verb is "hate", so it matched neither clause. Nor would
-// "I'm allergic to peanuts", "I live in Nagpur", "I work nights", "I've got a sister called
-// Anaya", "call me Mihir" — every one of them a fact about him, none of them shaped like the
+// "I'm allergic to peanuts", "I live in Ludhiana", "I work nights", "I've got a sister called
+// Anaya", "call me Atharv" — every one of them a fact about him, none of them shaped like the
 // regex. The verb people use to state a fact about themselves is an OPEN CLASS, and so is the
 // sentence frame; there is no end to the work of adding more.
 //
@@ -56,12 +56,12 @@ const EXEMPLARS = {
     'my favourite colour is teal',
     'i hate summer and enjoy winters',
     'i am allergic to peanuts',
-    'i live in nagpur',
+    'i live in ludhiana',
     'i work at a startup',
     'i have a sister called anaya',
     'i prefer tea over coffee',
     'i usually wake up at seven',
-    'call me mihir',
+    'call me atharv',
     'i am scared of heights',
     'my birthday is in march',
     'i do not eat meat',

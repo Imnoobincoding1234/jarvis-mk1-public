@@ -38,8 +38,8 @@ const grades = fs.existsSync(gradesFile) ? JSON.parse(fs.readFileSync(gradesFile
 const R = fs.readFileSync(runFile, 'utf8').trim().split('\n').map(l => JSON.parse(l));
 
 // The sandbox's fixture book: fake numbers → the names the labels use.
-const PHONE = { '919900000001': 'mama', '919900000002': 'bhai', '919900000003': 'kunal', '919900000004': 'ira',
-  '919900000005': 'rehaan', '919900000006': 'yuvan', '919900000007': 'nanu' };
+const PHONE = { '919900000001': 'mama', '919900000002': 'bhai', '919900000003': 'parth', '919900000004': 'harsimran',
+  '919900000005': 'sidhu', '919900000006': 'ekamveer', '919900000007': 'nanu' };
 const low = s => String(s || '').toLowerCase();
 const nameKey = s => { const t = low(s).replace(/[^a-z ]/g, ' ').trim(); return t === 'mera bhai' ? 'bhai' : t.split(/\s+/).pop() === 'bhai' ? 'bhai' : t; };
 

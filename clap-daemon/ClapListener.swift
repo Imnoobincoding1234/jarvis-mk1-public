@@ -36,7 +36,7 @@ let LAUNCH_COOLDOWN_MS = envDouble("CLAP_LAUNCH_COOLDOWN_MS", 4000) // don't rel
 // clap there; the default is now JARVIS, and Claude is not reachable from this file at all.
 let CLAP_TARGET_PATH = ProcessInfo.processInfo.environment["CLAP_TARGET_PATH"]
     ?? (NSHomeDirectory() + "/JARVIS MK-1/jarvis-os/JARVIS OS.app")
-let CLAP_TARGET_BUNDLE = ProcessInfo.processInfo.environment["CLAP_TARGET_BUNDLE"] ?? "com.jarvis.jarvisos.shell"
+let CLAP_TARGET_BUNDLE = ProcessInfo.processInfo.environment["CLAP_TARGET_BUNDLE"] ?? "com.atharv.jarvisos.shell"
 let CLAP_TARGET = (CLAP_TARGET_PATH as NSString).lastPathComponent   // for logging only
 
 func nowMs() -> Double { Date().timeIntervalSince1970 * 1000 }

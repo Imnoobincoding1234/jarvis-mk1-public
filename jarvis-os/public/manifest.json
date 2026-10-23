@@ -1,7 +1,7 @@
 {
   "name": "JARVIS OS",
   "short_name": "JARVIS",
-  "description": "Mihir's personal AI operating system.",
+  "description": "Atharv's personal AI operating system.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

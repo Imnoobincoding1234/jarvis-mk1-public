@@ -19,7 +19,7 @@ const NORMAL = { batteryPct: 64, charging: false, cpu: 18, ramPct: 78, diskPct: 
 // (v4.1's set: 10:49 AM for "shaam ho gayi jarvis"). Held-outs from before v4.2 have no `now` and keep their old behaviour.
 const C = require('./promptclock');
 const CLOCKED = H.greet.concat(H.caps, H.chat).some(c => 'now' in c) || /v42/.test(process.env.BONSAI_HELD || '');
-const DEFAULT_NOW = '2026-10-13T16:10', DEFAULT_WEATHER = { temp: 27, unit: 'C', desc: 'Clear', city: 'Nagpur' };
+const DEFAULT_NOW = '2026-10-13T16:10', DEFAULT_WEATHER = { temp: 27, unit: 'C', desc: 'Clear', city: 'Ludhiana' };
 const clocked = (sys, c) => CLOCKED ? C.setClock(sys, C.at((c && c.now) || DEFAULT_NOW), c && c.weather === null ? null : DEFAULT_WEATHER) : sys;
 // Max reply tokens per job — the live budgets' order of size (chat 700 is a ceiling nobody reaches in a greeting).
 const MAX = { greet: 80, caps: 120, chat: 200, reasoning: 400, resolver: 24 };

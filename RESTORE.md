@@ -108,7 +108,7 @@ backup. Both were moved in, so the repo boundary is now the truth:
   and re-register it with `lsregister -f`.
 
 `install.sh` **generates** the launchd plists from wherever the repo is checked out rather than
-committing them. The originals hardcoded `/Users/you/...`, and one of them pointed outside the
+committing them. The originals hardcoded `/Users/atharv/...`, and one of them pointed outside the
 repo for months without anyone noticing — generated paths are correct by construction, on any
 machine and any username.
 

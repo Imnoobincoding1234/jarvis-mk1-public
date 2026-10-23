@@ -39,7 +39,7 @@ const FILE = () => path.join(deps.stateDir || '/tmp', 'proactive.json');
 
 const MIN = 60000, HOUR = 3600000;
 const TICK = 2 * MIN;
-// NORMAL MODE (set at Mihir's request, 2026-08-05). Initiative is standard behaviour now, not a
+// NORMAL MODE (set at Atharv's request, 2026-08-05). Initiative is standard behaviour now, not a
 // cautious opt-in — so the ceiling is raised and the gap shortened. The limits still exist, because
 // the failure mode of a proactive assistant is being muted, and a muted assistant is worth nothing.
 // These are the dials to turn if it ever gets noisy.

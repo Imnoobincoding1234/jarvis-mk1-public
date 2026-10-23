@@ -1,7 +1,7 @@
 'use strict';
-// FRESH held-out #3 for the self-fact lane (2026-10-10, Mihir away on a trek), written BEFORE the candidate below was run.
+// FRESH held-out #3 for the self-fact lane (2026-10-10, Atharv away on a trek), written BEFORE the candidate below was run.
 // Why: the casual dev set (v1) and the one judged v2 run showed selffact.js V2 filing casual chat as durable facts about him
-// and answering "Noted, Sir — I will remember that.": news of the day, compliments to JARVIS, a Marathi greeting, a how-to
+// and answering "Noted, Sir — I will remember that.": news of the day, compliments to JARVIS, a Punjabi greeting, a how-to
 // question, a slang music request. #1 and #2 are written in a neat register ("i am allergic to peanuts"); this one is in HIS
 // register (data/style_profile.md: lowercase, slang, Hinglish). No sentence from either casual stress set is used; the guard
 // below refuses exact and near copies (word Jaccard ≥ 0.75) of both stress sets and of #1/#2.
@@ -18,12 +18,12 @@
 const fs = require('fs');
 const path = require('path');
 const store = [
-  'im vegetarian btw', 'i stay in nashik', 'my bday is on 14 feb lol', 'i main jett in valorant', 'ngl i hate coffee',
+  'im vegetarian btw', 'i stay in mohali', 'my bday is on 14 feb lol', 'i main jett in valorant', 'ngl i hate coffee',
   'i support csk', 'im in class 11', 'i wake up at 6 everyday', 'my fav singer is the weeknd', 'i cant stand horror movies',
   'my dog is a labrador named simba', 'i use an iphone 13', 'mera fav colour blue hai', 'main non veg nahi khata',
-  'meri height 5 10 hai', 'i go to the gym on weekdays', 'im left footed', 'my best friend is kunal', 'i usually sleep around 1',
-  'i have asthma', 'my shoe size is 9', 'i speak marathi at home', 'mujhe spicy khana pasand hai', 'im allergic to dust',
-  'i dont drink cold drinks', 'my school starts at 8', 'i was born in kolhapur', 'my fav subject is physics',
+  'meri height 5 10 hai', 'i go to the gym on weekdays', 'im left footed', 'my best friend is parth', 'i usually sleep around 1',
+  'i have asthma', 'my shoe size is 9', 'i speak punjabi at home', 'mujhe spicy khana pasand hai', 'im allergic to dust',
+  'i dont drink cold drinks', 'my school starts at 8', 'i was born in chandigarh', 'my fav subject is physics',
   'i drive an activa', 'my papa runs a shop',
 ];
 const skip = [
@@ -37,7 +37,7 @@ const skip = [
   // hello / bye
   'namaste ji', 'yo jarvis wassup', 'cya tmrw', 'good morning bhai',
   // requests
-  'need some marathi songs rn', 'put on some chill music', 'show me the cricket score', 'gimme a quick recipe for maggi', 'koi accha gaana laga',
+  'need some punjabi songs rn', 'put on some chill music', 'show me the cricket score', 'gimme a quick recipe for maggi', 'koi accha gaana laga',
   // questions
   'how do i stop procrastinating', 'whats the best way to learn guitar', 'why is the sky blue tho', 'kya tum mujhe yaad rakhte ho',
   // about the world

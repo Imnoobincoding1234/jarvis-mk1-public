@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Round 6's rows — the `time` act, and the shapes round 5 still asked about or missed. New sentences in Mihir's style.
+"""Round 6's rows — the `time` act, and the shapes round 5 still asked about or missed. New sentences in Atharv's style.
     gen_round6.py       # writes data/round6_batches/round6.tsv
     then: synth_add.py round6 < data/round6_batches/round6.tsv
 
@@ -41,7 +41,7 @@ PEOPLE = ['tanya', 'vikram', 'ishaan', 'meher', 'jas', 'gurpreet', 'ankit', 'cha
 HI_PEOPLE = ['chachu', 'bua', 'mausi', 'didi', 'bhaiya', 'gurpreet', 'karan', 'riya', 'sahil', 'papa']
 ARTISTS = [('arijit singh', 'tum hi ho'), ('the weeknd', 'starboy'), ('taylor swift', 'cruel summer'), ('ap dhillon', 'brown munde'),
            ('karan aujla', 'softly'), ('coldplay', 'yellow'), ('drake', 'gods plan'), ('billie eilish', 'birds of a feather'),
-           ('diljit dosanjh', 'lover'), ('eminem', 'lose yourself'), ('dua lipa', 'levitating'), ('rehaan moosewala', '295'),
+           ('diljit dosanjh', 'lover'), ('eminem', 'lose yourself'), ('dua lipa', 'levitating'), ('sidhu moosewala', '295'),
            ('linkin park', 'numb'), ('pritam', 'kesariya'), ('bruno mars', 'die with a smile')]
 MOODS = ['mast', 'accha', 'chill', 'sad', 'party wala', 'purana', 'romantic', 'dhamakedar']
 TOPICS = ['photosynthesis', 'the cold war', 'trigonometry', 'the periodic table', 'world war 1', 'organic chemistry', 'indian history',
@@ -144,7 +144,7 @@ for _ in range(10):
     t = f(pick(['{q} chala do', '{q} laga de', '{q} bajao', '{q} sunao']).format(q=q))
     add(t, {'act': 'play', 'query': cut(t, q)})
 for _ in range(8):
-    q = pick(['some lofi', 'some drake', 'arijit', 'some old songs', 'the weeknd', 'some marathi music'])
+    q = pick(['some lofi', 'some drake', 'arijit', 'some old songs', 'the weeknd', 'some punjabi music'])
     t = f(pick(['ply {q}', 'pls ply {q}', 'plya {q}', 'pley {q}']).format(q=q))
     add(t, {'act': 'play', 'query': cut(t, q)})
 for _ in range(10):

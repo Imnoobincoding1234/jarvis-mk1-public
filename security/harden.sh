@@ -35,7 +35,7 @@ echo "  [ok] stripped group/other-write from $n path(s)"
 
 # 4) Report (don't auto-touch) launch agents that are world/group-writable — those are
 #    the highest-value hijack target and should never be writable by anyone but you.
-bad=$(find "$HOME/Library/LaunchAgents" -maxdepth 1 -name 'com.jarvis.*.plist' -perm -0022 2>/dev/null)
+bad=$(find "$HOME/Library/LaunchAgents" -maxdepth 1 -name 'com.atharv.*.plist' -perm -0022 2>/dev/null)
 if [ -n "$bad" ]; then echo "  [WARN] writable launch agents:"; echo "$bad" | sed 's/^/    /'; else echo "  [ok] launch agents not world/group-writable"; fi
 
 # 5) Flag anything not owned by you inside the tree (possible implant).

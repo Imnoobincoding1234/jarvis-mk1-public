@@ -75,7 +75,7 @@ if ('speechSynthesis' in window) {
   jarvisVoice = pickJarvisVoice(); // some browsers have the list ready immediately
 }
 // SELF-WAKE SUPPRESSION. The wake-word daemon listens to the same room these speakers play into, so
-// it hears JARVIS as readily as it hears Mihir — caught in the daemon log transcribing his own
+// it hears JARVIS as readily as it hears Atharv — caught in the daemon log transcribing his own
 // reply: "shall i run through them battery is at 4% worth plugging in". Harmless there, but the
 // moment a reply contains the word "jarvis" he can wake himself, and each wake opens the window and
 // starts listening, which is a loop with nothing to stop it.
@@ -515,7 +515,7 @@ function loadFaceApi() {
 // here and the caller must treat it as one — "no face" leaves the tier alone, it does not demote.
 // SWEEP THE DETECTOR, do not give up after one setting.
 //
-// Found in practice: Kunal enrolled with a photo and NO descriptor, so he sat in the roster as
+// Found in practice: Parth enrolled with a photo and NO descriptor, so he sat in the roster as
 // "known" while actually being classified unknown — a silent, invisible failure. His face was there
 // all along; at inputSize 416 it detected at score 0.868, a strong hit. His photo is portrait
 // (288x384) and the 320 input squashes it enough to miss.
@@ -585,7 +585,7 @@ function schedule(ms) {
 // ---------------- location (asked for, not assumed) ----------------
 //
 // WHY THIS EXISTS. The server's fallback is IP geolocation, and on his connection that resolves to
-// Nagpur — 78.1 km from where he actually is. Harmless for a weather tile; wrong city for an
+// Ludhiana — 78.1 km from where he actually is. Harmless for a weather tile; wrong city for an
 // ambulance. The browser can do far better: navigator.geolocation reads Core Location (WiFi
 // positioning), accurate to tens of metres, and it is the same source the address-lookup sites use.
 // Going straight to it means his live position never passes through anyone else's server.
@@ -664,7 +664,7 @@ const SET_LABELS = {
   uncertainty:      { label: 'When unsure',          hint: 'read-act-write-ask = act on reversible things, ask before anything that changes state.' },
   contactAmbiguity: { label: 'Ambiguous contact',    hint: 'What to do when a name matches more than one person.' },
   nicknameStrategy: { label: 'Unfamiliar names',     hint: 'learn = ask once, then remember that answer for good.' },
-  language:         { label: 'Language',             hint: 'en-understand-hi = understands Hindi/Marathi/Hinglish, always answers in English.' },
+  language:         { label: 'Language',             hint: 'en-understand-hi = understands Hindi/Punjabi/Hinglish, always answers in English.' },
   music:            { label: 'Music app',            hint: 'Which app “play …” controls.' },
   breaks:           { label: 'Break reminders',      hint: 'Water and look-away nudges during long sessions.' },
   quizNewTopics:    { label: 'Quiz new topics',      hint: 'ask = when you add a study topic (“teach me about …”), JARVIS asks before quizzing you on it · always = adds it straight away (what answering “always” sets).' },
@@ -1870,7 +1870,7 @@ async function collectWake() {
     //
     // Being SUMMONED is not the same as being opened. Called by name, he should be listening, not
     // introducing himself — the opening greeting is a spoken paragraph, and it was playing over the
-    // command the wake word exists to capture, so the mic heard the greeting instead of Mihir.
+    // command the wake word exists to capture, so the mic heard the greeting instead of Atharv.
     suppressGreetingForWake();
     // A cold launch runs ~4.5s of boot animation first. Starting the mic underneath it would burn
     // the listening window on a sound effect, so the boot hands over when it clears instead.

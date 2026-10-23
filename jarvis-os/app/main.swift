@@ -91,7 +91,7 @@ final class SpeechBridge: NSObject {
         request.taskHint = .dictation
         // TELL IT THE WORDS IT CANNOT BE EXPECTED TO KNOW.
         //
-        // The recogniser has a general English lexicon and no idea who Kunal is, what AdMax is, or
+        // The recogniser has a general English lexicon and no idea who Parth is, what AdMax is, or
         // that Instamart and Swiggy are different services. Those are exactly the words that carry
         // the meaning of a request, so mangling one loses the whole sentence — and the failure is
         // silent, because a confidently wrong transcript looks like a correctly heard one.

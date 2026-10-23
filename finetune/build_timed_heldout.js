@@ -37,10 +37,10 @@ const ROWS = [
   // ---- later: clock times ----
   ['later', E, 'open youtube at 9 tonight', { at: [21, 0, 'next'], task: ['youtube'] }],
   ['later', E, 'at 7am tomorrow open my calendar', { at: [7, 0, 'tomorrow'], task: ['calendar'] }],
-  ['later', E, 'message kunal at 6 pm saying gym time', { at: [18, 0, 'next'], task: ['kunal'] }],
+  ['later', E, 'message parth at 6 pm saying gym time', { at: [18, 0, 'next'], task: ['parth'] }],
   ['later', E, 'open whatsapp at 8:15 pm', { at: [20, 15, 'next'], task: ['whatsapp'] }],
   ['later', E, 'play arijit songs at 11 tonight', { at: [23, 0, 'next'], task: ['arijit'] }],
-  ['later', E, 'send yuvan hi at 4 pm', { at: [16, 0, 'next'], task: ['yuvan'] }],
+  ['later', E, 'send ekamveer hi at 4 pm', { at: [16, 0, 'next'], task: ['ekamveer'] }],
   ['later', E, 'start the gym playlist at 6 am tomorrow', { at: [6, 0, 'tomorrow'], task: ['gym'] }],
   ['later', H, 'raat 10 baje mama ko msg kar dena ki so gaya', { at: [22, 0, 'next'], task: ['mama'] }],
   ['later', H, 'kal subah 7 baje calendar dikha dena', { at: [7, 0, 'tomorrow'], task: ['calendar'] }],
@@ -54,7 +54,7 @@ const ROWS = [
   ['other', E, 'open the 2 pm lecture notes', { why: 'now' }],
   ['other', E, 'message bhai that the movie starts at 8', { why: 'now — the time is the message' }],
   ['other', H, 'volume 30 pe kar do', { why: 'now' }],
-  ['other', H, 'kunal ko bol de ki main 5 minute mein aa raha hoon', { why: 'now — the time is the message' }],
+  ['other', H, 'parth ko bol de ki main 5 minute mein aa raha hoon', { why: 'now — the time is the message' }],
   ['other', E, 'open youtube and play top 10 songs of 2024', { why: 'now' }],
   ['other', H, 'ek 5 minute wala workout video laga', { why: 'now' }],
   // ---- other: questions about time ----
@@ -72,7 +72,7 @@ const ROWS = [
   ['other', E, 'the match starts in an hour lol', { why: 'statement' }],
   ['other', H, 'mama 6 baje aayegi', { why: 'statement' }],
   ['other', E, 'i slept for like 3 hours', { why: 'statement' }],
-  ['other', E, 'kunal said hes coming at 5', { why: 'statement' }],
+  ['other', E, 'parth said hes coming at 5', { why: 'statement' }],
   // ---- other: reminder requests (the reminder lane keeps these) ----
   ['other', E, 'at 6 tonight remind me nanu wanted a call back', { why: 'reminder' }],
   ['other', E, 'remind me in 20 minutes to drink water', { why: 'reminder' }],

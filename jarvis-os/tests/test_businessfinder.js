@@ -18,9 +18,9 @@ ok(!BF.isBusiness({ amenity: 'school' }) && !BF.isBusiness({ amenity: 'place_of_
   'schools, temples, parks and benches are not');
 
 console.log('around a point');
-const a = BF.areaAround(30.7, 76.7, 2, 'Nashik');
+const a = BF.areaAround(30.7, 76.7, 2, 'Mohali');
 ok(Math.abs((a.bbox[2] - a.bbox[0]) * 111.32 - 4) < 0.01, '2 km each way north–south');
-ok(a.bbox[1] < 76.7 && a.bbox[3] > 76.7 && a.name === 'Nashik', 'centred on the point, named');
+ok(a.bbox[1] < 76.7 && a.bbox[3] > 76.7 && a.name === 'Mohali', 'centred on the point, named');
 
 const OUT = fs.mkdtempSync(path.join(os.tmpdir(), 'bf-'));
 const realFind = BF.find;
@@ -36,11 +36,11 @@ BF.find = async q => {
 
 (async () => {
   console.log('the tool — around him');
-  agent.init({ whereAmI: async () => ({ lat: 30.7, lon: 76.7, ageDays: 13, label: 'Nashik' }), outDir: OUT });
+  agent.init({ whereAmI: async () => ({ lat: 30.7, lon: 76.7, ageDays: 13, label: 'Mohali' }), outDir: OUT });
   let r = await agent.find_businesses({ withoutWebsite: true, needPhone: 'true' });
   ok(r.ok && asked.near && asked.near.km === 2 && !asked.where, 'no place named → a 2 km square around the saved location');
   ok(asked.withoutWebsite === true && asked.needPhone === true && asked.what === '', 'flags passed; no kind = any business');
-  ok(/within about 2 km/.test(r.say) && /13 days ago/.test(r.say) && /Nashik/.test(r.say), 'says where and how old the location is');
+  ok(/within about 2 km/.test(r.say) && /13 days ago/.test(r.say) && /Mohali/.test(r.say), 'says where and how old the location is');
   ok(/2 confirmed by a web search, 1 not checked/.test(r.say), 'separates checked "no website" from unchecked');
   ok(/Ink Studio — \S.*\(website not checked\)/.test(r.say), 'an unchecked place is marked as such');
   ok(/Rajput IT — no number found/.test(r.say), 'a place without a number says so, nothing invented');
@@ -48,11 +48,11 @@ BF.find = async q => {
   ok(r.data.file && fs.existsSync(r.data.file) && /Verma Law Firm/.test(fs.readFileSync(r.data.file, 'utf8')), 'the full list is saved as a file');
 
   console.log('the tool — a named place, and no location at all');
-  r = await agent.find_businesses({ what: 'gyms', where: 'Baner' });
-  ok(asked.where === 'Baner' && !asked.near && asked.what === 'gyms' && /gyms in Baner/.test(r.say), 'a named place is searched by name');
-  agent.init({ whereAmI: async () => ({ city: 'Nagpur' }) });
+  r = await agent.find_businesses({ what: 'gyms', where: 'Kharar' });
+  ok(asked.where === 'Kharar' && !asked.near && asked.what === 'gyms' && /gyms in Kharar/.test(r.say), 'a named place is searched by name');
+  agent.init({ whereAmI: async () => ({ city: 'Ludhiana' }) });
   r = await agent.find_businesses({});
-  ok(asked.where === 'Nagpur' && /no saved location, so this is the whole city/.test(r.say), 'IP city only as a whole city, and said');
+  ok(asked.where === 'Ludhiana' && /no saved location, so this is the whole city/.test(r.say), 'IP city only as a whole city, and said');
   agent.init({ whereAmI: async () => null });
   r = await agent.find_businesses({});
   ok(!r.ok && /tell me the area/.test(r.say), 'no location → asks for the area, does not guess');

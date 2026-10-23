@@ -1,0 +1,361 @@
+{
+  "_comment": "Common sites/apps JARVIS can open by bare name ('open youtube', 'open swiggy'). Hot-reloaded on change — no code edit needed. Fields: url = homepage; search = search URL with %s for the query ('search cats on youtube'); app = macOS app name to prefer IF it is actually installed (else the site opens). Keys must be lowercase a-z0-9 only; 'alias' lists other spoken names.",
+  "youtube": {
+    "url": "https://www.youtube.com",
+    "search": "https://www.youtube.com/results?search_query=%s",
+    "alias": [
+      "yt",
+      "you tube"
+    ]
+  },
+  "google": {
+    "url": "https://www.google.com",
+    "search": "https://www.google.com/search?q=%s"
+  },
+  "gmail": {
+    "url": "https://mail.google.com",
+    "search": "https://mail.google.com/mail/u/0/#search/%s",
+    "alias": [
+      "mail",
+      "email"
+    ]
+  },
+  "drive": {
+    "url": "https://drive.google.com",
+    "alias": [
+      "googledrive",
+      "gdrive"
+    ]
+  },
+  "calendar": {
+    "url": "https://calendar.google.com",
+    "app": "Calendar",
+    "alias": [
+      "googlecalendar",
+      "gcal"
+    ]
+  },
+  "maps": {
+    "url": "https://www.google.com/maps",
+    "search": "https://www.google.com/maps/search/%s",
+    "app": "Maps",
+    "alias": [
+      "googlemaps"
+    ]
+  },
+  "translate": {
+    "url": "https://translate.google.com",
+    "alias": [
+      "googletranslate"
+    ]
+  },
+  "photos": {
+    "url": "https://photos.google.com",
+    "app": "Photos",
+    "alias": [
+      "googlephotos"
+    ]
+  },
+  "swiggy": {
+    "url": "https://www.swiggy.com",
+    "search": "https://www.swiggy.com/search?query=%s"
+  },
+  "zomato": {
+    "url": "https://www.zomato.com"
+  },
+  "blinkit": {
+    "url": "https://blinkit.com",
+    "search": "https://blinkit.com/s/?q=%s"
+  },
+  "zepto": {
+    "url": "https://www.zeptonow.com"
+  },
+  "instamart": {
+    "url": "https://www.swiggy.com/instamart"
+  },
+  "dunzo": {
+    "url": "https://www.dunzo.com"
+  },
+  "amazon": {
+    "url": "https://www.amazon.in",
+    "search": "https://www.amazon.in/s?k=%s"
+  },
+  "flipkart": {
+    "url": "https://www.flipkart.com",
+    "search": "https://www.flipkart.com/search?q=%s"
+  },
+  "myntra": {
+    "url": "https://www.myntra.com",
+    "search": "https://www.myntra.com/%s"
+  },
+  "ajio": {
+    "url": "https://www.ajio.com"
+  },
+  "meesho": {
+    "url": "https://www.meesho.com"
+  },
+  "instagram": {
+    "url": "https://www.instagram.com"
+  },
+  "twitter": {
+    "url": "https://x.com",
+    "search": "https://x.com/search?q=%s",
+    "alias": [
+      "x"
+    ]
+  },
+  "facebook": {
+    "url": "https://www.facebook.com",
+    "alias": [
+      "fb"
+    ]
+  },
+  "linkedin": {
+    "url": "https://www.linkedin.com",
+    "search": "https://www.linkedin.com/search/results/all/?keywords=%s"
+  },
+  "reddit": {
+    "url": "https://www.reddit.com",
+    "search": "https://www.reddit.com/search/?q=%s"
+  },
+  "whatsapp": {
+    "url": "https://web.whatsapp.com",
+    "app": "WhatsApp"
+  },
+  "telegram": {
+    "url": "https://web.telegram.org",
+    "app": "Telegram"
+  },
+  "discord": {
+    "url": "https://discord.com/app",
+    "app": "Discord"
+  },
+  "slack": {
+    "url": "https://app.slack.com",
+    "app": "Slack"
+  },
+  "threads": {
+    "url": "https://www.threads.net"
+  },
+  "pinterest": {
+    "url": "https://www.pinterest.com",
+    "search": "https://www.pinterest.com/search/pins/?q=%s"
+  },
+  "quora": {
+    "url": "https://www.quora.com",
+    "search": "https://www.quora.com/search?q=%s"
+  },
+  "netflix": {
+    "url": "https://www.netflix.com",
+    "search": "https://www.netflix.com/search?q=%s"
+  },
+  "primevideo": {
+    "url": "https://www.primevideo.com",
+    "alias": [
+      "prime",
+      "amazonprime"
+    ]
+  },
+  "hotstar": {
+    "url": "https://www.hotstar.com",
+    "alias": [
+      "disneyhotstar",
+      "jiohotstar"
+    ]
+  },
+  "spotify": {
+    "url": "https://open.spotify.com",
+    "search": "https://open.spotify.com/search/%s",
+    "app": "Spotify"
+  },
+  "jiosaavn": {
+    "url": "https://www.jiosaavn.com",
+    "alias": [
+      "saavn"
+    ]
+  },
+  "applemusic": {
+    "url": "https://music.apple.com",
+    "app": "Music"
+  },
+  "twitch": {
+    "url": "https://www.twitch.tv",
+    "search": "https://www.twitch.tv/search?term=%s"
+  },
+  "github": {
+    "url": "https://github.com",
+    "search": "https://github.com/search?q=%s"
+  },
+  "stackoverflow": {
+    "url": "https://stackoverflow.com",
+    "search": "https://stackoverflow.com/search?q=%s",
+    "alias": [
+      "so",
+      "stack overflow"
+    ]
+  },
+  "chatgpt": {
+    "url": "https://chatgpt.com",
+    "app": "ChatGPT",
+    "alias": [
+      "gpt",
+      "openai"
+    ]
+  },
+  "claude": {
+    "url": "https://claude.ai",
+    "app": "Claude",
+    "alias": [
+      "anthropic"
+    ]
+  },
+  "perplexity": {
+    "url": "https://www.perplexity.ai"
+  },
+  "gemini": {
+    "url": "https://gemini.google.com",
+    "alias": [
+      "bard"
+    ]
+  },
+  "huggingface": {
+    "url": "https://huggingface.co",
+    "search": "https://huggingface.co/search/full-text?q=%s",
+    "alias": [
+      "hf"
+    ]
+  },
+  "openrouter": {
+    "url": "https://openrouter.ai"
+  },
+  "vercel": {
+    "url": "https://vercel.com"
+  },
+  "npm": {
+    "url": "https://www.npmjs.com",
+    "search": "https://www.npmjs.com/search?q=%s"
+  },
+  "mdn": {
+    "url": "https://developer.mozilla.org",
+    "search": "https://developer.mozilla.org/en-US/search?q=%s"
+  },
+  "leetcode": {
+    "url": "https://leetcode.com"
+  },
+  "codepen": {
+    "url": "https://codepen.io"
+  },
+  "replit": {
+    "url": "https://replit.com"
+  },
+  "notion": {
+    "url": "https://www.notion.so",
+    "app": "Notion"
+  },
+  "figma": {
+    "url": "https://www.figma.com",
+    "app": "Figma"
+  },
+  "canva": {
+    "url": "https://www.canva.com"
+  },
+  "zoom": {
+    "url": "https://zoom.us",
+    "app": "zoom.us"
+  },
+  "meet": {
+    "url": "https://meet.google.com",
+    "alias": [
+      "googlemeet"
+    ]
+  },
+  "docs": {
+    "url": "https://docs.google.com",
+    "alias": [
+      "googledocs"
+    ]
+  },
+  "sheets": {
+    "url": "https://sheets.google.com",
+    "alias": [
+      "googlesheets"
+    ]
+  },
+  "slides": {
+    "url": "https://slides.google.com",
+    "alias": [
+      "googleslides"
+    ]
+  },
+  "trello": {
+    "url": "https://trello.com"
+  },
+  "dropbox": {
+    "url": "https://www.dropbox.com"
+  },
+  "wikipedia": {
+    "url": "https://en.wikipedia.org",
+    "search": "https://en.wikipedia.org/w/index.php?search=%s",
+    "alias": [
+      "wiki"
+    ]
+  },
+  "bbc": {
+    "url": "https://www.bbc.com/news"
+  },
+  "ndtv": {
+    "url": "https://www.ndtv.com"
+  },
+  "aljazeera": {
+    "url": "https://www.aljazeera.com"
+  },
+  "hackernews": {
+    "url": "https://news.ycombinator.com",
+    "alias": [
+      "hn",
+      "ycombinator"
+    ]
+  },
+  "producthunt": {
+    "url": "https://www.producthunt.com"
+  },
+  "uber": {
+    "url": "https://m.uber.com"
+  },
+  "ola": {
+    "url": "https://book.olacabs.com"
+  },
+  "rapido": {
+    "url": "https://www.rapido.bike"
+  },
+  "irctc": {
+    "url": "https://www.irctc.co.in"
+  },
+  "makemytrip": {
+    "url": "https://www.makemytrip.com",
+    "alias": [
+      "mmt"
+    ]
+  },
+  "paytm": {
+    "url": "https://paytm.com"
+  },
+  "phonepe": {
+    "url": "https://www.phonepe.com"
+  },
+  "zerodha": {
+    "url": "https://kite.zerodha.com",
+    "alias": [
+      "kite"
+    ]
+  },
+  "admax": {
+    "url": "https://ad-max.vercel.app",
+    "alias": [
+      "ad max",
+      "ad-max",
+      "admax site",
+      "my business site"
+    ]
+  }
+}

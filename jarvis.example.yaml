@@ -1,0 +1,33 @@
+# JARVIS single source of truth — hand-edited; agents read it at launch
+jarvis:
+  name: JARVIS MK-1
+  version: 1
+agents:
+  clap.enabled: true
+  clap.label: com.jarvis.claplistener
+  clap.type: launchd
+  control.enabled: true
+  control.label: com.jarvis.jarviscontrol
+  control.type: launchd
+  focus.enabled: true
+  focus.label: com.jarvis.focusguard
+  focus.type: launchd
+  jarvisos.enabled: true
+  jarvisos.label: com.jarvis.jarvisos
+  jarvisos.type: launchd
+  selfheal.enabled: true
+  selfheal.label: com.jarvis.jarvisselfheal
+  selfheal.type: launchd
+  search.enabled: true
+  search.label: local.jarvis.search
+  search.type: app
+  security.enabled: true
+  security.label: com.jarvis.jarvissecurity
+  security.type: launchd
+database:
+  host: localhost
+  name: jarvis_core
+  password: CHANGEME
+  user: jarvis
+security:
+  settings_password: sha256$REPLACE_ME$run-tools-vault-sh-unpack-to-restore-the-real-one

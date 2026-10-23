@@ -1,0 +1,46 @@
+{
+  "_comment": [
+    "Per-site ordering recipes. Everything that made the Swiggy order work was hardcoded inside",
+    "orderUsualInOrder — the search URL, the test for 'am I on a menu page', the cart selector, the",
+    "labels on the dialog buttons. That meant it worked for exactly one restaurant on exactly one",
+    "site: 'order burgers from burger king' went to the old guessing path and got nothing.",
+    "",
+    "Adding a site is now data, not code. The behaviour that took a day to get right — search by URL",
+    "rather than a suggestion, two ADD controls per row where only one works, count the basket instead",
+    "of believing the click, answer a customisation dialog from stored choices — is shared by all of",
+    "them.",
+    "",
+    "cartRe   : matches the cart badge text, capturing the item count.",
+    "menuRe   : matches the URL path of a restaurant/product page (proof we actually got there).",
+    "searchUrl: {q} is replaced with the url-encoded query.",
+    "dishSearch: label of the in-page control that opens the per-dish search, if the site has one.",
+    "dialog   : labels used to complete an options dialog, in order."
+  ],
+
+  "swiggy": {
+    "host": "swiggy.com",
+    "searchUrl": "https://www.swiggy.com/search?query={q}",
+    "menuRe": "rest\\d{3,}|^/restaurants?/",
+    "cartRe": "^\\s*(\\d+)\\s*cart\\b",
+    "dishSearch": "Search for dishes",
+    "dialog": { "heading": "Customise as per your taste", "next": "Continue", "confirm": "Add Item to cart" }
+  },
+
+  "zomato": {
+    "host": "zomato.com",
+    "searchUrl": "https://www.zomato.com/search?q={q}",
+    "menuRe": "/order$|/restaurant/|/info$",
+    "cartRe": "^\\s*(\\d+)\\s*item",
+    "dishSearch": "Search within menu",
+    "dialog": { "heading": "Choose", "next": "Continue", "confirm": "Add item" }
+  },
+
+  "blinkit": {
+    "host": "blinkit.com",
+    "searchUrl": "https://blinkit.com/s/?q={q}",
+    "menuRe": "/s/|/cn/",
+    "cartRe": "^\\s*(\\d+)\\s*item",
+    "dishSearch": "",
+    "dialog": { "heading": "", "next": "", "confirm": "" }
+  }
+}

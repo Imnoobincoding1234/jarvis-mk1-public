@@ -1,0 +1,32 @@
+# jarvis = Bonsai-4B (PrismML 1-bit, Q1_0) + the v4.2 LoRA (update 690), 2026-10-08.
+#   ./.venv/bin/python export_lora_gguf.py adapters/bonsai_v42_s1/0000690_adapters.safetensors \
+#       adapters/bonsai_v42_s1/adapter_config.json adapters/bonsai_v42_s1/jarvis-v42-lora.gguf
+#   ollama create jarvis -f Modelfile.jarvis          (Ollama <= 0.33.x: 0.34.1 removed adapter creation)
+# The template is the training format exactly: Qwen3's chat template with thinking OFF, i.e. the reply follows an
+# empty think block. Bonsai's own Ollama template always opens "<think>\n" at the reply, which is not what
+# train_bonsai.py / eval_bonsai.py rendered (apply_chat_template(..., enable_thinking=False)).
+# temperature 0: the replies that were graded (runs/bonsai_v42_verdict.md) were greedy.
+FROM hf.co/prism-ml/Bonsai-4B-gguf:Q1_0
+ADAPTER ./adapters/bonsai_v42_s1/jarvis-v42-lora.gguf
+TEMPLATE """{{- if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}
+{{- range $i, $_ := .Messages }}
+{{- $last := eq (len (slice $.Messages $i)) 1 -}}
+{{- if eq .Role "user" }}<|im_start|>user
+{{ .Content }}<|im_end|>
+{{ else if eq .Role "assistant" }}<|im_start|>assistant
+{{ .Content }}{{ if not $last }}<|im_end|>
+{{ end }}
+{{- end }}
+{{- if and (ne .Role "assistant") $last }}<|im_start|>assistant
+<think>
+
+</think>
+
+{{ end }}
+{{- end }}"""
+PARAMETER stop <|im_start|>
+PARAMETER stop <|im_end|>
+PARAMETER temperature 0
+PARAMETER repeat_penalty 1

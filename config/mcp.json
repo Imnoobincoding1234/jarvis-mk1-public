@@ -1,0 +1,12 @@
+{
+  "_comment": "External MCP tool servers. Each is spawned as a child process and spoken to over stdio JSON-RPC. Set enabled:false to disable one without deleting it. JARVIS exposes at most 8 of a server's tools to the planner per request, chosen by keyword match — see mcp.js.",
+  "servers": {
+    "mock": {
+      "enabled": false,
+      "command": "node",
+      "args": [
+        "/path/to/your-mcp-server.js"
+      ]
+    }
+  }
+}

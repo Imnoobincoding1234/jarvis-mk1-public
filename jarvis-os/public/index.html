@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JARVIS OS</title>
+<!-- INSTALLABLE ON THE PHONE. Added so JARVIS can be opened from the home screen instead of typing
+     a tailnet address into Safari every time. "Add to Home Screen" then gives a real app icon, no
+     browser chrome and no URL bar; the API token is already embedded in this page by the server, so
+     an installed copy is authenticated the moment it loads. viewport-fit=cover + black-translucent
+     let the UI run under the notch rather than beside it. -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JARVIS">
+<meta name="theme-color" content="#03060a">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<link rel="manifest" href="/manifest.json">
+<!-- No webfonts: this machine is offline-only, so the two Google Fonts links were removed and the
+     stacks below resolve locally (Helvetica Neue for UI, SF Mono/Menlo for the instrument type). -->
+<style>
+  html, body { margin: 0; padding: 0; background: #03060a; overflow: hidden; }
+  * { box-sizing: border-box; }
+  /* No "back-up mode" label any more (removed 2026-09-17, his request): the local model is the only
+     model — there is no OpenRouter key to fall back from. */
+  /* Phase 4 action & confirm cards */
+  .act-card { display: flex; align-items: center; gap: 10px; background: rgba(10,28,48,.5); border: 1px solid rgba(90,180,255,.22); border-radius: 12px; padding: 9px 12px; font-size: 12.5px; color: rgba(255,255,255,.92); max-width: 82%; }
+  .act-card .ico { font-size: 16px; line-height: 1; }
+  .act-card .say { flex: 1; min-width: 0; }
+  .act-card .ms { font-size: 10px; color: rgba(255,255,255,.4); font-variant-numeric: tabular-nums; }
+  .act-card .res { font-size: 10px; padding: 2px 7px; border-radius: 9px; font-weight: 800; letter-spacing: .04em; }
+  .act-card .res.ok { background: rgba(52,211,153,.16); color: #6ee7b7; }
+  .act-card .res.bad { background: rgba(255,90,90,.18); color: #ff8a8a; }
+  .src-card { background: rgba(8,24,42,.42); border: 1px solid rgba(90,180,255,.18); border-left: 2px solid rgba(74,198,255,.55); border-radius: 10px; padding: 8px 11px 9px; max-width: 84%; }
+  .src-head { font-size: 9.5px; letter-spacing: .12em; font-weight: 800; color: rgba(74,198,255,.72); margin-bottom: 7px; }
+  .src-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .src-chip { font: 600 11px 'Helvetica Neue', sans-serif; color: #bfe4ff; background: rgba(16,50,84,.5); border: 1px solid rgba(74,198,255,.26); border-radius: 999px; padding: 3px 9px; cursor: pointer; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: background .15s, border-color .15s; }
+  .src-chip:hover { background: rgba(22,68,112,.72); border-color: rgba(74,198,255,.6); }
+  .confirm-card { border: 1px solid rgba(120,190,255,.5); background: rgba(10,30,52,.55); border-radius: 12px; padding: 11px 13px; max-width: 84%; }
+  .confirm-card .q { font-size: 13px; color: #cfe6ff; margin-bottom: 9px; }
+  .clarify-opts { display: flex; flex-wrap: wrap; gap: 7px; }
+  .clarify-btn { font: 600 12.5px 'Helvetica Neue', sans-serif; color: #bfe4ff; background: rgba(16,50,84,.5); border: 1px solid rgba(74,198,255,.28); border-radius: 8px; padding: 7px 13px; cursor: pointer; transition: background .15s, border-color .15s; }
+  .clarify-btn:hover:not(:disabled) { background: rgba(22,68,112,.75); border-color: rgba(74,198,255,.6); }
+  .clarify-btn:disabled { opacity: .45; cursor: default; }
+  .clarify-btn.picked { opacity: 1; background: rgba(52,211,153,.22); border-color: rgba(110,231,183,.6); color: #a7f3d0; }
+  .confirm-card .btns { display: flex; gap: 8px; }
+  .confirm-card button { border: none; border-radius: 9px; padding: 6px 15px; font: 700 12px 'Helvetica Neue',sans-serif; cursor: pointer; }
+  .confirm-card .yes { background: #2f74e8; color: #fff; }
+  .confirm-card .no { background: rgba(255,255,255,.14); color: #fff; }
+  .confirm-card.resolved .btns { display: none; }
+  .confirm-card .verdict { font-size: 11px; font-weight: 700; margin-top: 6px; }
+  body { width: 100vw; height: 100vh; color: rgba(255,255,255,0.92); font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; display: flex; flex-direction: column; }
+  a { color: #4fd0ff; text-decoration: none; }
+  ::placeholder { color: rgba(255,255,255,0.28); }
+  input, select { outline: none; }
+  ::-webkit-scrollbar { width: 0; height: 0; }
+
+  @keyframes orbPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.035); } }
+  @keyframes haloPulse { 0%,100% { opacity: .55; transform: scale(1); } 50% { opacity: .9; transform: scale(1.08); } }
+  @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes spinRev { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+  @keyframes wave { from { transform: scaleY(0.25); } to { transform: scaleY(1); } }
+  @keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+  @keyframes ringBreathe { 0%,100% { opacity: .35; } 50% { opacity: .8; } }
+  @keyframes drift { 0%,100% { transform: translateY(0); opacity: .12; } 50% { transform: translateY(-28px); opacity: .6; } }
+
+  .bg { position: absolute; inset: 0; pointer-events: none; }
+  .grid-row { flex: 1; display: grid; grid-template-columns: minmax(196px,240px) minmax(0,1fr) minmax(232px,296px); gap: 20px; padding: 20px 20px 0 20px; min-height: 0; position: relative; }
+
+  .glass { position: relative; background:
+      linear-gradient(180deg, rgba(120,196,244,0.05) 0%, rgba(255,255,255,0.012) 34%, rgba(255,255,255,0.022) 100%),
+      rgba(255,255,255,0.022);
+    backdrop-filter: blur(24px); border: 1px solid rgba(118,192,238,0.10); border-radius: 18px; padding: 18px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.45), 0 1px 0 rgba(160,225,255,0.05) inset,
+                inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -18px 40px rgba(6,20,38,0.35);
+    transition: border-color .3s, box-shadow .3s; }
+  .glass:hover { border-color: rgba(118,192,238,0.22); box-shadow: 0 20px 50px rgba(0,0,0,0.45), 0 0 26px rgba(48,168,255,0.07), inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -18px 40px rgba(6,20,38,0.35); }
+  /* HUD corner brackets. Two gradients per corner drawn into ::before/::after — cheaper and
+     sharper than border images, and they read instantly as "instrument panel" rather than "card". */
+  .glass::before, .glass::after {
+    content: ''; position: absolute; width: 13px; height: 13px; pointer-events: none;
+    border-color: rgba(140,220,255,0.34); border-style: solid; border-width: 0;
+  }
+  .glass::before { top: 7px; left: 7px; border-top-width: 1px; border-left-width: 1px; border-top-left-radius: 5px; }
+  .glass::after { bottom: 7px; right: 7px; border-bottom-width: 1px; border-right-width: 1px; border-bottom-right-radius: 5px; }
+
+  /* ══ film grain ══
+     A single fixed noise layer over everything. Flat dark UIs band badly on gradients and read as
+     plastic; a little grain breaks the banding and gives the glass something to sit on. Kept very
+     low opacity — it should be felt, not seen — and pointer-events:none so it never intercepts. */
+  #grain {
+    position: fixed; inset: 0; z-index: 9998; pointer-events: none; opacity: .035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  @media (prefers-reduced-motion: reduce) { #grain { opacity: .02; } }
+  .card-title { font-size: 10px; letter-spacing: .28em; text-transform: uppercase; color: rgba(150,206,240,0.62); font-family: ui-monospace,'SF Mono',Menlo,monospace; margin-bottom: 13px; }
+  .mono { font-family: ui-monospace,'SF Mono',Menlo,monospace; }
+
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; cursor: pointer; font-size: 13.5px; font-weight: 500; transition: all .25s cubic-bezier(.2,.8,.2,1); color: rgba(255,255,255,0.62); background: transparent; }
+  .nav-item:hover { background: rgba(118,192,238,0.08); color: #fff; box-shadow: inset 0 0 20px rgba(74,198,255,0.06), 0 0 20px rgba(48,168,255,0.08); }
+  .nav-item.active { background: rgba(74,198,255,0.10); color: #dff5ff; box-shadow: inset 0 0 24px rgba(74,198,255,0.07), 0 0 24px rgba(48,168,255,0.10), inset 0 0 0 1px rgba(118,192,238,0.18); }
+
+  .view { display: none; flex: 1; min-height: 0; flex-direction: column; }
+  .view.active { display: flex; }
+
+  .btn { padding: 9px 14px; border-radius: 999px; font-size: 12px; font-weight: 500; color: rgba(176,222,250,0.8); background: rgba(118,192,238,0.06); border: 1px solid rgba(118,192,238,0.12); cursor: pointer; white-space: nowrap; transition: all .25s; user-select: none; }
+  .btn:hover { background: rgba(118,192,238,0.14); color: #fff; box-shadow: 0 0 18px rgba(48,168,255,0.15); }
+  .btn.on { background: rgba(118,192,238,0.28); color: #fff; box-shadow: 0 0 18px rgba(48,168,255,0.35); border-color: rgba(118,192,238,0.7); }
+  .btn.small { padding: 6px 11px; font-size: 11px; }
+
+  .field { background: rgba(5,12,21,0.55); border: 1px solid rgba(118,192,238,0.15); border-radius: 12px; color: rgba(255,255,255,0.92); font-family: 'Helvetica Neue',sans-serif; font-size: 13.5px; padding: 10px 13px; }
+  select.field { font-size: 12px; padding: 7px 10px; }
+
+  /* settings — one card per group, one row per setting.
+     Each setting used to be its own floating .glass panel, which at thirteen settings read as a
+     stack of unrelated boxes with no sense of what belonged with what. Grouping into cards with
+     hairline dividers is the same information with the structure made visible. */
+  .set-section { display: flex; flex-direction: column; }
+  .set-section-title { font-size: 10px; letter-spacing: .28em; text-transform: uppercase; color: rgba(150,206,240,0.62); font-family: ui-monospace,'SF Mono',Menlo,monospace; margin: 0 0 9px 4px; }
+  .set-card { background: rgba(255,255,255,0.018); border: 1px solid rgba(118,192,238,0.10); border-radius: 16px; overflow: hidden; backdrop-filter: blur(20px); box-shadow: 0 14px 34px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.05); }
+  .set-row { display: flex; align-items: center; gap: 18px; padding: 13px 16px; border-bottom: 1px solid rgba(118,192,238,0.07); transition: background .2s; }
+  .set-row:last-child { border-bottom: none; }
+  .set-row:hover { background: rgba(118,192,238,0.03); }
+  .set-left { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .set-label { font-size: 13px; color: rgba(255,255,255,0.86); font-weight: 500; }
+  /* The line that says what the choice DOES. Deliberately quiet — it is there when you look for it
+     and out of the way when you already know. */
+  .set-hint { font-size: 11px; line-height: 1.45; color: rgba(255,255,255,0.42); }
+  .set-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .set-input { min-width: 190px; }
+  input.set-input { font-size: 12.5px; padding: 8px 11px; }
+  .set-toggle { min-width: 58px; text-align: center; }
+  .set-toggle.on { color: #7de8b8; background: rgba(125,232,184,0.10); border-color: rgba(125,232,184,0.28); }
+  /* Saving is silent when it works and loud when it does not — the server validates now, so a
+     refused value has to be visible rather than leaving a control showing something unsaved. */
+  .set-status { font-size: 10.5px; font-family: ui-monospace,'SF Mono',Menlo,monospace; letter-spacing: .06em; opacity: 0; transition: opacity .2s; }
+  .set-status.ok { opacity: 1; color: rgba(125,232,184,0.8); }
+  .set-status.bad { opacity: 1; color: rgba(255,150,150,0.9); }
+  @media (max-width: 760px) {
+    .set-row { flex-direction: column; align-items: stretch; gap: 9px; }
+    .set-right { justify-content: space-between; }
+    .set-input { min-width: 0; flex: 1; }
+  }
+
+  /* chat bubbles */
+  .msg-user { align-self: flex-end; max-width: 76%; font-size: 13px; color: rgba(255,255,255,0.78); background: rgba(118,192,238,0.07); border: 1px solid rgba(118,192,238,0.13); padding: 9px 15px; border-radius: 16px 16px 4px 16px; backdrop-filter: blur(20px); white-space: pre-wrap; overflow-wrap: break-word; }
+  .msg-jarvis { align-self: flex-start; max-width: 82%; display: flex; gap: 11px; align-items: flex-start; background: rgba(5,12,21,0.55); backdrop-filter: blur(28px); border: 1px solid rgba(118,192,238,0.15); border-radius: 4px 16px 16px 16px; padding: 11px 14px; box-shadow: 0 12px 30px rgba(0,0,0,0.4), 0 0 30px rgba(48,168,255,0.05), inset 0 1px 0 rgba(255,255,255,0.05); }
+  .msg-jarvis .dot { width: 8px; height: 8px; min-width: 8px; border-radius: 50%; background: #4fd0ff; box-shadow: 0 0 10px rgba(74,198,255,0.9); margin-top: 6px; }
+  /* A soft blinking caret while the answer is still arriving. The bubble is otherwise identical to a
+     finished one, so the only signal is that the text is still growing. */
+  .msg-jarvis.streaming .txt::after { content: '▍'; margin-left: 2px; opacity: .55; animation: caretBlink 1s steps(2) infinite; color: rgba(120,215,255,0.9); }
+  @keyframes caretBlink { 0%,100% { opacity: .55; } 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .msg-jarvis.streaming .txt::after { animation: none; } }
+  /* Route + latency footnote. Quiet by design: it is diagnostic, not content. */
+  .msg-route { margin-top: 7px; font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 9.5px;
+               letter-spacing: 0.12em; text-transform: uppercase; color: rgba(140,190,225,0.42); }
+  .msg-jarvis .txt { flex: 1; font-size: 13.5px; line-height: 1.6; color: rgba(235,250,255,0.92); white-space: pre-wrap; overflow-wrap: break-word; }
+  .msg-jarvis.err .txt { color: #ffb09a; }
+
+  .list-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; cursor: pointer; transition: background .2s; }
+  .list-row:hover { background: rgba(118,192,238,0.07); }
+
+  .spinner { width: 16px; height: 16px; min-width: 16px; border-radius: 50%; border: 1.5px solid rgba(74,198,255,0.6); border-top-color: transparent; animation: spinSlow 1.4s linear infinite; }
+
+  /* ══ HUD ring assembly ══
+     One rule drives every ring: each <g class="r"> spins for its own --t. Because the durations are
+     coprime-ish and directions alternate, the rings never resynchronise, which is what keeps the
+     assembly from looking like one rigid spinning object.
+     transform-box:fill-box + transform-origin:center avoids hardcoding the 200,200 centre, so the
+     whole thing stays correct if the viewBox is ever changed. */
+  .hud { position: absolute; inset: -9%; width: 118%; height: 118%; overflow: visible; pointer-events: none; }
+  .hud .r { transform-box: fill-box; transform-origin: center; animation: spinSlow var(--t, 60s) linear infinite; }
+  .hud .ccw { animation-name: spinRev; }
+  .hud path { fill: none; }
+  /* The whole assembly breathes very slightly, so even the static-looking layers are never dead. */
+  .hud { animation: ringBreathe 9s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .hud, .hud .r { animation: none !important; }
+  }
+
+  /* ══ orb core — PARTICULATE SHELL ══
+     There is no sphere here and no backing plate. #orbCore is a transparent hit target; everything
+     visible is #orbParticles, one canvas drawing ~2600 discrete points on a transparent surface
+     with additive blending, so the cloud is composited onto the page background itself. No fill,
+     no border, no dark disc — if you can see an edge, something is wrong.
+     Points are uniformly distributed on the sphere (gaussian vector, normalised) and the WHOLE
+     cloud turns as one rigid body: no bands, no rows, no spiral seam. Rim density is not drawn,
+     it emerges — a uniform shell seen edge-on stacks more points per pixel near the silhouette.
+     No scale animation: the outline is fixed and the shell breathes by brightness and density. */
+  #orbCore {
+    position: relative; width: 62%; aspect-ratio: 1/1; border-radius: 50%; cursor: pointer;
+    display: grid; place-items: center; background: none; overflow: visible;
+  }
+  #orbCore > * { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; }
+  /* The ":last-child" half of this rule is gone with the label block it existed for. Leaving it in
+     would have caught #orbParticles and knocked the canvas out of its full-bleed positioning. */
+  #orbCore > .orb-label { position: relative; inset: auto; }
+  #orbParticles { display: block; width: 100%; height: 100%; }
+  /* Retired smooth-sphere layers. Kept in the markup because app.js may hold references. */
+  .orb-plasma, .orb-caustic, .orb-sheen, .orb-shadow { display: none; }
+
+  /* orb state variables */
+  #orbWrap { --pulse: 5.2s; --halo: 6.5s; --spin: 26s; --spin2: 38s; --glowA: 0.36; --glowB: 0.16; }
+  #orbWrap.listening { --pulse: 2.6s; --halo: 3s; --spin: 12s; --spin2: 18s; --glowA: 0.5; --glowB: 0.24; }
+  #orbWrap.thinking  { --pulse: 1.1s; --halo: 1.4s; --spin: 4.5s; --spin2: 7s; --glowA: 0.62; --glowB: 0.32; }
+  #orbWrap.speaking  { --pulse: 2s; --halo: 2.2s; --spin: 14s; --spin2: 20s; --glowA: 0.55; --glowB: 0.28; }
+
+  .wavebar { width: 3px; border-radius: 2px; background: linear-gradient(180deg,#4fd0ff,#2e6fdc); box-shadow: 0 0 6px rgba(74,198,255,0.5); animation: wave .6s ease-in-out infinite alternate; animation-play-state: paused; transform-origin: center; }
+  #wave.on .wavebar { animation-play-state: running; }
+  #wave { opacity: .22; transition: opacity .5s; }
+  #wave.on { opacity: 1; }
+
+  #ptt { width: 52px; height: 52px; min-width: 52px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; background: rgba(118,192,238,0.06); border: 1px solid rgba(118,192,238,0.16); transition: all .35s cubic-bezier(.2,.8,.2,1); color: rgba(176,222,250,0.75); }
+  #ptt:hover { transform: scale(1.06); box-shadow: 0 0 26px rgba(48,168,255,0.35), inset 0 0 12px rgba(74,198,255,0.15); }
+  #ptt.listening { background: rgba(74,198,255,0.16); border-color: rgba(74,198,255,0.6); box-shadow: 0 0 30px rgba(48,168,255,0.45), inset 0 0 16px rgba(74,198,255,0.2); color: #bfefff; }
+
+  video { width: 100%; border-radius: 14px; border: 1px solid rgba(118,192,238,0.18); background: #04080e; box-shadow: 0 12px 34px rgba(0,0,0,0.5); }
+  .del-x { cursor: pointer; color: rgba(255,255,255,0.3); padding: 2px 7px; font-size: 15px; }
+  .del-x:hover { color: #ff9d8a; }
+
+  /* ══ stop button ══
+     Hidden unless something is running, so it never reads as a control that does nothing. Red is
+     deliberate — it is the one destructive-looking affordance in a cyan UI, and it should be the
+     thing your eye finds when you want it in a hurry. */
+  #stopBtn { display: none; align-items: center; gap: 7px; padding: 9px 15px; border-radius: 999px;
+    font: 700 11px ui-monospace,'SF Mono',Menlo,monospace; letter-spacing: .12em; cursor: pointer; user-select: none;
+    color: #ffb4a2; background: rgba(255,90,70,0.10); border: 1px solid rgba(255,120,100,0.32);
+    transition: all .2s; white-space: nowrap; }
+  #stopBtn:hover { background: rgba(255,90,70,0.20); color: #ffd9cf; border-color: rgba(255,140,120,0.6);
+    box-shadow: 0 0 20px rgba(255,90,70,0.22); }
+  #stopBtn:active { transform: scale(.96); }
+  body.jarvis-busy #stopBtn { display: inline-flex; }
+  /* The waveform is decorative; the stop button earns its place ahead of it on a narrow bar.
+     !important because #wave carries an inline display:flex, which otherwise wins. */
+  body.jarvis-busy #wave { display: none !important; }
+
+  /* ══ working card ══
+     The live "what am I doing" feed. Styled as an instrument readout rather than a chat bubble, so
+     it is visibly transient — it is status, not something JARVIS said, and it should not read as
+     part of the conversation once the answer lands. */
+  .work-card { align-self: flex-start; max-width: 82%; margin: 2px 0 4px 0; padding: 9px 13px 10px 13px;
+    background: rgba(5,13,24,0.5); border: 1px solid rgba(118,192,238,0.13); border-left: 2px solid rgba(74,198,255,0.55);
+    border-radius: 4px 14px 14px 4px; backdrop-filter: blur(18px); }
+  .work-head { display: flex; align-items: center; gap: 8px; font-family: ui-monospace,'SF Mono',Menlo,monospace;
+    font-size: 9.5px; letter-spacing: .22em; color: rgba(150,225,255,0.7); margin-bottom: 7px; }
+  .work-spin { width: 8px; height: 8px; border-radius: 50%; border: 1.4px solid rgba(74,198,255,0.75);
+    border-top-color: transparent; animation: spinSlow .9s linear infinite; }
+  .work-step { font-size: 12.5px; line-height: 1.65; color: rgba(215,240,255,0.72); padding-left: 13px; position: relative; }
+  .work-step::before { content: '›'; position: absolute; left: 0; color: rgba(74,198,255,0.6); }
+  .work-step:last-child { color: rgba(235,250,255,0.95); }   /* the current step is the bright one */
+  /* Settled: the spinner stops and the whole card recedes — the answer below is the point now. */
+  .work-card.done { opacity: .42; border-left-color: rgba(74,198,255,0.22); }
+  .work-card.done .work-spin { animation: none; border-top-color: rgba(74,198,255,0.75); opacity: .5; }
+  .work-card.done .work-step:last-child { color: rgba(215,240,255,0.72); }
+  @media (prefers-reduced-motion: reduce) { .work-spin { animation: none; } }
+
+  #toast { position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%); background: rgba(5,12,20,0.92); border: 1px solid rgba(118,192,238,0.3); border-radius: 12px; padding: 10px 18px; font-size: 12.5px; color: #dff5ff; box-shadow: 0 12px 40px rgba(0,0,0,0.6); opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 99; }
+  #toast.show { opacity: 1; }
+
+  /* ══════════ MOBILE (phone access over the tailnet) ══════════
+     The desktop layout is a fixed 3-column grid whose side columns alone demand ~430px, so on a
+     375px phone it overflowed horizontally and was unusable. Most of the layout lives in INLINE
+     styles (ported straight from the design file), which outrank a stylesheet rule — hence the
+     !important flags here. They are not laziness; without them these rules simply lose.
+     Approach: one column, nav becomes a scrollable top strip, the ancillary status column is
+     dropped, and the composer keeps only what a thumb needs. */
+  @media (max-width: 820px) {
+    /* dvh so iOS URL-bar chrome cannot clip the composer. overflow-x because the ambient
+       background blobs are sized in vw with negative offsets — purely decorative, but they
+       pushed the document 39px wider than the screen and gave the whole page a sideways scroll. */
+    /* Must be on html AS WELL as body: the blobs are positioned against the initial containing
+       block, so clipping only body leaves the root element still scrollable sideways. */
+    html { overflow-x: hidden; }
+    /* position:relative matters as much as the overflow rule. The ambient blobs are
+       position:absolute with no positioned ancestor, so their containing block is the initial
+       containing block — outside body — and body's overflow could not clip them. Making body a
+       containing block brings them inside, and only then does overflow-x actually bite. */
+    body { height: 100dvh; overflow-x: hidden; position: relative; }
+    /* SAFE AREAS. Installed to the home screen with a translucent status bar, the page is drawn
+       UNDER the clock and battery rather than beside them — measured on his phone, the nav strip
+       collided with the iOS status bar and the first tabs were unreadable. env() resolves to 0
+       everywhere it does not apply (desktop, a plain Safari tab), so these are additive and safe. */
+    .grid-row {
+      display: flex !important; flex-direction: column !important;
+      gap: 10px !important;
+      padding: calc(10px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) 0 calc(10px + env(safe-area-inset-left)) !important;
+    }
+    /* Left column collapses from a full sidebar to a horizontal nav strip. */
+    .col-left { flex: 0 0 auto !important; min-height: 0 !important; }
+    .col-left > div { padding: 8px !important; border-radius: 14px !important; overflow: visible !important; }
+    .col-left > div > div:first-child { display: none !important; }        /* JARVIS wordmark — the app is already open */
+    /* min-width:0 is what actually makes the scroll container scroll: without it the flex item
+       sizes to its content and the nav strip widens the page instead of scrolling inside it. */
+    .col-left > div > div:nth-child(2) {
+      flex-direction: row !important; gap: 6px !important;
+      overflow-x: auto !important; scrollbar-width: none;
+      min-width: 0 !important; max-width: 100% !important;
+    }
+    .col-left > div > div:nth-child(2)::-webkit-scrollbar { display: none; }
+    .col-left .nav-item { padding: 8px 12px !important; font-size: 12.5px !important; white-space: nowrap; }
+    .col-left > div > div:nth-child(n+3) { display: none !important; }     /* spacer + desktop-only footer rows */
+
+    /* Status/notifications are reference material, not the reason you opened this on a phone. */
+    .col-right { display: none !important; }
+
+    .col-center { flex: 1 1 auto !important; min-height: 0 !important; }
+
+    /* Bubbles get the width back that the side columns were taking. */
+    .msg-user { max-width: 88% !important; }
+    .msg-jarvis { max-width: 92% !important; }
+
+    /* Composer: drop the waveform and quick actions, keep mic + input reachable.
+       Targeted by class, not `body > div:last-of-type` — the overlays (boot, log, world monitor,
+       neural net) are all later siblings, so the positional selector matched one of those and
+       every composer rule silently did nothing. */
+    /* Bottom inset folded into the existing shorthand rather than added as a second rule — this one
+       is later in the sheet and uses the `padding` shorthand with !important, so it would have
+       overridden any separate padding-bottom declared above it. */
+    .composer-bar { padding: 8px calc(10px + env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left)) !important; }
+    .composer-bar > div { max-width: none !important; padding: 8px 10px !important; gap: 10px !important; }
+    #wave { display: none !important; }
+    #ptt { width: 44px !important; height: 44px !important; min-width: 44px !important; }
+    /* 16px keeps iOS Safari from zooming the viewport when the field is focused. */
+    #cmdInput { font-size: 16px !important; }
+    #cmdInput::placeholder { font-size: 13px; }
+
+    .glass { padding: 13px !important; border-radius: 14px !important; }
+
+    /* Full-screen overlays were sized for a desktop window. */
+    .log-panel, .nn-info, .wm-cmd { max-width: 94vw !important; }
+    .nn-head { flex-wrap: wrap; gap: 6px; }
+  }
+  /* Phone-width composer: three quick-action buttons squeezed the text field down to ~190px on a
+     390px screen, which is the one control that has to be comfortable. They are all reachable by
+     typing ("brief me", "focus mode"), so the field wins. Tablets keep them. */
+  @media (max-width: 560px) {
+    #cmdInput { min-width: 0 !important; flex: 1 1 auto !important; }
+    .composer-bar .btn { display: none !important; }
+  }
+  /* PHONES LOSE THE NAV LABELS — raised from 380px, which was too narrow to help anyone.
+     Measured on his 390px phone back when there were SIX tabs: six LABELLED ones need about 540px,
+     so Chat/Voice/Vision fitted, Automations was clipped mid-word and Skills and Files sat off-screen
+     behind a horizontal scroll with no visual hint that it scrolled. Reported, correctly, as "I
+     cannot access the different things". Icons only, at ~42px each, fit inside 375px with room to
+     spare — everything is reachable in one tap and nothing has to be discovered. Skills and then
+     Automations have since been removed, so it is four tabs now and the labelled row would fit; the icons-only
+     rule is kept anyway because it still leaves the most room for the composer, and because the
+     next tab added would silently reintroduce the exact bug above. 560px matches the composer
+     breakpoint below; tablets keep their labels because they have the width for them. */
+  @media (max-width: 560px) {
+    .col-left .nav-item span { display: none !important; }
+    /* 14px vertical around a 16px icon gives a 44px-tall target — Apple's minimum for a fingertip.
+       Measured at 390px: six items occupy 301px of a 352px strip, so the extra height is free. */
+    .col-left .nav-item { padding: 14px 13px !important; }
+  }
+
+  /* ── system log console (⌘L) ── */
+  #logConsole { position: fixed; inset: 0; z-index: 800; display: flex; align-items: center; justify-content: center; background: rgba(3,5,8,0.62); backdrop-filter: blur(6px); transition: opacity .22s ease; }
+  #logConsole.log-hidden { opacity: 0; pointer-events: none; }
+  .log-panel { width: min(1060px, 94vw); height: min(80vh, 780px); display: flex; flex-direction: column; background: rgba(5,10,17,0.97); border: 1px solid rgba(118,192,238,0.22); border-radius: 16px; box-shadow: 0 30px 90px rgba(0,0,0,0.6), 0 0 50px rgba(48,168,255,0.06); overflow: hidden; }
+  .log-head { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid rgba(118,192,238,0.12); flex-wrap: wrap; }
+  .log-title { font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 11px; letter-spacing: 0.16em; color: rgba(176,222,250,0.85); white-space: nowrap; }
+  .log-live { color: #7de8b8; font-size: 10px; margin-left: 8px; cursor: pointer; user-select: none; }
+  .log-live.paused { color: #f59e6b; }
+  .log-filters { display: flex; gap: 6px; flex: 1; flex-wrap: wrap; }
+  .log-chip { font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 10px; letter-spacing: 0.04em; padding: 4px 9px; border-radius: 999px; border: 1px solid rgba(118,192,238,0.18); color: rgba(255,255,255,0.5); cursor: pointer; user-select: none; transition: all .15s; }
+  .log-chip.on { color: #e9fbff; border-color: rgba(74,198,255,0.5); background: rgba(74,198,255,0.1); }
+  .log-search { background: rgba(5,12,21,0.7); border: 1px solid rgba(118,192,238,0.15); border-radius: 8px; color: #e9fbff; font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 11px; padding: 5px 10px; width: 150px; }
+  .log-x { cursor: pointer; color: rgba(255,255,255,0.4); font-size: 15px; padding: 2px 6px; }
+  .log-x:hover { color: #ff9d8a; }
+  .log-body { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 8px 14px; font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 11.5px; line-height: 1.55; }
+  .log-body::-webkit-scrollbar { width: 8px; } .log-body::-webkit-scrollbar-thumb { background: rgba(118,192,238,0.2); border-radius: 4px; }
+  .lg { display: flex; gap: 10px; padding: 1px 0; }
+  .lg-t { color: rgba(255,255,255,0.3); flex: 0 0 auto; }
+  .lg-s { flex: 0 0 82px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lg-m { flex: 1; color: rgba(235,250,255,0.72); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .lg.ok .lg-m { color: #7de8b8; } .lg.warn .lg-m { color: #f59e6b; } .lg.error .lg-m { color: #ff9d8a; }
+  .log-foot { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; border-top: 1px solid rgba(118,192,238,0.12); font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 10px; color: rgba(255,255,255,0.4); }
+  .log-btn { font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 10.5px; letter-spacing: 0.12em; padding: 8px 13px; border-radius: 999px; border: 1px solid rgba(118,192,238,0.14); background: rgba(118,192,238,0.05); color: rgba(176,222,250,0.72); cursor: pointer; transition: all .2s; white-space: nowrap; }
+  .log-btn:hover { background: rgba(118,192,238,0.13); color: #fff; box-shadow: 0 0 16px rgba(48,168,255,0.15); }
+
+  /* ── boot / power-up sequence ── */
+  #boot { position: fixed; inset: 0; z-index: 9999; background: radial-gradient(ellipse 60% 50% at 50% 44%, #06111d 0%, #03060a 72%); display: flex; align-items: center; justify-content: center; transition: opacity .75s ease; }
+  #boot.gone { opacity: 0; pointer-events: none; }
+  .boot-scan { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(118,192,238,0.022) 0, rgba(118,192,238,0.022) 1px, transparent 1px, transparent 4px); }
+  .boot-center { position: relative; display: flex; flex-direction: column; align-items: center; gap: 14px; width: min(440px, 86vw); }
+  .boot-reactor { position: relative; width: 152px; height: 152px; display: grid; place-items: center; }
+  .br-ring { position: absolute; border-radius: 50%; border: 1.5px solid transparent; opacity: 0; }
+  .br-ring.r1 { width: 152px; height: 152px; border-top-color: rgba(74,198,255,0.75); border-right-color: rgba(74,198,255,0.15); animation: bootRingIn .7s ease forwards, spinSlow 3.6s linear infinite; }
+  .br-ring.r2 { width: 116px; height: 116px; border-bottom-color: rgba(59,130,246,0.6); border-left-color: rgba(59,130,246,0.14); animation: bootRingIn .7s .1s ease forwards, spinRev 4.6s linear infinite; }
+  .br-ring.r3 { width: 82px; height: 82px; border-left-color: rgba(150,230,255,0.65); border-right-color: rgba(150,230,255,0.18); animation: bootRingIn .7s .2s ease forwards, spinSlow 2.3s linear infinite; }
+  .br-core { width: 44px; height: 44px; border-radius: 50%; transform: scale(0); background: radial-gradient(circle at 50% 45%, #e9fbff, #4fd0ff 45%, #1e5f8f 78%, rgba(20,60,100,0.25) 100%); box-shadow: 0 0 30px rgba(48,168,255,0.7), 0 0 74px rgba(48,168,255,0.4), inset 0 0 12px rgba(255,255,255,0.6); animation: bootCore .9s cubic-bezier(.2,.9,.2,1) .15s forwards; }
+  .boot-title { font-size: 30px; font-weight: 600; letter-spacing: 0.5em; padding-left: 0.5em; color: #e9fbff; text-shadow: 0 0 20px rgba(130,225,255,0.8), 0 0 50px rgba(48,168,255,0.5); opacity: 0; animation: bootFade .7s .35s ease forwards; }
+  .boot-title.flare { animation: bootFlare .9s ease; }
+  .boot-sub { font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 10.5px; letter-spacing: 0.42em; color: rgba(176,222,250,0.78); text-transform: uppercase; opacity: 0; min-height: 14px; text-align: center; animation: bootFade .7s .5s ease forwards; }
+  .boot-log { font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 11px; width: 100%; display: flex; flex-direction: column; gap: 5px; margin-top: 4px; min-height: 156px; }
+  .bl { display: flex; align-items: center; opacity: 0; transform: translateY(3px); animation: bootFade .26s ease forwards; }
+  .bl-l { color: rgba(255,255,255,0.62); white-space: nowrap; }
+  .bl-d { flex: 1; margin: 0 9px; border-bottom: 1px dotted rgba(118,192,238,0.28); height: 7px; }
+  .bl-v { color: #4fd0ff; white-space: nowrap; }
+  .bl-v.ok { color: #7de8b8; } .bl-v.warn { color: #f59e6b; } .bl-v.down { color: #ff9d8a; }
+  .boot-progress { width: 100%; height: 2px; background: rgba(118,192,238,0.12); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+  .boot-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg,#2e6fdc,#4fd0ff); box-shadow: 0 0 10px rgba(74,198,255,0.85); transition: width .32s ease; }
+  .boot-hint { font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 9px; letter-spacing: 0.2em; color: rgba(255,255,255,0.22); margin-top: 2px; }
+  @keyframes bootRingIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes bootCore { from { transform: scale(0); } to { transform: scale(1); } }
+  @keyframes bootFade { to { opacity: 1; transform: translateY(0); } }
+  @keyframes bootFlare { 0% { text-shadow: 0 0 20px rgba(130,225,255,0.8); } 45% { text-shadow: 0 0 48px rgba(185,242,255,1), 0 0 95px rgba(48,168,255,0.9); letter-spacing: 0.56em; } 100% { text-shadow: 0 0 20px rgba(130,225,255,0.8); letter-spacing: 0.5em; } }
+
+  /* ══════════ WORLD MONITOR (⌘⇧W) — situation-room HUD ══════════
+     Flat matte graphite chrome + tracked-out mono labels (worldmonitor language);
+     colour reserved for DATA STATUS only. JARVIS identity kept: cyan accent + core orb. */
+  #worldMonitor { --wm-bg:#04070b; --wm-panel:#080c12; --wm-line:#16202c; --wm-line2:#1f2b3a;
+                  --wm-txt:#c2d2e2; --wm-dim:#6b7c8f; --wm-cy:#4fd0ff;
+                  --wm-red:#ff4d4d; --wm-amb:#ffa53c; --wm-yel:#ffd93d; --wm-grn:#4ade80;
+                  position: fixed; inset: 0; z-index: 6000; background: var(--wm-bg); display: none; overflow: hidden;
+                  font-family: 'Helvetica Neue',sans-serif; color: var(--wm-txt);
+                  grid-template-rows: 40px 30px 1fr 232px; grid-template-columns: 1fr; }
+  #worldMonitor.visible { display: grid; }
+  .wm-offline { position:fixed; inset:0; z-index:50; display:none; place-items:center; text-align:center;
+                background: radial-gradient(ellipse at 50% 45%, #0c2846 0%, #051424 55%, #020a15 100%); cursor:pointer; }
+  .wm-offline.show { display:grid; }
+  .wm-offline-txt { font:800 clamp(20px,3.4vw,40px)/1.3 ui-monospace,'SF Mono',Menlo,monospace; letter-spacing:.2em;
+                    color:#4fd0ff; text-shadow:0 0 26px rgba(74,198,255,.6), 0 0 64px rgba(74,198,255,.28);
+                    animation: wmOfflinePulse 2.4s ease-in-out infinite; }
+  .wm-offline-sub { margin-top:16px; font:600 12px/1.5 ui-monospace,Menlo,monospace; letter-spacing:.06em; color:#3f7aa8; max-width:420px; }
+  @keyframes wmOfflinePulse { 0%,100% { opacity:.82 } 50% { opacity:1 } }
+  .wm-mono { font-family: ui-monospace,'SF Mono',Menlo,monospace; }
+
+  /* ── row 1: command bar ── */
+  .wm-cmd { grid-row:1; display:flex; align-items:center; gap:8px; padding:0 10px; background:#0a0d12;
+            border-bottom:1px solid var(--wm-line); z-index:6; }
+  .wm-brand { display:flex; align-items:center; gap:7px; font:800 11px/1 'Helvetica Neue'; letter-spacing:.2em; color:#e8f4ff;
+              padding:5px 9px; border:1px solid var(--wm-line2); border-radius:3px; background:#10161d; }
+  .wm-brand .bdot { width:7px; height:7px; border-radius:50%; background:var(--wm-cy); box-shadow:0 0 8px var(--wm-cy); }
+  .wm-cmd .sep { width:1px; height:18px; background:var(--wm-line); }
+  .wm-chip { font:600 10px/1 ui-monospace,Menlo,monospace; letter-spacing:.1em; color:var(--wm-dim);
+             padding:6px 9px; border:1px solid var(--wm-line2); border-radius:3px; background:#0e1319;
+             display:flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap; transition:.15s; }
+  .wm-chip:hover { border-color:#33465c; color:#dbe7f2; }
+  .wm-chip.live { color:var(--wm-grn); border-color:#1d3a2a; }
+  .wm-chip.live::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--wm-grn);
+                          box-shadow:0 0 7px var(--wm-grn); animation:ctrlpulse 1.4s infinite alternate; }
+  .wm-chip.key { color:#7f8fa3; } .wm-chip.key b { color:#c3d2e0; font-weight:700; }
+  /* DEFCON-style computed threat pill — colour IS the datum */
+  .wm-defcon { font:800 10px/1 ui-monospace,Menlo,monospace; letter-spacing:.12em; padding:6px 10px; border-radius:3px;
+               display:flex; align-items:center; gap:7px; border:1px solid; }
+  .wm-defcon.d5 { color:var(--wm-grn); border-color:#1e4030; background:#0c1a13; }
+  .wm-defcon.d4 { color:var(--wm-yel); border-color:#4a4020; background:#1a1608; }
+  .wm-defcon.d3 { color:var(--wm-amb); border-color:#4d3418; background:#1c1408; }
+  .wm-defcon.d2 { color:var(--wm-red); border-color:#4d1f1f; background:#1c0a0a; }
+  .wm-spacer { margin-left:auto; }
+  .wm-icobtn { width:28px; height:26px; display:grid; place-items:center; border:1px solid var(--wm-line2);
+               border-radius:3px; background:#0e1319; color:#8fa3b8; font-size:12px; cursor:pointer; transition:.15s; }
+  .wm-icobtn:hover { color:#e6f4ff; border-color:#33465c; }
+  .wm-icobtn.x:hover { color:var(--wm-red); border-color:#5a2020; background:#180a0a; }
+
+  /* ── row 2: sub-header (range tabs · clock · mode) ── */
+  .wm-sub { grid-row:2; display:flex; align-items:center; gap:10px; padding:0 10px; background:#080b0f;
+            border-bottom:1px solid var(--wm-line); z-index:6; }
+  .wm-sub .lbl { font:700 9.5px/1 ui-monospace,Menlo,monospace; letter-spacing:.22em; color:#7d8fa3; }
+  .wm-tabs { display:flex; border:1px solid var(--wm-line2); border-radius:3px; overflow:hidden; }
+  .wm-tabs span { font:600 9.5px/1 ui-monospace,Menlo,monospace; letter-spacing:.08em; padding:5px 9px; color:#6f8095;
+                  cursor:pointer; background:#0b1016; border-right:1px solid var(--wm-line); transition:.15s; }
+  .wm-tabs span:last-child { border-right:0; }
+  .wm-tabs span:hover { color:#cfe0f0; }
+  .wm-tabs span.on { background:var(--wm-cy); color:#04202c; font-weight:800; }
+  .wm-clock { margin:0 auto; font:600 11px/1 ui-monospace,Menlo,monospace; letter-spacing:.14em; color:#9db2c6;
+              font-variant-numeric:tabular-nums; }
+
+  /* ── row 3: map stage (globe + floating rails) ── */
+  .wm-stage { grid-row:3; position:relative; overflow:hidden; background:
+              radial-gradient(ellipse at 50% 45%, #0b1420 0%, #070a0e 65%, #05070a 100%); }
+  #worldGlobe { position:absolute; inset:0; }
+  #worldGlobe canvas { outline:none; }
+  #worldMap { position:absolute; inset:0; width:100%; height:100%; display:none; cursor:grab; outline:none; }
+  #worldMap.on { display:block; }
+  #worldMap.drag { cursor:grabbing; }
+  .wm-maptip { position:absolute; z-index:6; pointer-events:none; display:none; font:600 12px Inter,sans-serif; color:#fff;
+    background:rgba(6,14,24,.92); padding:6px 9px; border-radius:7px; border:1px solid rgba(94,212,247,.4); max-width:260px; }
+  .wm-maptip.show { display:block; }
+  .wm-scanline { position:absolute; inset:0; z-index:2; pointer-events:none;
+                 background:repeating-linear-gradient(0deg, rgba(74,198,255,.02) 0 1px, transparent 1px 3px);
+                 mix-blend-mode:screen; opacity:.45; }
+  .wm-stagelbl { position:absolute; top:10px; left:12px; z-index:3; font:700 9.5px/1 ui-monospace,Menlo,monospace;
+                 letter-spacing:.24em; color:#5d6f82; pointer-events:none; }
+
+  /* panels — flat, matte, square-ish; no glassy blur */
+  .wm-panel { background:var(--wm-panel); border:1px solid var(--wm-line); border-radius:4px; padding:0; }
+  .wm-panel > h4 { margin:0; font:700 9.5px/1 ui-monospace,Menlo,monospace; letter-spacing:.2em; color:#8199ad;
+                   padding:8px 10px; border-bottom:1px solid var(--wm-line); background:#0a0e13;
+                   display:flex; align-items:center; gap:6px; }
+  .wm-panel > h4 .hint { font-weight:400; letter-spacing:.04em; color:#4e6072; margin-left:auto; text-transform:none; }
+  .wm-pbody { padding:8px 10px; }
+
+  .wm-stats { position:absolute; left:12px; top:34px; width:236px; max-height:calc(100% - 46px); overflow-y:auto;
+              z-index:3; display:flex; flex-direction:column; gap:8px; padding-right:3px; }
+  .wm-feed { position:absolute; right:12px; top:34px; width:290px; max-height:calc(100% - 46px); overflow:hidden;
+             z-index:3; display:flex; flex-direction:column; gap:8px; }
+  .wm-stats::-webkit-scrollbar,.wm-feed-list::-webkit-scrollbar,.wm-answer::-webkit-scrollbar { width:3px; }
+  .wm-stats::-webkit-scrollbar-thumb,.wm-feed-list::-webkit-scrollbar-thumb,.wm-answer::-webkit-scrollbar-thumb { background:#243040; }
+  .wm-feed .wm-panel { display:flex; flex-direction:column; min-height:0; }
+  .wm-feed-list { overflow-y:auto; max-height:34vh; padding:4px 10px 8px; }
+
+  .wm-stat-row { display:flex; justify-content:space-between; align-items:center; font-size:11px; padding:3px 0;
+                 color:#a9bdd0; font-family:ui-monospace,Menlo,monospace; }
+  .wm-stat-row .v { color:#e9f6ff; font-weight:700; font-variant-numeric:tabular-nums; }
+  .wm-bar-mini { height:2px; background:#151d27; border-radius:2px; overflow:hidden; margin-top:5px; }
+  .wm-bar-mini i { display:block; height:100%; background:var(--wm-cy); }
+
+  /* layer checklist (reference uses checkbox + icon + label) */
+  .wm-layers { display:flex; flex-direction:column; gap:1px; }
+  .wm-layer { display:flex; align-items:center; gap:8px; font:600 10.5px/1 ui-monospace,Menlo,monospace;
+              letter-spacing:.06em; color:#b9cbdd; padding:5px 4px; cursor:pointer; user-select:none;
+              border-radius:2px; transition:.12s; }
+  .wm-layer:hover { background:#101821; color:#e8f4ff; }
+  .wm-layer .box { width:13px; height:13px; flex:0 0 13px; border:1px solid #2c3a4a; border-radius:2px; background:#0a0e13;
+                   display:grid; place-items:center; font-size:9px; color:#04202c; font-weight:900; }
+  .wm-layer.on .box { background:var(--wm-grn); border-color:var(--wm-grn); }
+  .wm-layer.on .box::after { content:'✓'; }
+  .wm-layer .swatch { width:7px; height:7px; border-radius:50%; flex:0 0 7px; }
+  .wm-layer .n { margin-left:auto; color:#5f7387; font-weight:700; font-variant-numeric:tabular-nums; }
+  .wm-layer.off { color:#4a5a6b; } .wm-layer.off .swatch { background:#2a3644 !important; }
+
+  /* legend strip pinned under the map, like the reference */
+  .wm-legend { position:absolute; left:50%; bottom:10px; transform:translateX(-50%); z-index:3; display:flex;
+               align-items:center; gap:14px; padding:6px 14px; background:rgba(10,14,19,.88);
+               border:1px solid var(--wm-line); border-radius:3px; font:600 9.5px/1 ui-monospace,Menlo,monospace;
+               letter-spacing:.1em; color:#8ea3b7; white-space:nowrap; }
+  .wm-legend .lg { display:flex; align-items:center; gap:6px; }
+  .wm-legend i { width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .wm-legend .cap { color:#5b6c7e; letter-spacing:.2em; }
+  .wm-legend:empty { display:none; }   /* the legend is a panel in the left column now — the strip sat behind the ask bar */
+  .wm-legend-grid { display:grid; grid-template-columns:1fr; gap:6px; }
+  .wm-legend-grid .lg-row { display:flex; align-items:center; gap:8px; font:600 9px/1.2 ui-monospace,Menlo,monospace; letter-spacing:.08em; color:#8ea3b7; }
+  .wm-legend-grid .lg-row.off { opacity:.35; }
+  .wm-legend-grid .sw { width:16px; display:inline-flex; justify-content:center; align-items:center; flex:none; }
+  .wm-legend-grid .lg-dot { width:9px; height:9px; border-radius:50%; display:block; box-shadow:0 0 0 1px rgba(0,0,0,.6); }
+  .wm-legend-grid .lg-ring { width:10px; height:10px; border-radius:50%; border:1.6px solid; box-sizing:border-box; display:block; }
+  .wm-legend-grid .lg-sq { width:5px; height:5px; display:block; }
+  .wm-legend-grid .lg-line { width:15px; height:2px; display:block; border-radius:1px; }
+
+  /* event + headline rows */
+  .wm-ev { font-size:11px; color:#b4c7d9; padding:5px 10px; border-bottom:1px solid #121a23; line-height:1.35;
+           display:flex; align-items:flex-start; gap:7px; }
+  .wm-ev:last-child { border-bottom:0; }
+  .wm-ev.link { cursor:pointer; } .wm-ev.link:hover { background:#101821; color:#eaf6ff; }
+  .wm-ev .dot { width:7px; height:7px; border-radius:50%; flex:0 0 7px; margin-top:4px; }
+  .wm-ev .src { font-size:9px; color:#556879; letter-spacing:.06em; margin-left:auto; padding-left:6px; }
+  .wm-head { font-size:11px; color:#b4c7d9; padding:6px 0; border-bottom:1px solid #121a23; line-height:1.4;
+             cursor:pointer; display:flex; gap:7px; }
+  .wm-head:last-child { border-bottom:0; }
+  .wm-head:hover { color:#eaf6ff; }
+  .wm-head .tag { flex:0 0 auto; font:800 8px/1 ui-monospace,Menlo,monospace; letter-spacing:.08em; color:#04202c;
+                  background:var(--wm-cy); border-radius:2px; padding:3px 4px; margin-top:1px; white-space:nowrap; }
+  .wm-head .tag.t { background:var(--wm-amb); color:#231202; }
+  .wm-srcs { display:flex; flex-wrap:wrap; gap:5px; }
+  .wm-src { font:600 9.5px/1 ui-monospace,Menlo,monospace; letter-spacing:.06em; color:#8fb8d0; cursor:pointer;
+            padding:4px 7px; border-radius:2px; background:#0e1319; border:1px solid var(--wm-line2); transition:.15s; }
+  .wm-src:hover { color:#dff2ff; border-color:#33465c; }
+
+  /* ── row 4: bottom console (3 dense panels, like the reference's news/webcam/AI row) ── */
+  .wm-console { grid-row:4; display:grid; grid-template-columns:1fr 1fr 340px; gap:1px; background:var(--wm-line);
+                border-top:1px solid var(--wm-line); min-height:0; }
+  .wm-col { background:var(--wm-panel); display:flex; flex-direction:column; min-height:0; min-width:0; }
+  .wm-colhead { display:flex; align-items:center; gap:8px; padding:7px 10px; border-bottom:1px solid var(--wm-line);
+                background:#0a0e13; font:700 9.5px/1 ui-monospace,Menlo,monospace; letter-spacing:.2em; color:#8199ad; }
+  .wm-colhead .st { margin-left:auto; font-size:8.5px; letter-spacing:.14em; color:#4e6072; }
+  .wm-colbody { flex:1; min-height:0; overflow-y:auto; padding:6px 10px; }
+  .wm-colbody::-webkit-scrollbar { width:3px; } .wm-colbody::-webkit-scrollbar-thumb { background:#243040; }
+  /* outlet filter chips (reference has BLOOMBERG/SKYNEWS/… tabs) */
+  .wm-outlets { display:flex; gap:4px; padding:6px 10px 0; flex-wrap:wrap; }
+  .wm-outlet { font:700 8.5px/1 ui-monospace,Menlo,monospace; letter-spacing:.08em; color:#6f8398; padding:4px 7px;
+               border:1px solid var(--wm-line2); border-radius:2px; background:#0b1016; cursor:pointer; transition:.12s; }
+  .wm-outlet:hover { color:#d6e6f4; }
+  .wm-outlet.on { background:var(--wm-cy); color:#04202c; border-color:var(--wm-cy); }
+  /* AI dossier card (reference: "Iran Theater — CRIT — AIR 2 / SEA 2") */
+  .wm-dossier { border:1px solid #2a1a1a; border-left:2px solid var(--wm-red); border-radius:3px; background:#120c0c;
+                padding:8px 10px; margin-bottom:6px; }
+  .wm-dossier.amb { border-color:#2e2412; border-left-color:var(--wm-amb); background:#12100a; }
+  .wm-dossier.cy  { border-color:#12262e; border-left-color:var(--wm-cy);  background:#0a1116; }
+  .wm-dossier .dh { display:flex; align-items:center; gap:8px; font:700 11px/1 'Helvetica Neue'; color:#e6f2ff; }
+  .wm-dossier .sev { margin-left:auto; font:800 8.5px/1 ui-monospace,Menlo,monospace; letter-spacing:.1em; }
+  .wm-dossier .dm { display:flex; gap:14px; margin-top:7px; font:600 9.5px/1 ui-monospace,Menlo,monospace; color:#7d92a6; }
+  .wm-dossier .dm b { color:#dbeaf7; }
+  .wm-brief { font-size:11.5px; line-height:1.55; color:#b9cbdd; }
+
+  /* ── overlays: alert banner, answer, command input ── */
+  .wm-alert { position:absolute; top:34px; left:50%; transform:translateX(-50%); z-index:5; display:none;
+              align-items:center; gap:9px; padding:6px 13px; border-radius:3px; background:#180909;
+              border:1px solid #58201f; color:#ffb3b3; font:700 10.5px/1 ui-monospace,Menlo,monospace;
+              letter-spacing:.08em; max-width:60%; }
+  .wm-alert.show { display:flex; }
+  .wm-alert .pulse { width:7px; height:7px; border-radius:50%; background:var(--wm-red); box-shadow:0 0 8px var(--wm-red);
+                     animation:ctrlpulse .7s infinite alternate; flex:0 0 7px; }
+  .wm-answer { position:absolute; left:50%; bottom:64px; transform:translateX(-50%); width:min(660px,74%);
+               max-height:30vh; overflow-y:auto; z-index:5; background:rgba(10,15,21,.95);
+               border:1px solid #1f3340; border-left:2px solid var(--wm-cy); border-radius:3px; padding:11px 14px;
+               font-size:12.5px; line-height:1.55; color:#dbeaf7; display:none; }
+  .wm-answer.show { display:block; }
+  .wm-ans-src { margin-top:8px; display:flex; flex-wrap:wrap; gap:5px; align-items:center;
+                font:600 9px/1 ui-monospace,Menlo,monospace; letter-spacing:.08em; color:#5b6c7e; }
+  .wm-bar { position:absolute; left:50%; bottom:14px; transform:translateX(-50%); width:min(660px,74%); display:flex;
+            align-items:center; gap:10px; z-index:5; background:#0b1016; border:1px solid #1f2c3a; border-radius:3px;
+            padding:5px 12px 5px 5px; }
+  .wm-bar:focus-within { border-color:#2c4a5e; }
+  #worldInput { flex:1; background:transparent; border:none; outline:none; color:#e6f2ff;
+                font-family:ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:.02em; }
+  #worldInput::placeholder { color:#4e6072; }
+  .wm-bar .hintk { font:700 8.5px/1 ui-monospace,Menlo,monospace; letter-spacing:.1em; color:#3f5265;
+                   border:1px solid var(--wm-line2); border-radius:2px; padding:4px 6px; }
+  /* JARVIS core orb — identity element, kept glowing on purpose */
+  .wm-orb { position:relative; width:38px; height:38px; flex:0 0 38px; display:grid; place-items:center; cursor:pointer; }
+  .wm-orb .r { position:absolute; border-radius:50%; }
+  .wm-orb .r1 { inset:0; border:1px solid transparent; border-top-color:rgba(74,198,255,.7);
+                border-right-color:rgba(74,198,255,.18); animation:spinSlow 4.5s linear infinite; }
+  .wm-orb .r2 { inset:5px; border:1px solid transparent; border-bottom-color:rgba(59,130,246,.55);
+                animation:spinRev 7s linear infinite; }
+  .wm-orb .halo { inset:-5px; background:radial-gradient(circle, rgba(48,168,255,.38), transparent 65%);
+                  filter:blur(6px); animation:haloPulse 3s ease-in-out infinite; }
+  .wm-orb .core { width:18px; height:18px; border-radius:50%;
+                  background:radial-gradient(circle at 50% 45%, rgba(205,245,255,.95), rgba(110,215,255,.8) 40%, rgba(34,110,180,.6) 75%, rgba(10,30,55,.9));
+                  box-shadow:0 0 16px rgba(94,200,255,.85), inset 0 0 9px rgba(20,70,120,.6);
+                  animation:orbPulse 2.4s ease-in-out infinite; }
+  .wm-orb.busy .core { animation-duration:1s; }
+  .wm-orb.listening .halo { background:radial-gradient(circle, rgba(74,198,255,.6), transparent 65%); animation-duration:.9s; }
+
+  /* ticker rides the top of the stage */
+  .wm-ticker { position:absolute; top:0; left:0; right:0; height:24px; overflow:hidden; z-index:4;
+               background:#080b0f; border-bottom:1px solid var(--wm-line);
+               -webkit-mask-image:linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent); }
+  .wm-ticker-track { display:inline-flex; gap:34px; white-space:nowrap; padding-left:100%;
+                     animation:wmScroll 90s linear infinite; font-size:10.5px; line-height:24px; color:#93a8bc;
+                     font-family:ui-monospace,Menlo,monospace; }
+  .wm-ticker-track b { color:var(--wm-cy); font-weight:700; margin-right:6px; letter-spacing:.08em; }
+  .wm-ticker-track span.link { cursor:pointer; } .wm-ticker-track span.link:hover { color:#e2f2ff; }
+  @keyframes wmScroll { to { transform:translateX(-100%); } }
+  .wm-status { grid-row:4; position:absolute; }  /* legacy node — content now lives in the command bar */
+
+  /* ===== NEURAL NETWORK — Obsidian graph structure, Palantir density, JARVIS glow ===== */
+  #neuralNet { position: fixed; inset: 0; z-index: 2400; display: none; background:
+      radial-gradient(1200px 700px at 50% 40%, #06131f 0%, #030a12 55%, #01060b 100%); }
+  #neuralNet.visible { display: block; }
+  /* Palantir-ish measured grid, kept faint so the graph reads on top of it. */
+  #neuralNet .nn-grid { position: absolute; inset: 0; pointer-events: none; opacity: .5;
+    background-image: linear-gradient(rgba(74,198,255,.055) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(74,198,255,.055) 1px, transparent 1px);
+    background-size: 46px 46px; }
+  #neuralNet svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .nn-head { position: absolute; top: 16px; left: 22px; right: 22px; display: flex; align-items: center;
+    justify-content: space-between; pointer-events: none; z-index: 3; }
+  /* Inside the native JARVIS OS window the page runs under a transparent title bar, so the macOS
+     close/minimise buttons sit on whatever is in the top-left corner — which here was the title. */
+  body.in-app .nn-head { top: 38px; }
+  .nn-title { font: 700 12px ui-monospace, Menlo, monospace; letter-spacing: .34em; color: #7fe4ff;
+    text-shadow: 0 0 18px rgba(74,198,255,.5); }
+  .nn-sub { font: 500 10.5px ui-monospace, Menlo, monospace; letter-spacing: .12em; color: rgba(176,222,250,.45); margin-top: 5px; }
+  .nn-x { pointer-events: auto; cursor: pointer; font: 700 11px ui-monospace, monospace; color: rgba(176,222,250,.6);
+    border: 1px solid rgba(74,198,255,.28); border-radius: 8px; padding: 6px 11px; background: rgba(5,15,27,.6); }
+  .nn-x:hover { color: #bfe4ff; border-color: rgba(74,198,255,.6); }
+  /* Legend doubles as the "labelled properly" key for the groups. */
+  .nn-legend { position: absolute; left: 22px; bottom: 104px; display: flex; flex-direction: column; gap: 5px; z-index: 3; }
+  .nn-legend.hide { opacity: 0; pointer-events: none; }
+  .nn-legend { transition: opacity .18s; }
+  .nn-lg { display: flex; align-items: center; gap: 7px; font: 600 9.5px ui-monospace, monospace;
+    letter-spacing: .1em; color: rgba(176,222,250,.5); }
+  .nn-lg i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+  /* Detail panel on hover/click — Palantir side-readout. */
+  .nn-info { position: absolute; right: 22px; top: 70px; width: 244px; background: rgba(4,13,23,.9);
+    border: 1px solid rgba(74,198,255,.26); border-left: 2px solid #25c3f2; border-radius: 10px;
+    padding: 12px 14px; z-index: 3; opacity: 0; transition: opacity .18s; backdrop-filter: blur(8px); }
+  .nn-info.show { opacity: 1; }
+  .nn-info h5 { font: 700 11px ui-monospace, monospace; letter-spacing: .18em; color: #a6eaff; margin: 0 0 6px; }
+  .nn-info p { font: 500 11px/1.55 'Helvetica Neue', sans-serif; color: rgba(220,244,255,.8); margin: 0 0 6px; }
+  .nn-info .nn-links { font: 500 10px ui-monospace, monospace; color: rgba(176,222,250,.5); }
+  /* Chatbox — same interaction shape as the World Monitor's. */
+  .nn-ask { position: absolute; left: 50%; transform: translateX(-50%); bottom: 26px; width: min(620px, 78vw); z-index: 4; }
+  .nn-ask input { width: 100%; background: rgba(4,14,25,.86); border: 1px solid rgba(74,198,255,.3);
+    border-radius: 12px; padding: 13px 16px; color: #dff3ff; font: 500 13px 'Helvetica Neue', sans-serif; outline: none;
+    backdrop-filter: blur(10px); }
+  .nn-ask input:focus { border-color: rgba(74,198,255,.65); box-shadow: 0 0 22px rgba(34,211,238,.16); }
+  .nn-answer { margin-top: 9px; background: rgba(4,14,25,.9); border: 1px solid rgba(74,198,255,.24);
+    border-radius: 10px; padding: 12px 15px; color: #dff3ff; font: 500 12.5px/1.6 'Helvetica Neue', sans-serif;
+    max-height: 30vh; overflow-y: auto; white-space: pre-wrap; display: none; }
+  .nn-answer.show { display: block; }
+  /* Node visuals */
+  .nn-node { cursor: pointer; }
+  .nn-node text { font: 600 9.5px ui-monospace, Menlo, monospace; letter-spacing: .07em; fill: rgba(214,240,255,.82);
+    text-anchor: middle; pointer-events: none; }
+  .nn-node.dim { opacity: .22; }
+  .nn-edge { fill: none; stroke: rgba(74,198,255,.17); stroke-width: 1; }
+  .nn-edge.hot { stroke: #38cdff; stroke-width: 2; filter: url(#nnGlow); }
+  .nn-edge.dim { opacity: .07; }
+  @keyframes nnPulse { 0%,100% { r: var(--r); opacity: 1 } 50% { r: calc(var(--r) * 1.28); opacity: .75 } }
+  .nn-core.fire { animation: nnPulse 1.1s ease-in-out infinite; }
+
+
+  /* animated field behind the graph — drifting nodes + links, so the backdrop reads as
+     'live substrate' instead of flat black. Canvas is cheap and sits under everything. */
+  #nnBg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .8; }
+  .nn-vignette { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 50% 45%, transparent 38%, rgba(1,6,11,.72) 100%); }
+  /* slow sweep, very low contrast — motion without distraction */
+  @keyframes nnScan { 0% { transform: translateY(-12%) } 100% { transform: translateY(112%) } }
+  .nn-scan { position: absolute; left: 0; right: 0; height: 190px; pointer-events: none; opacity: .5;
+    background: linear-gradient(180deg, transparent, rgba(74,198,255,.05) 45%, rgba(74,198,255,.09) 50%, rgba(74,198,255,.05) 55%, transparent);
+    animation: nnScan 9s linear infinite; }
+  .nn-node.drag { cursor: grabbing; }
+  .nn-node circle { transition: stroke-width .15s; }
+  /* overview panel — bottom-left, above the legend, so it never covers the graph like the
+     old top-right card did (it was sitting on top of AMBIENT DASHBOARD). */
+  .nn-info { position: absolute; left: 22px; right: auto; top: auto; bottom: 150px; width: 320px; max-height: 42vh; overflow-y: auto;
+    background: linear-gradient(180deg, rgba(5,17,30,.95), rgba(3,11,20,.95));
+    border: 1px solid rgba(74,198,255,.3); border-left: 2px solid #25c3f2; border-radius: 10px;
+    padding: 13px 15px; z-index: 5; opacity: 0; transform: translateY(6px); pointer-events: none;
+    transition: opacity .18s, transform .18s; backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px rgba(0,0,0,.55); }
+  .nn-info.show { opacity: 1; transform: none; pointer-events: auto; }
+  .nn-info h5 { font: 700 11.5px ui-monospace, monospace; letter-spacing: .16em; color: #a6eaff; margin: 0 0 3px; }
+  .nn-kind { font: 600 8.5px ui-monospace, monospace; letter-spacing: .18em; color: rgba(176,222,250,.45); margin-bottom: 8px; }
+  .nn-info p { font: 500 11.5px/1.6 'Helvetica Neue', sans-serif; color: rgba(224,246,255,.86); margin: 0 0 9px; }
+  .nn-info .nn-links { font: 500 9.5px/1.7 ui-monospace, monospace; color: rgba(176,222,250,.5);
+    border-top: 1px solid rgba(74,198,255,.16); padding-top: 8px; }
+  .nn-expand { margin-top: 9px; font: 700 9.5px ui-monospace, monospace; letter-spacing: .12em; color: #25c3f2;
+    border: 1px solid rgba(74,198,255,.4); border-radius: 7px; padding: 6px 10px; cursor: pointer;
+    background: rgba(34,211,238,.08); display: inline-block; }
+  .nn-expand:hover { background: rgba(34,211,238,.18); }
+  .nn-answer { position: relative; padding-right: 34px; }
+  .nn-clear { position: absolute; top: 7px; right: 8px; background: rgba(74,198,255,.1);
+    border: 1px solid rgba(74,198,255,.28); color: rgba(176,222,250,.7); border-radius: 6px;
+    width: 21px; height: 21px; font-size: 10px; cursor: pointer; line-height: 1; }
+  .nn-clear:hover { background: rgba(74,198,255,.24); color: #dff3ff; }
+
+
+  .nn-info { padding-right: 34px; }
+  .nn-infox { position: absolute; top: 9px; right: 9px; background: rgba(74,198,255,.1);
+    border: 1px solid rgba(74,198,255,.28); color: rgba(176,222,250,.7); border-radius: 6px;
+    width: 21px; height: 21px; font-size: 10px; line-height: 1; cursor: pointer; }
+  .nn-infox:hover { background: rgba(74,198,255,.24); color: #dff3ff; }
+
+  /* Undo suggestion — bottom-centre, above the composer. Auto-hides after 5s; the bar drains so
+     the remaining time is visible rather than the popup just vanishing. */
+  #undoPop { position: fixed; left: 50%; transform: translateX(-50%) translateY(14px); bottom: 108px;
+    z-index: 3200; display: none; align-items: center; gap: 12px; padding: 11px 12px 11px 16px;
+    background: linear-gradient(180deg, rgba(5,19,34,.97), rgba(4,13,23,.97));
+    border: 1px solid rgba(74,198,255,.34); border-radius: 12px; backdrop-filter: blur(12px);
+    box-shadow: 0 12px 42px rgba(0,0,0,.6); opacity: 0; transition: opacity .18s, transform .18s; }
+  #undoPop.show { display: flex; opacity: 1; transform: translateX(-50%) translateY(0); }
+  #undoPop .u-txt { font: 500 12.5px 'Helvetica Neue', sans-serif; color: rgba(226,246,255,.9); }
+  #undoPop .u-txt b { color: #a6eaff; font-weight: 600; }
+  #undoPop .u-btn { font: 700 11px ui-monospace, monospace; letter-spacing: .1em; color: #041520;
+    background: #38cdff; border: none; border-radius: 8px; padding: 7px 13px; cursor: pointer; }
+  #undoPop .u-btn:hover { background: #6ee7f7; }
+  #undoPop .u-x { background: rgba(74,198,255,.1); border: 1px solid rgba(74,198,255,.28);
+    color: rgba(176,222,250,.72); border-radius: 7px; width: 24px; height: 24px; font-size: 11px;
+    line-height: 1; cursor: pointer; }
+  #undoPop .u-x:hover { background: rgba(74,198,255,.24); color: #dff3ff; }
+  #undoPop .u-bar { position: absolute; left: 0; bottom: 0; height: 2px; background: #38cdff;
+    border-radius: 0 0 12px 12px; width: 100%; }
+  @keyframes undoDrain { from { width: 100% } to { width: 0 } }
+  #undoPop.show .u-bar { animation: undoDrain 5s linear forwards; }
+</style>
+</head>
+<body>
+
+<!-- film grain, over everything, inert -->
+<div id="grain"></div>
+
+<!-- ambient background (ported from the design) -->
+<div class="bg" style="background: radial-gradient(ellipse 55% 45% at 50% 42%, rgba(22,106,186,0.10), transparent 70%), radial-gradient(ellipse 40% 30% at 50% 110%, rgba(48,168,255,0.05), transparent 70%);"></div>
+<div class="bg" style="background-image: linear-gradient(rgba(104,176,230,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(104,176,230,0.03) 1px, transparent 1px); background-size: 72px 72px; mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black, transparent 80%);"></div>
+<div class="bg" style="background: repeating-linear-gradient(0deg, rgba(118,192,238,0.013) 0px, rgba(118,192,238,0.013) 1px, transparent 1px, transparent 3px);"></div>
+<div class="bg" style="left: -8%; top: 58%; width: 38vw; height: 38vw; border-radius: 50%; background: radial-gradient(circle, rgba(16,78,146,0.10), transparent 65%); filter: blur(40px); animation: floatY 14s ease-in-out infinite; position: absolute;"></div>
+<div class="bg" style="right: -10%; top: -18%; width: 44vw; height: 44vw; border-radius: 50%; background: radial-gradient(circle, rgba(24,104,176,0.075), transparent 65%); filter: blur(50px); animation: floatY 18s ease-in-out 2s infinite; position: absolute; left: auto;"></div>
+<div class="bg">
+  <div style="position:absolute;left:22%;top:26%;width:3px;height:3px;border-radius:50%;background:rgba(140,220,255,0.6);box-shadow:0 0 8px rgba(140,220,255,0.6);animation:drift 11s ease-in-out infinite;"></div>
+  <div style="position:absolute;left:30%;top:68%;width:2px;height:2px;border-radius:50%;background:rgba(140,220,255,0.5);box-shadow:0 0 6px rgba(140,220,255,0.5);animation:drift 14s ease-in-out 1.5s infinite;"></div>
+  <div style="position:absolute;left:47%;top:16%;width:3px;height:3px;border-radius:50%;background:rgba(160,235,255,0.55);box-shadow:0 0 9px rgba(160,235,255,0.55);animation:drift 12.5s ease-in-out 3s infinite;"></div>
+  <div style="position:absolute;left:58%;top:74%;width:2px;height:2px;border-radius:50%;background:rgba(140,220,255,0.5);box-shadow:0 0 6px rgba(140,220,255,0.5);animation:drift 16s ease-in-out 0.8s infinite;"></div>
+  <div style="position:absolute;left:66%;top:30%;width:3px;height:3px;border-radius:50%;background:rgba(140,220,255,0.55);box-shadow:0 0 8px rgba(140,220,255,0.55);animation:drift 13s ease-in-out 5s infinite;"></div>
+</div>
+
+<div class="grid-row">
+
+  <!-- ══════════ LEFT SIDEBAR ══════════ -->
+  <div class="col-left" style="display:flex;flex-direction:column;gap:20px;min-height:0;min-width:0;">
+    <div style="flex:1;display:flex;flex-direction:column;background:rgba(255,255,255,0.028);backdrop-filter:blur(24px);border:1px solid rgba(118,192,238,0.10);border-radius:20px;padding:20px 14px;box-shadow:0 0 0 1px rgba(0,0,0,0.3),0 24px 60px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.05);min-height:0;overflow-y:auto;">
+      <div style="display:flex;align-items:center;gap:11px;padding:2px 10px 20px 10px;">
+        <div style="width:26px;height:26px;border-radius:50%;border:1px solid rgba(74,198,255,0.5);display:grid;place-items:center;box-shadow:0 0 14px rgba(48,168,255,0.25),inset 0 0 8px rgba(48,168,255,0.2);">
+          <div style="width:8px;height:8px;border-radius:50%;background:#4fd0ff;box-shadow:0 0 8px rgba(74,198,255,0.9);"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <div style="font-size:14px;font-weight:600;letter-spacing:0.14em;">JARVIS</div>
+          <div class="mono" style="font-size:9px;letter-spacing:0.22em;color:rgba(118,192,238,0.55);">PERSONAL AI OS</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <div class="nav-item" data-view="chat"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="9" rx="3" stroke="currentColor" stroke-width="1.3"></rect><path d="M5.5 12v2l2.5-2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Chat</span></div>
+        <div class="nav-item" data-view="voice"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="6" y="2" width="4" height="8" rx="2" stroke="currentColor" stroke-width="1.3"></rect><path d="M3.5 8a4.5 4.5 0 0 0 9 0M8 12.5V14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg><span>Voice</span></div>
+        <div class="nav-item" data-view="vision"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1.8 8C3 5.2 5.3 3.5 8 3.5S13 5.2 14.2 8C13 10.8 10.7 12.5 8 12.5S3 10.8 1.8 8Z" stroke="currentColor" stroke-width="1.3"></path><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"></circle></svg><span>Vision</span></div>
+        <div class="nav-item" data-view="files"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4.5A1.5 1.5 0 0 1 3.5 3h3l1.5 1.8h4.5A1.5 1.5 0 0 1 14 6.3v5.2a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5v-7Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"></path></svg><span>Files</span></div>
+      </div>
+
+      <div style="flex:1;"></div>
+      <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(118,192,238,0.14),transparent);margin:14px 0;"></div>
+      <div class="nav-item" id="navSettings" data-view="settings" title="Settings"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.2" stroke="currentColor" stroke-width="1.3"></circle><path d="M8 1.8v2M8 12.2v2M1.8 8h2M12.2 8h2M3.6 3.6l1.4 1.4M11 11l1.4 1.4M12.4 3.6 11 5M5 11l-1.4 1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg><span>Settings</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════ CENTER ══════════ -->
+  <div class="col-center" style="display:flex;flex-direction:column;min-height:0;min-width:0;position:relative;">
+    <!-- clock -->
+    <div style="display:flex;justify-content:center;align-items:center;gap:10px;padding:6px 0 12px 0;">
+      <div class="mono" style="display:flex;align-items:center;gap:14px;padding:8px 18px;border-radius:999px;background:rgba(255,255,255,0.025);border:1px solid rgba(118,192,238,0.08);backdrop-filter:blur(20px);">
+        <span id="clock" style="font-size:13px;color:rgba(255,255,255,0.85);letter-spacing:0.08em;">--:--:--</span>
+        <span style="width:3px;height:3px;border-radius:50%;background:rgba(118,192,238,0.5);"></span>
+        <span id="dateLine" style="font-size:11px;color:rgba(255,255,255,0.42);letter-spacing:0.1em;">---</span>
+      </div>
+      <div id="logBtn" class="log-btn" title="System log (⌘L)">▤ LOG&nbsp;&nbsp;⌘L</div>
+    </div>
+
+    <!-- VOICE (orb home) -->
+    <!-- Required setup still missing (app.js checkSetup). Hidden once it is done. -->
+    <div id="setupBanner" class="set-card" role="button" tabindex="0" style="display:none;margin:0 4px 10px;padding:11px 15px;font-size:12px;line-height:1.5;color:rgba(255,214,150,0.92);cursor:pointer;">
+      Finish setting up JARVIS — add your Composio API key in Settings → Connections. Cloud tools stay off until then.
+    </div>
+    <div class="view active" id="view-voice" style="align-items:center;justify-content:center;">
+      <div id="orbWrap" style="position:relative;width:min(380px,100%,50vh);aspect-ratio:1/1;display:grid;place-items:center;">
+        <div style="position:absolute;width:85%;height:85%;border-radius:50%;background:radial-gradient(circle, rgba(48,168,255,0.22), rgba(48,168,255,0.05) 55%, transparent 72%);filter:blur(30px);animation:haloPulse var(--halo) ease-in-out infinite;"></div>
+        <!-- ══ HUD ring assembly ══
+             SVG rather than stacked divs: a broken ring is just stroke-dasharray, and irregular
+             dash patterns are what stop this reading as a set of plain concentric circles. Every
+             group spins at its own rate and direction, so the rings drift out of phase instead of
+             turning as one rigid object — that relative motion is most of the "alive" feeling. -->
+        <svg class="hud" viewBox="0 0 400 400" aria-hidden="true">
+          <defs>
+            <linearGradient id="hudFade" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%"   stop-color="#a6eaff" stop-opacity=".95"/>
+              <stop offset="55%"  stop-color="#4fb9e8" stop-opacity=".45"/>
+              <stop offset="100%" stop-color="#2b7fc4" stop-opacity=".12"/>
+            </linearGradient>
+            <linearGradient id="hudWarm" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stop-color="#dff6ff" stop-opacity=".8"/>
+              <stop offset="100%" stop-color="#3aa0d8" stop-opacity=".08"/>
+            </linearGradient>
+          </defs>
+
+          <!-- outermost: sparse long arcs, barely there -->
+          <g class="r cw" style="--t:150s">
+            <circle cx="200" cy="200" r="192" stroke="url(#hudFade)" stroke-width="1"
+                    fill="none" stroke-dasharray="180 90 40 140 70 260" opacity=".5"/>
+          </g>
+          <!-- graduation ticks, very slow, the "instrument" layer -->
+          <g class="r ccw" style="--t:220s">
+            <circle cx="200" cy="200" r="183" stroke="#7fd4f5" stroke-width="5" fill="none"
+                    stroke-dasharray="1 7" opacity=".26"/>
+          </g>
+          <!-- three heavy segments with uneven gaps — the main "broken" ring -->
+          <g class="r cw" style="--t:var(--spin)">
+            <circle cx="200" cy="200" r="171" stroke="url(#hudFade)" stroke-width="1.1" fill="none"
+                    stroke-dasharray="150 46 74 120 30 190" stroke-linecap="round"/>
+            <circle cx="200" cy="200" r="163" stroke="#4fd0ff" stroke-width="1" fill="none"
+                    stroke-dasharray="8 14 40 90" opacity=".4"/>
+          </g>
+          <!-- counter-rotating irregular dashes -->
+          <g class="r ccw" style="--t:var(--spin2)">
+            <circle cx="200" cy="200" r="150" stroke="url(#hudWarm)" stroke-width="1.2" fill="none"
+                    stroke-dasharray="60 18 8 26 120 14 4 40" stroke-linecap="butt"/>
+          </g>
+          <!-- dense micro-ticks -->
+          <g class="r cw" style="--t:90s">
+            <circle cx="200" cy="200" r="139" stroke="#8fdcff" stroke-width="4" fill="none"
+                    stroke-dasharray="1 5" opacity=".2"/>
+          </g>
+          <!-- bracket arcs: two bold opposing sweeps, the most legible "JARVIS" cue -->
+          <g class="r ccw" style="--t:34s">
+            <circle cx="200" cy="200" r="126" stroke="#bfeeff" stroke-width="1.3" fill="none"
+                    stroke-dasharray="96 300" stroke-linecap="round" opacity=".85"/>
+            <circle cx="200" cy="200" r="126" stroke="#bfeeff" stroke-width="1.3" fill="none"
+                    stroke-dasharray="52 344" stroke-dashoffset="-200" stroke-linecap="round" opacity=".6"/>
+          </g>
+          <!-- fine inner dashes, fastest, sits just outside the core -->
+          <g class="r cw" style="--t:22s">
+            <circle cx="200" cy="200" r="113" stroke="#4fd0ff" stroke-width="1" fill="none"
+                    stroke-dasharray="3 9" opacity=".45"/>
+          </g>
+          <!-- radial spokes, deliberately asymmetric so nothing looks machined -->
+          <g class="r ccw" style="--t:64s" opacity=".5">
+            <path d="M200 92 v14 M200 294 v14 M92 200 h14 M294 200 h14" stroke="#a6eaff" stroke-width="1"/>
+            <path d="M124 124 l9 9 M276 276 l9 9" stroke="#a6eaff" stroke-width="0.9" opacity=".7"/>
+          </g>
+          <!-- hairline shell gauges: static, thin, the reference marks the labels point at -->
+          <circle cx="200" cy="200" r="104" stroke="rgba(150,226,255,.2)" stroke-width=".6" fill="none"/>
+          <circle cx="200" cy="200" r="99" stroke="rgba(150,226,255,.12)" stroke-width=".6" fill="none" stroke-dasharray="2 7"/>
+        </svg>
+        <div id="orbCore" title="Talk to JARVIS">
+          <!-- Retired smooth-sphere layers. app.js may hold references, so they stay in the DOM and
+               CSS switches them off. Do not delete. -->
+          <div class="orb-plasma a"></div>
+          <div class="orb-plasma b"></div>
+          <div class="orb-caustic"></div>
+          <div class="orb-sheen"></div>
+          <div class="orb-shadow"></div>
+          <!-- The core. Nothing overlaps it: no wordmark, no telemetry. Real status lives in
+               #stateDot / #stateLabel below the orb, which app.js already drives. -->
+          <canvas id="orbParticles" aria-hidden="true"></canvas>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:-6px;">
+        <div class="mono" style="display:flex;align-items:center;gap:9px;">
+          <span id="stateDot" style="width:6px;height:6px;border-radius:50%;background:rgba(118,192,238,0.75);box-shadow:0 0 10px rgba(118,192,238,0.75);transition:background .5s;"></span>
+          <span id="stateLabel" style="font-size:11px;letter-spacing:0.34em;color:rgba(176,222,250,0.75);text-transform:uppercase;">Online</span>
+        </div>
+        <div id="stateLine" style="font-size:15px;font-weight:300;color:rgba(255,255,255,0.55);max-width:480px;text-align:center;transition:opacity .5s;min-height:22px;">At your service, Sir — tap the core or press the mic.</div>
+      </div>
+      <!-- last exchange card -->
+      <div id="voiceReply" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:min(620px,94%);max-height:38vh;display:none;flex-direction:column;gap:8px;z-index:5;">
+        <div id="voiceQuery" class="msg-user" style="display:none;"></div>
+        <div class="msg-jarvis" style="max-height:38vh;overflow:hidden;"><div class="dot"></div><div class="txt" id="voiceAnswer" style="max-height:calc(38vh - 26px);overflow-y:auto;"></div><div class="del-x" onclick="document.getElementById('voiceReply').style.display='none'">×</div></div>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="view" id="view-chat">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px 10px 4px;">
+        <span class="card-title" style="margin:0;">CHAT — DIRECT LINE</span>
+        <span class="btn small" id="btnNewChat">New chat</span>
+      </div>
+      <div id="chatLog" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 6px 12px 6px;"></div>
+    </div>
+
+    <!-- VISION -->
+    <div class="view" id="view-vision" style="gap:12px;overflow-y:auto;">
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:8px;">
+          <video id="camA" autoplay playsinline muted></video>
+          <select class="field" id="selA"></select>
+        </div>
+        <div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:8px;">
+          <video id="camB" autoplay playsinline muted></video>
+          <select class="field" id="selB"></select>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <input class="field" id="visionQ" style="flex:1;min-width:200px;" placeholder="Ask about what the cameras see… (Enter)">
+        <label style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:rgba(255,255,255,0.6);cursor:pointer;"><input type="checkbox" id="useFaces"> Known faces</label>
+        <span class="btn" id="btnVisionAsk">Ask JARVIS</span>
+      </div>
+      <div style="font-size:10.5px;color:rgba(255,255,255,0.35);">Drop labeled photos (e.g. <span class="mono">YourName.jpg</span>) into <span class="mono">~/JARVIS MK-1/jarvis-os/faces/</span> to teach JARVIS faces. Recognition is best-effort.</div>
+      <div id="visionLog" style="display:flex;flex-direction:column;gap:10px;padding-bottom:12px;"></div>
+    </div>
+
+    <!-- SETTINGS. Edits ONLY what JARVIS OS owns (profile.js preferences). The agent on/off
+         switches live in jarvis.yaml — duplicating them here would create two switches for one
+         lamp, so the fleet is shown read-only.
+         The password lock that used to sit in front of this was removed 2026-09-08 at his request;
+         see the note at the settings routes in server.js for what still guards it. -->
+    <div class="view" id="view-settings" style="gap:0;overflow-y:auto;">
+      <div style="padding:2px 4px 18px;">
+        <div style="font-size:19px;font-weight:600;color:rgba(255,255,255,0.9);letter-spacing:-0.01em;">Settings</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.42);margin-top:5px;">
+          How JARVIS behaves. Every change saves immediately.
+        </div>
+      </div>
+      <div id="setForm" style="display:flex;flex-direction:column;gap:22px;padding:0 4px;"></div>
+      <!-- CONNECTIONS (2026-10-09): the Composio key (required setup) and MCP servers connected by link. app.js
+           loadConnections renders it; keys are sent once, tested by the server, and never shown again. -->
+      <div class="set-section" id="connSection" style="margin-top:22px;padding:0 4px;">
+        <div class="set-section-title">CONNECTIONS</div>
+        <div id="connBox" class="set-card"></div>
+      </div>
+      <!-- MODELS (2026-10-17): which model does which job, Calibrate (measure → Keep / Discard), and this Mac. Replaces the old
+           read-only box, whose "Chat model" line showed the helper model, not the one writing replies. -->
+      <div class="set-section" id="modelsSection" style="margin-top:22px;padding:0 4px;">
+        <div class="set-section-title">MODELS</div>
+        <div id="modelsBox" class="set-card"></div>
+      </div>
+    </div>
+
+    <!-- FILES -->
+    <div class="view" id="view-files" style="gap:10px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:0 4px;">
+        <span class="card-title" style="margin:0;flex:1;" id="filesPath">JARVIS MK-1</span>
+        <span class="btn small" id="btnFilesUp">↑ Up</span>
+        <span class="btn small" id="btnReveal">Reveal in Finder</span>
+      </div>
+      <div id="filesList" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:2px;padding:2px 4px;"></div>
+    </div>
+
+    <!-- MEMORY -->
+  </div>
+
+  <!-- ══════════ RIGHT SIDEBAR ══════════ -->
+  <div class="col-right" style="display:flex;flex-direction:column;gap:14px;min-height:0;min-width:0;overflow-y:auto;padding-bottom:4px;">
+    <div class="glass">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <span class="card-title" style="margin:0;">SYSTEM</span>
+        <span id="sysState" style="display:flex;align-items:center;gap:6px;font-size:10.5px;color:#7de8b8;"><span style="width:5px;height:5px;border-radius:50%;background:#7de8b8;box-shadow:0 0 8px rgba(125,232,184,0.8);"></span>Nominal</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:6px;"><span style="color:rgba(255,255,255,0.6);">Neural cores</span><span class="mono" id="cpuPct" style="color:rgba(176,222,250,0.85);">—</span></div>
+          <div style="height:3px;border-radius:2px;background:rgba(118,192,238,0.1);overflow:hidden;"><div id="cpuW" style="height:100%;width:0%;border-radius:2px;background:linear-gradient(90deg,#2b9ee6,#4fd0ff);box-shadow:0 0 8px rgba(74,198,255,0.6);transition:width 1.2s cubic-bezier(.2,.8,.2,1);"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:6px;"><span style="color:rgba(255,255,255,0.6);">Memory</span><span class="mono" id="ramPct" style="color:rgba(176,222,250,0.85);">—</span></div>
+          <div style="height:3px;border-radius:2px;background:rgba(118,192,238,0.1);overflow:hidden;"><div id="ramW" style="height:100%;width:0%;border-radius:2px;background:linear-gradient(90deg,#2e6fdc,#60a5fa);box-shadow:0 0 8px rgba(96,165,250,0.5);transition:width 1.2s cubic-bezier(.2,.8,.2,1);"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:6px;"><span style="color:rgba(255,255,255,0.6);">Power cell</span><span class="mono" id="battPct" style="color:rgba(176,222,250,0.85);">—</span></div>
+          <div style="height:3px;border-radius:2px;background:rgba(118,192,238,0.1);overflow:hidden;"><div id="battW" style="height:100%;width:0%;border-radius:2px;background:linear-gradient(90deg,#34d399,#7de8b8);box-shadow:0 0 8px rgba(125,232,184,0.5);transition:width 1.2s cubic-bezier(.2,.8,.2,1);"></div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:rgba(255,255,255,0.6);">Storage</span><span class="mono" id="diskLine" style="color:rgba(176,222,250,0.85);">—</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:rgba(255,255,255,0.6);">Latency</span><span class="mono" id="latency" style="color:rgba(176,222,250,0.85);">—</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;"><span style="color:rgba(255,255,255,0.6);">Running apps</span><span class="mono" id="runApps" style="color:rgba(176,222,250,0.85);">—</span></div>
+      </div>
+    </div>
+
+    <div class="glass">
+      <div class="card-title">FLEET &amp; ACTIVE TASKS</div>
+      <div id="tasksList" style="display:flex;flex-direction:column;gap:9px;font-size:12.5px;"></div>
+    </div>
+
+    <div class="glass">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
+        <span class="card-title" style="margin:0;">TODAY</span>
+        <span id="weatherLine" style="font-size:12px;color:rgba(176,222,250,0.8);"></span>
+      </div>
+      <div id="todayList" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+
+    <div class="glass">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
+        <span class="card-title" style="margin:0;">NOTIFICATIONS</span>
+        <span id="notifClearAll" class="del-x" style="display:none;font-size:13px;line-height:1;" title="Clear all notifications">×</span>
+      </div>
+      <div id="notifList" style="display:flex;flex-direction:column;gap:11px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ BOTTOM BAR ══════════ -->
+<div class="composer-bar" style="padding:16px 20px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;">
+    <!-- Attached images waiting to be sent. Hidden until there is something to show. -->
+    <div id="attachStrip" style="display:none;width:100%;max-width:920px;gap:8px;flex-wrap:wrap;"></div>
+  <div style="width:100%;max-width:920px;display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.03);backdrop-filter:blur(28px);border:1px solid rgba(118,192,238,0.12);border-radius:22px;padding:12px 14px;box-shadow:0 24px 60px rgba(0,0,0,0.5), 0 0 40px rgba(48,168,255,0.04), inset 0 1px 0 rgba(255,255,255,0.06);">
+    <div id="ptt" title="Push to talk">
+      <svg width="19" height="19" viewBox="0 0 16 16" fill="none"><rect x="6" y="1.6" width="4" height="8.4" rx="2" stroke="currentColor" stroke-width="1.4"></rect><path d="M3.2 7.8a4.8 4.8 0 0 0 9.6 0M8 12.6v1.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg>
+    </div>
+    <div id="wave" style="display:flex;align-items:center;gap:3px;height:40px;min-width:148px;padding:0 4px;"></div>
+    <!-- Only visible while something is actually running; a dead stop button is worse than none. -->
+    <div id="stopBtn" title="Stop whatever JARVIS is doing (Esc)">■ STOP</div>
+    <input id="cmdInput" placeholder="What do you need? /schedule, /watch — or just talk to me…" style="flex:1;background:transparent;border:none;color:rgba(255,255,255,0.92);font-family:'Helvetica Neue',sans-serif;font-size:14px;font-weight:400;letter-spacing:0.01em;padding:10px 4px;">
+    <div style="display:flex;gap:8px;">
+      <div class="btn" id="qaBriefing">Briefing</div>
+      <div class="btn" id="qaThink" title="Send your NEXT question to the slow, careful reasoning model — a few minutes, much better at hard logic">Think hard</div>
+      <div class="btn" id="qaFocus">Focus mode</div>
+      <div class="btn" id="qaCapture">Capture</div>
+      <div class="btn" id="qaAttach" title="Attach an image for JARVIS to look at — or just paste (⌘V) or drop one here">Attach</div>
+      <input type="file" id="imgFile" accept="image/*" multiple style="display:none">
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ BOOT / POWER-UP SEQUENCE ══════════ -->
+<div id="boot">
+  <div class="boot-scan"></div>
+  <div class="boot-center">
+    <div class="boot-reactor">
+      <div class="br-ring r1"></div>
+      <div class="br-ring r2"></div>
+      <div class="br-ring r3"></div>
+      <div class="br-core"></div>
+    </div>
+    <div class="boot-title" id="bootTitle">JARVIS</div>
+    <div class="boot-sub" id="bootSub">SYSTEM BOOT</div>
+    <div class="boot-log" id="bootLog"></div>
+    <div class="boot-progress"><div class="boot-progress-fill" id="bootFill"></div></div>
+    <div class="boot-hint">click anywhere to skip</div>
+  </div>
+</div>
+
+<!-- ══════════ SYSTEM LOG CONSOLE (⌘L) ══════════ -->
+<div id="logConsole" class="log-hidden">
+  <div class="log-panel">
+    <div class="log-head">
+      <div class="log-title">SYSTEM LOG · JARVIS MK-1<span class="log-live" id="logLive">● LIVE</span></div>
+      <div class="log-filters" id="logFilters"></div>
+      <input id="logSearch" class="log-search" placeholder="filter…" spellcheck="false">
+      <div class="log-x" id="logClose">✕</div>
+    </div>
+    <div class="log-body" id="logBody"></div>
+    <div class="log-foot"><span id="logCount">—</span><span>⌘L / Esc to close · click ● to pause</span></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div id="worldMonitor">
+  <!-- Offline takeover: shown instead of the globe/panels whenever the ping-based connectivity
+       check (shared with the System panel's latency readout) reports no internet. Sits above every
+       row of the grid; Escape/⌘⇧W still close the monitor since those are global key handlers, not
+       DOM-dependent. -->
+  <div id="wmOffline" class="wm-offline">
+    <div class="wm-offline-txt">NO INTERNET CONNECTION</div>
+    <div class="wm-offline-sub">World Monitor standing by — resumes automatically once the connection returns.</div>
+  </div>
+  <!-- ROW 1 · command bar -->
+  <div class="wm-cmd">
+    <div class="wm-brand"><span class="bdot"></span>JARVIS</div>
+    <div class="wm-chip">WORLD MONITOR</div>
+    <div class="sep"></div>
+    <div class="wm-chip live" id="wmLiveChip">LIVE</div>
+    <div class="wm-defcon d5" id="wmDefcon">DEFCON 5 <span id="wmDefconPct">0%</span></div>
+    <div class="wm-chip" id="wmSignalChip">◎ 0 SIGNALS</div>
+    <div class="wm-spacer"></div>
+    <div class="wm-chip key" id="wmSourcesChip">0 SOURCES</div>
+    <div class="wm-chip key" title="Ask JARVIS"><b>⌘⇧W</b> MONITOR</div>
+    <div class="wm-icobtn" id="wmRefresh" title="Refresh feed">⟳</div>
+    <div class="wm-icobtn x" id="wmClose" title="Close (Esc)">✕</div>
+  </div>
+
+  <!-- ROW 2 · sub-header -->
+  <div class="wm-sub">
+    <span class="lbl">GLOBAL SITUATION</span>
+    <div class="wm-tabs" id="wmLens"></div>
+    <div class="wm-clock" id="wmClock"></div>
+    <div class="wm-tabs" id="wmMode"><span class="on" data-mode="3d" title="Globe">3D</span><span data-mode="2d" title="Flat map — every marker at its coordinates">2D</span></div>
+  </div>
+
+  <!-- ROW 3 · map stage -->
+  <div class="wm-stage">
+    <div id="worldGlobe"></div>
+    <canvas id="worldMap"></canvas>
+    <div class="wm-maptip" id="wmMapTip"></div>
+    <div class="wm-scanline"></div>
+    <div class="wm-ticker"><div class="wm-ticker-track" id="wmTicker">Loading world feed…</div></div>
+    <div class="wm-alert" id="wmAlert"></div>
+    <div class="wm-stats" id="wmStats"></div>
+    <div class="wm-feed" id="wmFeed"></div>
+    <div class="wm-legend" id="wmLegend"></div>
+    <div class="wm-answer" id="wmAnswer"></div>
+    <div class="wm-bar">
+      <div class="wm-orb" id="wmOrb" title="Tap to speak"><div class="r halo"></div><div class="r r1"></div><div class="r r2"></div><div class="core"></div></div>
+      <input id="worldInput" placeholder="Ask JARVIS about the world…  summarize · biggest quake · what's happening in Ukraine" spellcheck="false" autocomplete="off">
+      <span class="hintk">↵</span>
+    </div>
+  </div>
+
+  <!-- ROW 4 · bottom console -->
+  <div class="wm-console">
+    <div class="wm-col">
+      <div class="wm-colhead">LIVE INTEL FEED <span class="st" id="wmFeedCount">0 SIGNALS</span></div>
+      <div class="wm-outlets" id="wmOutlets"></div>
+      <div class="wm-colbody" id="wmNewsWall"></div>
+    </div>
+    <div class="wm-col">
+      <div class="wm-colhead">EVENT LOG <span class="st">GEO · REALTIME</span></div>
+      <div class="wm-colbody" id="wmEventLog"></div>
+    </div>
+    <div class="wm-col">
+      <div class="wm-colhead">JARVIS INSIGHTS <span class="st" id="wmInsightSt">STANDBY</span></div>
+      <div class="wm-colbody" id="wmInsights"></div>
+    </div>
+  </div>
+  <div class="wm-status" id="wmStatus" style="display:none"></div>
+</div>
+
+<!-- NEURAL NETWORK — live self-model of JARVIS. Graph is fetched from /api/neural, which builds it
+     from RUNNING state (launchd agents, live tool registries), so new components appear on their own. -->
+<div id="neuralNet">
+  <canvas id="nnBg"></canvas>
+  <div class="nn-grid"></div>
+  <div class="nn-vignette"></div>
+  <div class="nn-scan"></div>
+  <svg id="nnSvg">
+    <defs>
+      <filter id="nnGlow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <g id="nnEdges"></g>
+    <g id="nnNodes"></g>
+  </svg>
+  <div class="nn-head">
+    <div>
+      <div class="nn-title">NEURAL NETWORK</div>
+      <div class="nn-sub" id="nnSub">mapping…</div>
+    </div>
+    <div style="display:flex;gap:8px;pointer-events:auto"><div class="nn-x" id="nnMode" title="Switch between JARVIS's own architecture and your knowledge graph">◧ MY GRAPH</div><div class="nn-x" id="nnBack" style="display:none">‹ BACK</div><div class="nn-x" id="nnClose">✕ CLOSE</div></div>
+  </div>
+  <div class="nn-legend" id="nnLegend"></div>
+  <div class="nn-info" id="nnInfo"><button class="nn-infox" id="nnInfoClose" title="Close">✕</button><h5 id="nnInfoTitle"></h5><div class="nn-kind" id="nnInfoKind"></div><p id="nnInfoMeta"></p><div class="nn-links" id="nnInfoLinks"></div><div class="nn-expand" id="nnExpand" style="display:none"></div></div>
+  <div class="nn-ask">
+    <input id="nnInput" placeholder="Ask about how I work — “what happens when I say open youtube?”" autocomplete="off">
+    <div class="nn-answer" id="nnAnswer"><button class="nn-clear" id="nnClear" title="New question">✕</button><div id="nnAnswerText"></div></div>
+  </div>
+</div>
+
+<!-- Undo suggestion. Only appears when the server reports the last action is genuinely reversible. -->
+<div id="undoPop">
+  <div class="u-txt">Created <b id="undoLabel"></b></div>
+  <button class="u-btn" id="undoGo">UNDO</button>
+  <button class="u-x" id="undoX" title="Dismiss">✕</button>
+  <div class="u-bar"></div>
+</div>
+<!-- ══════════ PARTICULATE CORE ══════════
+     Hand-written, zero dependencies, one canvas, one rAF loop, transparent + additive throughout.
+     Reads state from the classes and CSS variables already on #orbWrap, so app.js keeps driving the
+     core exactly as before. Nothing here touches app.js. -->
+<script>
+(function () {
+  var wrap = document.getElementById('orbWrap');
+  var core = document.getElementById('orbCore');
+  var cv   = document.getElementById('orbParticles');
+  if (!wrap || !core || !cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+  /* ── the cloud ──────────────────────────────────────────────────────────────────────────────
+     Three gaussians per point, normalised. This is the only placement scheme with no structure at
+     all: no latitude rows, and none of the faint spiral seam golden-angle placement leaves behind. */
+  var N = 2600;
+  var ox = new Float32Array(N), oy = new Float32Array(N), oz = new Float32Array(N);
+  var ph = new Float32Array(N), va = new Float32Array(N), vs = new Float32Array(N);
+  var px = new Float32Array(N), py = new Float32Array(N), ps = new Float32Array(N);
+  function gauss() {
+    var u = 1 - Math.random(), v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(6.283185 * v);
+  }
+  for (var i = 0; i < N; i++) {
+    var x = gauss(), y = gauss(), z = gauss(), m = Math.hypot(x, y, z) || 1;
+    ox[i] = x / m; oy[i] = y / m; oz[i] = z / m;
+    ph[i] = Math.random() * 6.2832;
+    va[i] = 0.62 + Math.random() * 0.38;              /* per-point brightness spread */
+    vs[i] = Math.random() < 0.06 ? 1.7 : 1;           /* a few brighter motes */
+  }
+
+  /* Alpha is quantised to 14 levels so fillStyle is set 14 times a frame rather than 2600. */
+  var LV = 14, bins = [], counts = new Int32Array(LV), cols = [];
+  for (i = 0; i < LV; i++) {
+    bins.push(new Int32Array(N));
+    var k = i / (LV - 1);
+    cols.push('rgba(' + Math.round(30 + 190 * k * k) + ',' + Math.round(140 + 108 * k) + ',' +
+              Math.round(198 + 57 * k) + ',' + (0.05 + 0.95 * k).toFixed(3) + ')');
+  }
+
+  var cur = { spin: 1, roll: 1, bw: 1.2, bright: 1, turb: 0, rip: 0, bloom: .36, dens: 1 };
+  var tgt = { spin: 1, roll: 1, bw: 1.2, bright: 1, turb: 0, rip: 0, bloom: .36, dens: 1 };
+
+  function num(cs, n, d) { var v = parseFloat(cs.getPropertyValue(n)); return (isFinite(v) && v > 0) ? v : d; }
+  function readState() {
+    var cs = getComputedStyle(wrap), c = wrap.classList;
+    tgt.spin  = 26 / num(cs, '--spin', 26);           /* idle == 1x */
+    tgt.roll  = 38 / num(cs, '--spin2', 38);
+    tgt.bw    = 6.2832 / num(cs, '--pulse', 5.2);
+    var gA = num(cs, '--glowA', .36);
+    tgt.bloom = gA; tgt.bright = 0.7 + gA;
+    tgt.turb = c.contains('thinking') ? 1 : (c.contains('speaking') ? .3 : 0);
+    tgt.rip  = c.contains('listening') ? 1 : (c.contains('speaking') ? .4 : 0);
+    tgt.dens = c.contains('thinking') ? 1.25 : (c.contains('listening') ? 1.1 : 1);
+    if (!running) render(T);
+  }
+
+  var W = 0, cx = 0, cy = 0, R = 0, bloomG = null;
+  function resize() {
+    var w = core.clientWidth || 200, s = Math.round(Math.min(w, 460) * DPR);
+    if (s < 8 || s === W) return;
+    W = s; cv.width = W; cv.height = W;
+    cx = cy = W / 2; R = W * 0.40;
+    /* Additive only, and it fades fully to transparent — a glow, never a plate. */
+    bloomG = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.25);
+    bloomG.addColorStop(0, 'rgba(46,150,235,.34)');
+    bloomG.addColorStop(.5, 'rgba(24,96,178,.11)');
+    bloomG.addColorStop(1, 'rgba(10,40,90,0)');
+    render(T);
+  }
+
+  var TILT = 0.36, sinT = Math.sin(TILT), cosT = Math.cos(TILT);
+  function render(t) {
+    if (!W || !bloomG) return;
+    ctx.clearRect(0, 0, W, W);                        /* stays transparent: no background fill */
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalAlpha = Math.min(.5, .1 + cur.bloom * .5);
+    ctx.fillStyle = bloomG; ctx.fillRect(0, 0, W, W);
+    ctx.globalAlpha = 1;
+
+    /* One rigid rotation for the entire cloud: yaw, then a slow roll, then the fixed viewing tilt. */
+    var a = t * 0.42 * cur.spin, ca = Math.cos(a), sa = Math.sin(a);
+    var b = t * 0.13 * cur.roll, cb = Math.cos(b), sb = Math.sin(b);
+    var breath = Math.sin(t * cur.bw), rip = cur.rip;
+    var front = rip > .02 ? ((t * .55) % 1.7) - .25 : -9;   /* ripple front, centre -> rim */
+    counts.fill(0);
+
+    for (var n = 0; n < N; n++) {
+      var x0 = ox[n], y0 = oy[n], z0 = oz[n];
+      var x1 = x0 * ca + z0 * sa, z1 = z0 * ca - x0 * sa;
+      var y1 = y0 * cb - z1 * sb;  z1 = z1 * cb + y0 * sb;
+      var Y = y1 * cosT + z1 * sinT, Z = z1 * cosT - y1 * sinT, X = x1;
+
+      /* Shell thickness, not scale: the silhouette never moves. */
+      var r = 1 + breath * 0.02;
+      if (cur.turb > .01) {
+        var q = cur.turb;
+        r += 0.045 * q * Math.sin(t * 3.2 + ph[n] * 2.7);
+        X += 0.028 * q * Math.sin(t * 2.1 + ph[n] * 1.7);
+        Y += 0.028 * q * Math.cos(t * 2.4 + ph[n] * 2.3);
+      }
+      X *= r; Y *= r; Z *= r;
+
+      var depth = (Z + 1) * .5;                       /* 0 far side, 1 near side */
+      var boost = 0;
+      if (front > -1) {
+        var d = Math.sqrt(X * X + Y * Y) - front;     /* wave travels outward through the cloud */
+        boost = Math.exp(-(d * d) * 55) * rip;
+      }
+      /* Far side never drops to zero — you see the back of the shell through the front, which is
+         what makes it read as hollow rather than as a filled disc. */
+      var al = va[n] * cur.bright * cur.dens
+             * (0.22 + 0.78 * depth * depth)
+             * (0.78 + 0.22 * Math.sin(t * cur.bw + ph[n]))
+             + boost * 0.85;
+      if (al <= 0.045) continue;
+      var lv = al >= 1 ? LV - 1 : (al * LV) | 0;
+      bins[lv][counts[lv]++] = n;
+      px[n] = cx + X * R; py[n] = cy + Y * R;
+      ps[n] = Math.max(1, vs[n] * DPR * (0.5 + 0.85 * depth + boost * 0.5));
+    }
+
+    for (var g = 0; g < LV; g++) {
+      var c = counts[g]; if (!c) continue;
+      ctx.fillStyle = cols[g];
+      var arr = bins[g];
+      for (var m = 0; m < c; m++) { var id = arr[m], s = ps[id]; ctx.fillRect(px[id] - s * .5, py[id] - s * .5, s, s); }
+    }
+  }
+
+  var running = false, raf = 0, last = 0, T = 0;
+  function frame(ts) {
+    if (!running) return;
+    var dt = last ? Math.min(.05, (ts - last) / 1000) : .016; last = ts;
+    T += dt;
+    var e = Math.min(1, dt * 3.2);
+    for (var k in tgt) cur[k] += (tgt[k] - cur[k]) * e;
+    render(T);
+    raf = requestAnimationFrame(frame);
+  }
+  function start() { if (running) return; running = true; last = 0; raf = requestAnimationFrame(frame); }
+  function stop() { running = false; if (raf) cancelAnimationFrame(raf); raf = 0; }
+
+  /* Never animate off-screen: hidden tab, or the voice view not being active. */
+  var frozen = false;
+  function sync() {
+    if (reduce.matches) {
+      stop();
+      if (!frozen) { frozen = true; for (var k in tgt) cur[k] = tgt[k]; render(2.4); }
+      return;
+    }
+    frozen = false;
+    if (document.hidden || !core.offsetParent) stop(); else start();
+  }
+
+  new MutationObserver(readState).observe(wrap, { attributes: true, attributeFilter: ['class', 'style'] });
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(core);
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', sync);
+  if (reduce.addEventListener) reduce.addEventListener('change', function () { frozen = false; sync(); });
+  resize(); readState();
+  for (var kk in tgt) cur[kk] = tgt[kk];
+  sync();
+  // Nobody is looking at a hidden window. This drives the HUD interpolation every 800ms whether the
+  // app is frontmost or buried behind Brave, keeping the WebContent process awake and animating for
+  // no one. The visibilitychange listener above already re-syncs the moment it comes back, so
+  // nothing is stale on return — it simply stops burning cycles while out of sight.
+  setInterval(function () { if (!document.hidden) sync(); }, 800);
+})();
+</script>
+<!-- LINK LOST. Shown when the app can no longer reach the JARVIS core — the Mac asleep, off the
+     tailnet, or the service stopped. Lives in the page rather than being fetched, because the whole
+     point is that nothing can be fetched at the moment it is needed. Hidden by default; app.js
+     reveals it after two consecutive failed heartbeats and removes it the moment one succeeds. -->
+<div id="linkLost" style="display:none;position:fixed;inset:0;z-index:9999;background:#03060a;
+     flex-direction:column;align-items:center;justify-content:center;gap:22px;
+     font-family:'Helvetica Neue',sans-serif;padding:28px;text-align:center;">
+  <div style="position:relative;width:132px;height:132px;">
+    <div id="llRing" style="position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(94,212,247,0.16);"></div>
+    <div style="position:absolute;inset:26px;border-radius:50%;background:radial-gradient(circle,rgba(94,212,247,0.28),transparent 68%);"></div>
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+         font-family:'SF Mono',Menlo,monospace;font-size:26px;color:rgba(94,212,247,0.75);">— —</div>
+  </div>
+  <div>
+    <div style="font-size:17px;letter-spacing:0.02em;color:rgba(255,255,255,0.92);margin-bottom:9px;">Cannot reach JARVIS</div>
+    <div id="llWhy" style="font-size:13px;line-height:1.55;color:rgba(255,255,255,0.45);max-width:340px;">
+      The core is not answering. The Mac is most likely asleep, off the tailnet, or the service has stopped.
+    </div>
+  </div>
+  <div id="llMeta" class="mono" style="font-size:10.5px;letter-spacing:0.06em;color:rgba(255,255,255,0.28);">LAST CONTACT —</div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span id="llRetry" class="btn" style="cursor:pointer;">Retry now</span>
+  </div>
+  <div id="llAuto" class="mono" style="font-size:10px;letter-spacing:0.06em;color:rgba(255,255,255,0.22);">RETRYING AUTOMATICALLY</div>
+</div>
+<style>
+  @keyframes llPulse { 0%,100% { opacity:0.25; transform:scale(1); } 50% { opacity:0.7; transform:scale(1.045); } }
+  #linkLost #llRing { animation: llPulse 2.4s ease-in-out infinite; }
+</style>
+<script src="/app.js"></script>
+
+
+</body>
+</html>

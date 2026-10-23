@@ -1,0 +1,121 @@
+# JARVIS MK-1 — what git carries and what it must not.
+#
+# The rule: SOURCE and STRUCTURE are versioned. Secrets, biometrics and personal history are
+# versioned too, but ONLY inside private/vault.enc (see tools/vault.sh) — encrypted before they ever
+# reach a commit. Everything a machine can rebuild for itself is left out entirely.
+#
+# Why the vault instead of just committing the files: a private repo is not a vault. It is readable
+# by anything holding an account token, it is in scope for an account breach, and git history is
+# permanent — a key committed today and deleted tomorrow is still in the history forever. Encrypting
+# first means a repo leak is not a data leak.
+
+# ── secrets: real values live in the vault; .env.example documents the shape ──
+.env
+*.token
+.apitoken
+jarvis-os/state/.apitoken
+jarvis-control/.token
+
+# ── biometric + personal: family faces, life history, location. Vault only. ──
+jarvis-os/faces/
+jarvis-os/state/profile.json
+jarvis-os/state/episodes.json
+jarvis-os/state/memory.json
+jarvis-os/state/location.json
+jarvis-os/state/notifications.json
+
+# ── logs. clap.log is a transcript of what the microphone heard in his home. ──
+# Never committed, encrypted or otherwise: it is regenerable noise with a real privacy cost.
+*.log
+logs/
+jarvis-os/logs/
+clap-daemon/clap.log
+focus-guard/focus.log
+security/*.log
+
+# ── regenerable: rebuilt by install.sh, so committing them only adds weight ──
+jarvis-os/state/library.json
+security/integrity.manifest
+security/selfheal.json
+security/canary.json
+node_modules/
+
+# ── per-run churn: rewritten by simply USING JARVIS, so the tree was dirty after
+# every session and real changes had to be picked out of the noise. None of it is
+# worth restoring onto a new machine — a canary re-arms, a greeting re-greets, the
+# proactive clock restarts, the time machine refills from live use.
+#
+# Deliberately NOT here: lessons.json and learned.json. They churn too, but they
+# hold what he taught and what failed — the one thing in state/ a dead Mac could
+# not rebuild for itself.
+jarvis-os/state/canary.json
+jarvis-os/state/greeting-seen.json
+jarvis-os/state/proactive.json
+jarvis-os/state/timemachine.json
+jarvis-os/state/listener.json
+# Visual-silent mode's override. Runtime state with an expiry, exactly like listener.json above —
+# the SCHEDULE is code (server.js) and belongs in git; a manual "quiet for 30 minutes" does not.
+jarvis-os/state/silent.json
+jarvis-os/state/spend.json
+# The week's AI/ML stories (ainews.js): re-read from the sources by any dream cycle, three weeks at most.
+jarvis-os/state/ainews.json
+# The migration-version manifest. Machine-local and RESTORED FROM THE VAULT, not
+# from git — it must arrive with the data files it describes (episodes, profile),
+# which are vaulted too. A copy from git could name a version the restored data
+# has not reached and re-run migrations over it.
+jarvis-os/state/.schema.json
+
+# ── build products: rebuilt from source by install.sh ──
+*.app/
+!**/Contents/
+build/
+*.o
+# Python's own bytecode cache, rewritten whenever a .py changes (tts/piper_daemon.py's was committed once).
+__pycache__/
+
+# ── backups/: every pre-edit copy, and the leftovers of the 2026-09-18 tidy. git IS the history for
+# tracked files; backups/ exists for the files git never sees (.env, jarvis.yaml, state/*.json) and for a
+# one-command undo of an edit. tools/bak.sh FILE WHAT copies FILE to backups/<same path>.bak-WHAT-<time>.
+# The patterns below still catch a .bak made the old way, beside its file — 346 of those had piled up.
+backups/
+*.bak
+*.bak-*
+*.bak.*
+
+# ── macOS noise ──
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# ── live config: holds the settings-panel password hash. Vaulted, not committed. ──
+jarvis.yaml
+
+# Derived vector index for semantic recall — rebuilt from episodes.json in ~13s, 2.2MB of floats.
+jarvis-os/state/episodes.vec
+jarvis-os/state/episodes.vec.json
+
+# The item classifier's cache. Unlike learned.json/lessons.json above, this is NOT a ledger of what
+# he taught — it fills itself in, one row per item ever classified, so tracking it would put a diff
+# on every order. The rows that ARE his (marked `taught`) are irreplaceable, so they go in the
+# encrypted vault instead: tools/vault.sh carries this file. Everything else in it rebuilds by
+# re-embedding, and the whole file is discarded automatically when the prototypes change.
+jarvis-os/state/itemclass.json
+
+# ── finetune/: the reader model's workshop. Scripts are versioned; everything heavy or personal is not.
+# data/ holds his real sentences (same rule as state/norm_pairs.json). models/ and adapters/ are
+# gigabytes a machine can re-download or re-train. .venv is rebuilt from requirements.txt.
+finetune/.venv/
+finetune/models/
+finetune/data/
+# adapters/current IS shipped (2026-09-24, owner's decision): the live reader's LoRA adapter, 29 MB, so any
+# install can build jarvis-reader. It holds weights only — the messages it was trained on stay in data/.
+finetune/adapters/*
+!finetune/adapters/current/
+finetune/runs/
+
+# What JARVIS writes out for him (the Sunday AI/ML list, etc.) — personal output, not code.
+JARVIS Outputs/
+
+# Per-user speech vocabulary (names, places) — install.sh seeds it from config/vocabulary.example.json
+config/vocabulary.json

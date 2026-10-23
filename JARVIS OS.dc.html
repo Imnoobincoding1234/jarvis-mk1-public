@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #050608; overflow: hidden; }
+  * { box-sizing: border-box; }
+  a { color: #5ed4f7; text-decoration: none; }
+  a:hover { color: #9fe6ff; }
+  ::placeholder { color: rgba(255,255,255,0.28); }
+  input { outline: none; }
+  ::-webkit-scrollbar { width: 0; height: 0; }
+  @keyframes orbPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.035); }
+  }
+  @keyframes haloPulse {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.08); }
+  }
+  @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes spinRev { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+  @keyframes wave { from { transform: scaleY(0.25); } to { transform: scaleY(1); } }
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+  }
+  @keyframes ringBreathe {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.8; }
+  }
+  @keyframes drift {
+    0%, 100% { transform: translateY(0px); opacity: 0.12; }
+    50% { transform: translateY(-28px); opacity: 0.6; }
+  }
+</style>
+</helmet>
+
+<div style="width: 100vw; height: 100vh; background: #050608; color: rgba(255,255,255,0.92); font-family: 'Inter', 'Helvetica Neue', sans-serif; position: relative; display: flex; flex-direction: column; overflow: hidden;" data-screen-label="JARVIS OS">
+
+  <!-- ambient background glow -->
+  <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 55% 45% at 50% 42%, rgba(34,150,220,0.10), transparent 70%), radial-gradient(ellipse 40% 30% at 50% 110%, rgba(56,189,248,0.05), transparent 70%);"></div>
+  <div style="position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(120,200,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(120,200,255,0.025) 1px, transparent 1px); background-size: 72px 72px; mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black, transparent 80%);"></div>
+  <div style="position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(140,210,255,0.013) 0px, rgba(140,210,255,0.013) 1px, transparent 1px, transparent 3px);"></div>
+  <div style="position: absolute; left: -8%; top: 58%; width: 38vw; height: 38vw; border-radius: 50%; background: radial-gradient(circle, rgba(30,100,170,0.10), transparent 65%); filter: blur(40px); animation: floatY 14s ease-in-out infinite; pointer-events: none;"></div>
+  <div style="position: absolute; right: -10%; top: -18%; width: 44vw; height: 44vw; border-radius: 50%; background: radial-gradient(circle, rgba(40,140,200,0.08), transparent 65%); filter: blur(50px); animation: floatY 18s ease-in-out 2s infinite; pointer-events: none;"></div>
+  <div style="position: absolute; inset: 0; pointer-events: none;">
+    <div style="position: absolute; left: 22%; top: 26%; width: 3px; height: 3px; border-radius: 50%; background: rgba(140,220,255,0.6); box-shadow: 0 0 8px rgba(140,220,255,0.6); animation: drift 11s ease-in-out infinite;"></div>
+    <div style="position: absolute; left: 30%; top: 68%; width: 2px; height: 2px; border-radius: 50%; background: rgba(140,220,255,0.5); box-shadow: 0 0 6px rgba(140,220,255,0.5); animation: drift 14s ease-in-out 1.5s infinite;"></div>
+    <div style="position: absolute; left: 47%; top: 16%; width: 3px; height: 3px; border-radius: 50%; background: rgba(160,235,255,0.55); box-shadow: 0 0 9px rgba(160,235,255,0.55); animation: drift 12.5s ease-in-out 3s infinite;"></div>
+    <div style="position: absolute; left: 58%; top: 74%; width: 2px; height: 2px; border-radius: 50%; background: rgba(140,220,255,0.5); box-shadow: 0 0 6px rgba(140,220,255,0.5); animation: drift 16s ease-in-out 0.8s infinite;"></div>
+    <div style="position: absolute; left: 66%; top: 30%; width: 3px; height: 3px; border-radius: 50%; background: rgba(140,220,255,0.55); box-shadow: 0 0 8px rgba(140,220,255,0.55); animation: drift 13s ease-in-out 5s infinite;"></div>
+    <div style="position: absolute; left: 40%; top: 82%; width: 2px; height: 2px; border-radius: 50%; background: rgba(160,235,255,0.45); box-shadow: 0 0 6px rgba(160,235,255,0.45); animation: drift 15s ease-in-out 2.2s infinite;"></div>
+  </div>
+
+  <!-- main row -->
+  <div style="flex: 1; display: grid; grid-template-columns: minmax(196px, 240px) minmax(0, 1fr) minmax(232px, 296px); gap: 20px; padding: 20px 20px 0 20px; min-height: 0; position: relative;">
+
+    <!-- ══════════ LEFT SIDEBAR ══════════ -->
+    <div style="display: flex; flex-direction: column; gap: 20px; min-height: 0; min-width: 0; animation: {{ floatAnimA }};">
+      <div style="flex: 1; display: flex; flex-direction: column; background: rgba(255,255,255,0.028); backdrop-filter: blur(24px); border: 1px solid rgba(140,210,255,0.10); border-radius: 20px; padding: 20px 14px; box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 24px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05); min-height: 0; overflow-y: auto;">
+
+        <!-- brand -->
+        <div style="display: flex; align-items: center; gap: 11px; padding: 2px 10px 20px 10px;">
+          <div style="width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(94,212,247,0.5); display: grid; place-items: center; box-shadow: 0 0 14px rgba(56,189,248,0.25), inset 0 0 8px rgba(56,189,248,0.2);">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: #5ed4f7; box-shadow: 0 0 8px rgba(94,212,247,0.9);"></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 1px;">
+            <div style="font-size: 14px; font-weight: 600; letter-spacing: 0.14em;">JARVIS</div>
+            <div style="font-size: 9px; letter-spacing: 0.22em; color: rgba(140,210,255,0.55); font-family: 'JetBrains Mono', monospace;">PERSONAL AI OS</div>
+          </div>
+        </div>
+
+        <!-- nav -->
+        <div style="display: flex; flex-direction: column; gap: 3px;">
+          <div onClick="{{ nav.chat.onClick }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; cursor: pointer; font-size: 13.5px; font-weight: 500; transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1); background: {{ nav.chat.bg }}; color: {{ nav.chat.color }}; box-shadow: {{ nav.chat.glow }};" style-hover="background: rgba(140,210,255,0.08); color: #ffffff; box-shadow: inset 0 0 20px rgba(94,212,247,0.06), 0 0 20px rgba(56,189,248,0.08);">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="9" rx="3" stroke="currentColor" stroke-width="1.3"></rect><path d="M5.5 12v2l2.5-2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <span>Chat</span>
+          </div>
+          <div onClick="{{ nav.voice.onClick }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; cursor: pointer; font-size: 13.5px; font-weight: 500; transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1); background: {{ nav.voice.bg }}; color: {{ nav.voice.color }}; box-shadow: {{ nav.voice.glow }};" style-hover="background: rgba(140,210,255,0.08); color: #ffffff; box-shadow: inset 0 0 20px rgba(94,212,247,0.06), 0 0 20px rgba(56,189,248,0.08);">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="6" y="2" width="4" height="8" rx="2" stroke="currentColor" stroke-width="1.3"></rect><path d="M3.5 8a4.5 4.5 0 0 0 9 0M8 12.5V14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+            <span>Voice</span>
+          </div>
+          <div onClick="{{ nav.vision.onClick }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; cursor: pointer; font-size: 13.5px; font-weight: 500; transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1); background: {{ nav.vision.bg }}; color: {{ nav.vision.color }}; box-shadow: {{ nav.vision.glow }};" style-hover="background: rgba(140,210,255,0.08); color: #ffffff; box-shadow: inset 0 0 20px rgba(94,212,247,0.06), 0 0 20px rgba(56,189,248,0.08);">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1.8 8C3 5.2 5.3 3.5 8 3.5S13 5.2 14.2 8C13 10.8 10.7 12.5 8 12.5S3 10.8 1.8 8Z" stroke="currentColor" stroke-width="1.3"></path><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"></circle></svg>
+            <span>Vision</span>
+          </div>
+          <div onClick="{{ nav.memory.onClick }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; cursor: pointer; font-size: 13.5px; font-weight: 500; transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1); background: {{ nav.memory.bg }}; color: {{ nav.memory.color }}; box-shadow: {{ nav.memory.glow }};" style-hover="background: rgba(140,210,255,0.08); color: #ffffff; box-shadow: inset 0 0 20px rgba(94,212,247,0.06), 0 0 20px rgba(56,189,248,0.08);">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"></circle><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"></circle></svg>
+            <span>Memory</span>
+          </div>
+          <div onClick="{{ nav.automations.onClick }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; cursor: pointer; font-size: 13.5px; font-weight: 500; transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1); background: {{ nav.automations.bg }}; color: {{ nav.automations.color }}; box-shadow: {{ nav.automations.glow }};" style-hover="background: rgba(140,210,255,0.08); color: #ffffff; box-shadow: inset 0 0 20px rgba(94,212,247,0.06), 0 0 20px rgba(56,189,248,0.08);">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8.8 1.8 3.5 9h4l-.3 5.2L12.5 7h-4l.3-5.2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"></path></svg>
+            <span>Automations</span>
+          </div>
+          <div onClick="{{ nav.skills.onClick }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; cursor: pointer; font-size: 13.5px; font-weight: 500; transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1); background: {{ nav.skills.bg }}; color: {{ nav.skills.color }}; box-shadow: {{ nav.skills.glow }};" style-hover="background: rgba(140,210,255,0.08); color: #ffffff; box-shadow: inset 0 0 20px rgba(94,212,247,0.06), 0 0 20px rgba(56,189,248,0.08);">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2.2" y="2.2" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.3"></rect><rect x="8.8" y="2.2" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.3"></rect><rect x="2.2" y="8.8" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.3"></rect><rect x="8.8" y="8.8" width="5" height="5" rx="2.5" stroke="currentColor" stroke-width="1.3"></rect></svg>
+            <span>Skills</span>
+          </div>
+          <div onClick="{{ nav.files.onClick }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; cursor: pointer; font-size: 13.5px; font-weight: 500; transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1); background: {{ nav.files.bg }}; color: {{ nav.files.color }}; box-shadow: {{ nav.files.glow }};" style-hover="background: rgba(140,210,255,0.08); color: #ffffff; box-shadow: inset 0 0 20px rgba(94,212,247,0.06), 0 0 20px rgba(56,189,248,0.08);">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4.5A1.5 1.5 0 0 1 3.5 3h3l1.5 1.8h4.5A1.5 1.5 0 0 1 14 6.3v5.2a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5v-7Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"></path></svg>
+            <span>Files</span>
+          </div>
+        </div>
+
+        <div style="flex: 1;"></div>
+
+        <div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(140,210,255,0.14), transparent); margin: 14px 0;"></div>
+
+        <div onClick="{{ nav.settings.onClick }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; cursor: pointer; font-size: 13.5px; font-weight: 500; transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1); background: {{ nav.settings.bg }}; color: {{ nav.settings.color }}; box-shadow: {{ nav.settings.glow }};" style-hover="background: rgba(140,210,255,0.08); color: #ffffff;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.2" stroke="currentColor" stroke-width="1.3"></circle><path d="M8 1.8v2M8 12.2v2M1.8 8h2M12.2 8h2M3.6 3.6l1.4 1.4M11 11l1.4 1.4M12.4 3.6 11 5M5 11l-1.4 1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+          <span>Settings</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════ CENTER — AI CORE ══════════ -->
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-height: 0; min-width: 0;">
+
+      <!-- clock -->
+      <div style="position: absolute; top: 6px; left: 0; right: 0; display: flex; justify-content: center;">
+        <div style="display: flex; align-items: center; gap: 14px; padding: 8px 18px; border-radius: 999px; background: rgba(255,255,255,0.025); border: 1px solid rgba(140,210,255,0.08); backdrop-filter: blur(20px); font-family: 'JetBrains Mono', monospace;">
+          <span style="font-size: 13px; color: rgba(255,255,255,0.85); letter-spacing: 0.08em;">{{ clock }}</span>
+          <span style="width: 3px; height: 3px; border-radius: 50%; background: rgba(140,210,255,0.5);"></span>
+          <span style="font-size: 11px; color: rgba(255,255,255,0.42); letter-spacing: 0.1em;">{{ dateLine }}</span>
+        </div>
+      </div>
+
+      <!-- orb assembly -->
+      <div style="position: relative; width: min(400px, 100%, 54vh); aspect-ratio: 1 / 1; display: grid; place-items: center;">
+        <!-- halo -->
+        <div style="position: absolute; width: 85%; height: 85%; border-radius: 50%; background: radial-gradient(circle, rgba(56,189,248,0.22), rgba(56,189,248,0.05) 55%, transparent 72%); filter: blur(30px); animation: haloPulse {{ haloDur }} ease-in-out infinite;"></div>
+        <!-- outer ring -->
+        <div style="position: absolute; width: 95%; height: 95%; border-radius: 50%; border: 1px solid rgba(140,210,255,0.10); animation: ringBreathe 6s ease-in-out infinite;"></div>
+        <!-- rotating arc ring -->
+        <div style="position: absolute; width: 82.5%; height: 82.5%; border-radius: 50%; border: 1px solid transparent; border-top-color: rgba(94,212,247,0.55); border-right-color: rgba(94,212,247,0.12); animation: spinSlow {{ spinDur }} linear infinite;"></div>
+        <div style="position: absolute; width: 74%; height: 74%; border-radius: 50%; border: 1px solid transparent; border-bottom-color: rgba(59,130,246,0.4); animation: spinRev {{ spinDur2 }} linear infinite;"></div>
+        <!-- tick ring -->
+        <div style="position: absolute; width: 89%; height: 89%; border-radius: 50%; background: repeating-conic-gradient(rgba(140,210,255,0.22) 0deg 0.5deg, transparent 0.5deg 6deg); mask-image: radial-gradient(circle, transparent 49.2%, black 49.6%, black 50%, transparent 50.4%); animation: spinSlow 120s linear infinite; opacity: 0.6;"></div>
+        <!-- radar sweep -->
+        <div style="position: absolute; width: 118%; height: 118%; border-radius: 50%; background: conic-gradient(from 0deg, transparent 0deg 305deg, rgba(94,212,247,0.10) 340deg, rgba(150,230,255,0.28) 359deg, transparent 360deg); mask-image: radial-gradient(circle, transparent 35%, black 41%, black 61%, transparent 65%); animation: spinSlow 7s linear infinite; opacity: 0.65;"></div>
+        <!-- reactor segments -->
+        <div style="position: absolute; width: 61%; height: 61%; border-radius: 50%; background: repeating-conic-gradient(rgba(94,212,247,0.55) 0deg 18deg, rgba(94,212,247,0.05) 18deg 36deg); mask-image: radial-gradient(circle, transparent 77%, black 80%, black 95%, transparent 98%); animation: spinRev 28s linear infinite;"></div>
+        <!-- core -->
+        <div onClick="{{ orbClick }}" title="Talk to JARVIS" style="position: relative; width: 49%; aspect-ratio: 1 / 1; border-radius: 50%; cursor: pointer; display: grid; place-items: center; animation: orbPulse {{ pulseDur }} ease-in-out infinite; background: radial-gradient(circle at 50% 50%, rgba(16,42,72,0.95) 0%, rgba(10,30,55,0.95) 52%, rgba(34,110,180,0.55) 76%, rgba(110,215,255,0.75) 90%, rgba(205,245,255,0.95) 100%); box-shadow: 0 0 60px rgba(56,189,248,{{ glowA }}), 0 0 140px rgba(56,189,248,{{ glowB }}), inset 0 0 26px rgba(94,200,255,0.5), inset 0 0 80px rgba(20,70,120,0.55); transition: box-shadow 0.6s ease;">
+          <div style="position: absolute; inset: 6%; border-radius: 50%; border: 1px solid rgba(190,240,255,0.18);"></div>
+          <div style="position: absolute; inset: 12%; border-radius: 50%; border: 1px dashed rgba(140,220,255,0.16); animation: spinSlow 50s linear infinite;"></div>
+          <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 7px;">
+            <div style="font-size: 21px; font-weight: 600; letter-spacing: 0.34em; padding-left: 0.34em; color: #eafaff; text-shadow: 0 0 18px rgba(130,225,255,0.95), 0 0 44px rgba(56,189,248,0.55);">JARVIS</div>
+            <div style="width: 30px; height: 1px; background: linear-gradient(90deg, transparent, rgba(150,230,255,0.8), transparent); box-shadow: 0 0 6px rgba(150,230,255,0.6);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- state readout -->
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: -6px;">
+        <div style="display: flex; align-items: center; gap: 9px; font-family: 'JetBrains Mono', monospace;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: {{ stateDot }}; box-shadow: 0 0 10px {{ stateDot }}; transition: background 0.5s;"></span>
+          <span style="font-size: 11px; letter-spacing: 0.34em; color: rgba(190,235,255,0.75); text-transform: uppercase;">{{ stateLabel }}</span>
+        </div>
+        <div style="font-size: 15px; font-weight: 300; color: rgba(255,255,255,0.55); letter-spacing: 0.01em; max-width: 420px; text-align: center; transition: opacity 0.5s;">{{ stateLine }}</div>
+      </div>
+
+      <!-- text reply surface -->
+      <sc-if value="{{ replyOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: min(620px, 94%); display: flex; flex-direction: column; gap: 8px; z-index: 5;">
+          <sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}">
+            <div style="align-self: flex-end; max-width: 78%; font-size: 12.5px; color: rgba(255,255,255,0.6); background: rgba(140,210,255,0.06); border: 1px solid rgba(140,210,255,0.12); padding: 8px 15px; border-radius: 999px; backdrop-filter: blur(20px);">{{ queryText }}</div>
+          </sc-if>
+          <div style="display: flex; gap: 12px; align-items: flex-start; background: rgba(10,16,26,0.55); backdrop-filter: blur(28px); border: 1px solid rgba(140,210,255,0.15); border-radius: 16px; padding: 14px 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(56,189,248,0.06), inset 0 1px 0 rgba(255,255,255,0.05);">
+            <div style="width: 8px; height: 8px; min-width: 8px; border-radius: 50%; background: #5ed4f7; box-shadow: 0 0 10px rgba(94,212,247,0.9); margin-top: 6px; animation: {{ replyDotAnim }};"></div>
+            <div style="flex: 1; font-size: 13.5px; line-height: 1.6; color: rgba(235,250,255,0.92); min-height: 22px; text-wrap: pretty;">{{ replyShown }}<span style="color: #5ed4f7; animation: ringBreathe 0.9s ease-in-out infinite;">{{ cursorChar }}</span></div>
+            <div onClick="{{ replyClose }}" style="cursor: pointer; color: rgba(255,255,255,0.35); font-size: 15px; line-height: 1; padding: 2px 4px; transition: color 0.2s;" style-hover="color: #ffffff;">×</div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <!-- ══════════ RIGHT SIDEBAR ══════════ -->
+    <div style="display: flex; flex-direction: column; gap: 14px; min-height: 0; min-width: 0; overflow-y: auto; padding-bottom: 4px;">
+
+      <!-- system status -->
+      <div style="background: rgba(255,255,255,0.028); backdrop-filter: blur(24px); border: 1px solid rgba(140,210,255,0.10); border-radius: 18px; padding: 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05); animation: {{ floatAnimB }}; transition: border-color 0.3s, box-shadow 0.3s;" style-hover="border-color: rgba(140,210,255,0.22); box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(56,189,248,0.07), inset 0 1px 0 rgba(255,255,255,0.05);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+          <span style="font-size: 10.5px; letter-spacing: 0.2em; color: rgba(255,255,255,0.45); font-family: 'JetBrains Mono', monospace;">SYSTEM</span>
+          <span style="display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: #7de8b8;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #7de8b8; box-shadow: 0 0 8px rgba(125,232,184,0.8);"></span>Nominal</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 11.5px; margin-bottom: 6px;"><span style="color: rgba(255,255,255,0.6);">Neural cores</span><span style="font-family: 'JetBrains Mono', monospace; color: rgba(190,235,255,0.85);">{{ cpuPct }}</span></div>
+            <div style="height: 3px; border-radius: 2px; background: rgba(140,210,255,0.1); overflow: hidden;"><div style="height: 100%; width: {{ cpuW }}; border-radius: 2px; background: linear-gradient(90deg, #38bdf8, #5ed4f7); box-shadow: 0 0 8px rgba(94,212,247,0.6); transition: width 1.2s cubic-bezier(0.2,0.8,0.2,1);"></div></div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 11.5px; margin-bottom: 6px;"><span style="color: rgba(255,255,255,0.6);">Memory</span><span style="font-family: 'JetBrains Mono', monospace; color: rgba(190,235,255,0.85);">{{ ramPct }}</span></div>
+            <div style="height: 3px; border-radius: 2px; background: rgba(140,210,255,0.1); overflow: hidden;"><div style="height: 100%; width: {{ ramW }}; border-radius: 2px; background: linear-gradient(90deg, #3b82f6, #60a5fa); box-shadow: 0 0 8px rgba(96,165,250,0.5); transition: width 1.2s cubic-bezier(0.2,0.8,0.2,1);"></div></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 11.5px;"><span style="color: rgba(255,255,255,0.6);">Latency</span><span style="font-family: 'JetBrains Mono', monospace; color: rgba(190,235,255,0.85);">{{ latency }}</span></div>
+        </div>
+      </div>
+
+      <!-- active tasks -->
+      <div style="background: rgba(255,255,255,0.028); backdrop-filter: blur(24px); border: 1px solid rgba(140,210,255,0.10); border-radius: 18px; padding: 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05); animation: {{ floatAnimC }}; transition: border-color 0.3s;" style-hover="border-color: rgba(140,210,255,0.22);">
+        <div style="font-size: 10.5px; letter-spacing: 0.2em; color: rgba(255,255,255,0.45); font-family: 'JetBrains Mono', monospace; margin-bottom: 13px;">ACTIVE TASKS</div>
+        <div style="display: flex; flex-direction: column; gap: 11px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid rgba(94,212,247,0.6); border-top-color: transparent; animation: spinSlow 1.6s linear infinite;"></div>
+            <div style="flex: 1;"><div style="font-size: 12.5px;">Indexing project files</div><div style="font-size: 10.5px; color: rgba(255,255,255,0.4);">2,431 of 3,208 documents</div></div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid rgba(96,165,250,0.55); border-top-color: transparent; animation: spinSlow 2.4s linear infinite;"></div>
+            <div style="flex: 1;"><div style="font-size: 12.5px;">Drafting weekly review</div><div style="font-size: 10.5px; color: rgba(255,255,255,0.4);">Ready in ~4 min</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- today: calendar + weather -->
+      <div style="background: rgba(255,255,255,0.028); backdrop-filter: blur(24px); border: 1px solid rgba(140,210,255,0.10); border-radius: 18px; padding: 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05); animation: {{ floatAnimB }}; transition: border-color 0.3s;" style-hover="border-color: rgba(140,210,255,0.22);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px;">
+          <span style="font-size: 10.5px; letter-spacing: 0.2em; color: rgba(255,255,255,0.45); font-family: 'JetBrains Mono', monospace;">TODAY</span>
+          <span style="font-size: 12px; color: rgba(190,235,255,0.8);">19° Clear night</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; gap: 11px; align-items: baseline;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(94,212,247,0.85); min-width: 42px;">09:30</span>
+            <div style="flex: 1;"><div style="font-size: 12.5px;">Design sync</div><div style="font-size: 10.5px; color: rgba(255,255,255,0.4);">I&#39;ll take notes for you</div></div>
+          </div>
+          <div style="display: flex; gap: 11px; align-items: baseline;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(94,212,247,0.85); min-width: 42px;">13:00</span>
+            <div style="flex: 1;"><div style="font-size: 12.5px;">Lunch with Mara</div><div style="font-size: 10.5px; color: rgba(255,255,255,0.4);">Reservation confirmed</div></div>
+          </div>
+          <div style="display: flex; gap: 11px; align-items: baseline;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(94,212,247,0.85); min-width: 42px;">16:00</span>
+            <div style="flex: 1;"><div style="font-size: 12.5px;">Flight check-in opens</div><div style="font-size: 10.5px; color: rgba(255,255,255,0.4);">SFO → HND · automated</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- notifications -->
+      <div style="background: rgba(255,255,255,0.028); backdrop-filter: blur(24px); border: 1px solid rgba(140,210,255,0.10); border-radius: 18px; padding: 18px; box-shadow: 0 20px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05); animation: {{ floatAnimC }}; transition: border-color 0.3s;" style-hover="border-color: rgba(140,210,255,0.22);">
+        <div style="font-size: 10.5px; letter-spacing: 0.2em; color: rgba(255,255,255,0.45); font-family: 'JetBrains Mono', monospace; margin-bottom: 13px;">NOTIFICATIONS</div>
+        <div style="display: flex; flex-direction: column; gap: 11px;">
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #5ed4f7; box-shadow: 0 0 8px rgba(94,212,247,0.7); margin-top: 5px;"></span>
+            <div style="flex: 1;"><div style="font-size: 12.5px;">Morning briefing is ready</div><div style="font-size: 10.5px; color: rgba(255,255,255,0.4);">3 highlights · 2 min read</div></div>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #f59e6b; box-shadow: 0 0 8px rgba(245,158,107,0.6); margin-top: 5px;"></span>
+            <div style="flex: 1;"><div style="font-size: 12.5px;">Home battery at 18%</div><div style="font-size: 10.5px; color: rgba(255,255,255,0.4);">Grid charging scheduled 02:00</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ BOTTOM BAR ══════════ -->
+  <div style="padding: 16px 20px 20px 20px; display: flex; justify-content: center; position: relative;">
+    <div style="width: 100%; max-width: 920px; display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.03); backdrop-filter: blur(28px); border: 1px solid rgba(140,210,255,0.12); border-radius: 22px; padding: 12px 14px; box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 40px rgba(56,189,248,0.04), inset 0 1px 0 rgba(255,255,255,0.06);">
+
+      <!-- push-to-talk -->
+      <div onClick="{{ pttClick }}" style="width: 52px; height: 52px; min-width: 52px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; background: {{ pttBg }}; border: 1px solid {{ pttBorder }}; box-shadow: {{ pttGlow }}; transition: all 0.35s cubic-bezier(0.2,0.8,0.2,1); color: {{ pttColor }};" style-hover="transform: scale(1.06); box-shadow: 0 0 26px rgba(56,189,248,0.35), inset 0 0 12px rgba(94,212,247,0.15);">
+        <svg width="19" height="19" viewBox="0 0 16 16" fill="none"><rect x="6" y="1.6" width="4" height="8.4" rx="2" stroke="currentColor" stroke-width="1.4"></rect><path d="M3.2 7.8a4.8 4.8 0 0 0 9.6 0M8 12.6v1.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg>
+      </div>
+
+      <!-- waveform -->
+      <div style="display: flex; align-items: center; gap: 3px; height: 40px; min-width: 148px; padding: 0 4px; opacity: {{ waveOpacity }}; transition: opacity 0.5s;">
+        <sc-for list="{{ bars }}" as="bar" hint-placeholder-count="24">
+          <div style="width: 3px; height: {{ bar.h }}px; border-radius: 2px; background: linear-gradient(180deg, #5ed4f7, #3b82f6); box-shadow: 0 0 6px rgba(94,212,247,0.5); animation: wave {{ bar.dur }}s ease-in-out {{ bar.delay }}s infinite alternate; animation-play-state: {{ wavePlay }}; transform-origin: center;"></div>
+        </sc-for>
+      </div>
+
+      <!-- command input -->
+      <input value="{{ inputValue }}" onChange="{{ inputChange }}" onKeyDown="{{ inputKeyDown }}" placeholder="What do you need? Type a command or just talk to me…" style="flex: 1; background: transparent; border: none; color: rgba(255,255,255,0.92); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400; letter-spacing: 0.01em; padding: 10px 4px;">
+
+      <!-- quick actions -->
+      <div style="display: flex; gap: 8px;">
+        <div onClick="{{ quickBriefing }}" style="padding: 9px 14px; border-radius: 999px; font-size: 12px; font-weight: 500; color: rgba(190,235,255,0.8); background: rgba(140,210,255,0.06); border: 1px solid rgba(140,210,255,0.12); cursor: pointer; white-space: nowrap; transition: all 0.25s;" style-hover="background: rgba(140,210,255,0.14); color: #ffffff; box-shadow: 0 0 18px rgba(56,189,248,0.15);">Briefing</div>
+        <div onClick="{{ quickFocus }}" style="padding: 9px 14px; border-radius: 999px; font-size: 12px; font-weight: 500; color: rgba(190,235,255,0.8); background: rgba(140,210,255,0.06); border: 1px solid rgba(140,210,255,0.12); cursor: pointer; white-space: nowrap; transition: all 0.25s;" style-hover="background: rgba(140,210,255,0.14); color: #ffffff; box-shadow: 0 0 18px rgba(56,189,248,0.15);">Focus mode</div>
+        <div onClick="{{ quickCapture }}" style="padding: 9px 14px; border-radius: 999px; font-size: 12px; font-weight: 500; color: rgba(190,235,255,0.8); background: rgba(140,210,255,0.06); border: 1px solid rgba(140,210,255,0.12); cursor: pointer; white-space: nowrap; transition: all 0.25s;" style-hover="background: rgba(140,210,255,0.14); color: #ffffff; box-shadow: 0 0 18px rgba(56,189,248,0.15);">Capture</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;orbState&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;live&quot;, &quot;idle&quot;, &quot;listening&quot;, &quot;thinking&quot;, &quot;speaking&quot;], &quot;default&quot;: &quot;live&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;AI Core&quot; },
+  &quot;ambientMotion&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Motion&quot; }
+}">
+class Component extends DCLogic {
+  state = {
+    orb: 'idle',          // idle | listening | thinking | speaking
+    activeNav: 'chat',
+    input: '',
+    query: null,
+    reply: '',
+    typed: 0,
+    replyOpen: false,
+    cpu: 23,
+    ram: 41,
+    latency: 12,
+    now: new Date(),
+  };
+
+  componentDidMount() {
+    this._clock = setInterval(() => this.setState({ now: new Date() }), 1000);
+    this._drift = setInterval(() => {
+      this.setState(s => {
+        const busy = s.orb === 'thinking' ? 38 : 0;
+        return {
+          cpu: Math.max(8, Math.min(96, Math.round(20 + busy + Math.random() * 14))),
+          ram: Math.max(30, Math.min(90, s.ram + Math.round(Math.random() * 6 - 3))),
+          latency: Math.round(9 + Math.random() * 8),
+        };
+      });
+    }, 2200);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._clock);
+    clearInterval(this._drift);
+    clearTimeout(this._t1);
+    clearTimeout(this._t2);
+    clearInterval(this._type);
+  }
+
+  ask(query) {
+    clearTimeout(this._t1);
+    clearTimeout(this._t2);
+    clearInterval(this._type);
+    this.setState({ orb: 'thinking', query: query, reply: '', typed: 0, replyOpen: true });
+
+    const finish = text => {
+      this.setState({ orb: 'speaking', reply: text, typed: 0 });
+      this._type = setInterval(() => {
+        this.setState(s => {
+          if (s.typed >= s.reply.length) { clearInterval(this._type); return { orb: 'idle' }; }
+          return { typed: s.typed + 2 };
+        });
+      }, 22);
+    };
+
+    const canned = [
+      'Done. I\'ve pinned the results to your workspace and cleared two duplicates while I was at it.',
+      'Handled. I also queued a follow-up for tomorrow at 09:00 — say the word and I\'ll move it.',
+      'Here\'s the short version: two items genuinely need you today. The rest I can run on my own.',
+      'Consider it done. I\'ll keep an eye on it and flag you only if something changes.',
+    ];
+    const fallback = () => finish(canned[Math.floor(Math.random() * canned.length)]);
+
+    if (typeof window !== 'undefined' && window.claude && window.claude.complete) {
+      const sys = 'You are JARVIS, the user\'s personal AI operating system — capable, warm, concise, slightly wry. Reply in first person, at most 35 words, as if you have already taken action or are answering directly. Plain text only: no markdown, no quotes, no emoji.';
+      const usr = query
+        ? query
+        : 'The user pressed push-to-talk and spoke to you (audio was not captured in this prototype). Give a brief, natural acknowledgment as their personal AI.';
+      window.claude.complete({ system: sys, messages: [{ role: 'user', content: usr }] })
+        .then(t => { const text = String(t).trim(); text ? finish(text) : fallback(); })
+        .catch(fallback);
+    } else {
+      this._t1 = setTimeout(fallback, 1500);
+    }
+  }
+
+  runCycle() { this.ask(null); }
+
+  renderVals() {
+    const s = this.state;
+    // Tweaks: prop override of orb state; ambient float motion
+    const propOrb = this.props.orbState ?? 'live';
+    const orb = propOrb === 'live' ? s.orb : propOrb;
+    const ambient = this.props.ambientMotion ?? true;
+
+    const h = s.now.getHours();
+    const greeting = h < 5 ? 'Working late' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+    const STATES = {
+      idle:      { label: 'Online', dot: 'rgba(140,210,255,0.75)', line: greeting + '. At your service — tap the core or press the mic.', pulse: '5.2s', halo: '6.5s', spin: '26s', spin2: '38s', glowA: 0.36, glowB: 0.16 },
+      listening: { label: 'Listening', dot: '#5ed4f7', line: 'Go ahead — I\'m listening.', pulse: '2.6s', halo: '3s', spin: '12s', spin2: '18s', glowA: 0.5, glowB: 0.24 },
+      thinking:  { label: 'Thinking', dot: '#60a5fa', line: 'On it. Cross-referencing your day now.', pulse: '1.1s', halo: '1.4s', spin: '4.5s', spin2: '7s', glowA: 0.62, glowB: 0.32 },
+      speaking:  { label: 'Speaking', dot: '#9fe6ff', line: 'Responding — voice and text.', pulse: '2s', halo: '2.2s', spin: '14s', spin2: '20s', glowA: 0.55, glowB: 0.28 },
+    };
+    const st = STATES[orb] || STATES.idle;
+
+    // nav styling
+    const navIds = ['chat', 'voice', 'vision', 'memory', 'automations', 'skills', 'files', 'settings'];
+    const nav = {};
+    navIds.forEach(id => {
+      const active = s.activeNav === id;
+      nav[id] = {
+        bg: active ? 'rgba(94,212,247,0.10)' : 'transparent',
+        color: active ? '#dff5ff' : 'rgba(255,255,255,0.62)',
+        glow: active ? 'inset 0 0 24px rgba(94,212,247,0.07), 0 0 24px rgba(56,189,248,0.10), inset 0 0 0 1px rgba(140,210,255,0.18)' : 'none',
+        onClick: () => this.setState({ activeNav: id }),
+      };
+    });
+
+    // waveform bars
+    const waveActive = orb === 'listening' || orb === 'speaking';
+    const bars = [];
+    for (let i = 0; i < 24; i++) {
+      const c = Math.abs(i - 11.5) / 11.5;
+      bars.push({
+        h: Math.round(10 + (1 - c) * 22 + Math.sin(i * 2.7) * 5),
+        dur: (0.45 + ((i * 7) % 5) * 0.09).toFixed(2),
+        delay: ((i * 0.083) % 0.6).toFixed(2),
+      });
+    }
+
+    // clock
+    const t = s.now;
+    const pad = n => String(n).padStart(2, '0');
+    const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+    const listening = orb === 'listening';
+    const float = dur => (ambient ? `floatY ${dur} ease-in-out infinite` : 'none');
+
+    return {
+      // orb
+      stateLabel: st.label,
+      stateLine: st.line,
+      stateDot: st.dot,
+      pulseDur: st.pulse,
+      haloDur: st.halo,
+      spinDur: st.spin,
+      spinDur2: st.spin2,
+      glowA: st.glowA,
+      glowB: st.glowB,
+      orbClick: () => { if (orb === 'idle') this.setState({ orb: 'listening' }); else if (orb === 'listening') this.runCycle(); },
+
+      // nav
+      nav,
+
+      // clock
+      clock: `${pad(t.getHours())}:${pad(t.getMinutes())}:${pad(t.getSeconds())}`,
+      dateLine: `${days[t.getDay()]} ${pad(t.getDate())} ${months[t.getMonth()]}`,
+
+      // system
+      cpuPct: s.cpu + '%',
+      cpuW: s.cpu + '%',
+      ramPct: s.ram + '%',
+      ramW: s.ram + '%',
+      latency: s.latency + ' ms',
+
+      // waveform
+      bars,
+      wavePlay: waveActive ? 'running' : 'paused',
+      waveOpacity: waveActive ? 1 : 0.22,
+
+      // ptt
+      pttClick: () => { if (listening) this.runCycle(); else this.setState({ orb: 'listening' }); },
+      pttBg: listening ? 'rgba(94,212,247,0.16)' : 'rgba(140,210,255,0.06)',
+      pttBorder: listening ? 'rgba(94,212,247,0.6)' : 'rgba(140,210,255,0.16)',
+      pttGlow: listening ? '0 0 30px rgba(56,189,248,0.45), inset 0 0 16px rgba(94,212,247,0.2)' : '0 0 0 rgba(0,0,0,0)',
+      pttColor: listening ? '#bfefff' : 'rgba(190,235,255,0.75)',
+
+      // input
+      inputValue: s.input,
+      inputChange: e => this.setState({ input: e.target.value }),
+      inputKeyDown: e => { if (e.key === 'Enter' && s.input.trim()) { const q = s.input.trim(); this.setState({ input: '' }); this.ask(q); } },
+
+      // quick actions
+      quickBriefing: () => this.ask('Give me my morning briefing'),
+      quickFocus: () => this.setState({ orb: 'idle', replyOpen: false }),
+      quickCapture: () => this.ask('Capture a note from my screen and file it'),
+
+      // text reply surface
+      replyOpen: s.replyOpen,
+      hasQuery: !!s.query,
+      queryText: s.query,
+      replyShown: s.orb === 'thinking' ? '' : s.reply.slice(0, s.typed),
+      cursorChar: (s.orb === 'thinking' || s.orb === 'speaking') ? '▍' : '',
+      replyDotAnim: s.orb === 'thinking' ? 'ringBreathe 0.8s ease-in-out infinite' : 'none',
+      replyClose: () => this.setState({ replyOpen: false }),
+
+      // ambient float
+      floatAnimA: float('9s'),
+      floatAnimB: float('7s'),
+      floatAnimC: float('8.2s'),
+    };
+  }
+}
+</script>
+</body>
+</html>

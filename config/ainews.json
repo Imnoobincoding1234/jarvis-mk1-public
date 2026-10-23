@@ -1,0 +1,36 @@
+{
+  "_what": "Where dream mode reads the week in AI and machine learning (jarvis-os/ainews.js). Every source is AI/ML BY CONSTRUCTION — a lab's own blog, the AI section of a publication, an AI community, Hugging Face's papers and models — so nothing decides by keyword what counts as AI news. Order is priority within a group. group: labs = first-party announcements, big and small; news = AI journalism; field = where new models and papers from unknown labs surface first. kind: rss | atom | hf-papers (one request per day of the week) | hf-models (trending, kept only if created this week). pages: how far a WordPress feed may be paged back (?paged=N) to reach Monday. Checked live 2026-09-18; Anthropic, Meta AI and Mistral publish no feed (404), so their news arrives through the outlets.",
+  "enabled": true,
+  "sources": [
+    { "name": "OpenAI",                 "group": "labs",  "kind": "rss",       "url": "https://openai.com/news/rss.xml" },
+    { "name": "Google DeepMind",        "group": "labs",  "kind": "rss",       "url": "https://deepmind.google/blog/rss.xml" },
+    { "name": "Google Research",        "group": "labs",  "kind": "rss",       "url": "https://research.google/blog/rss/" },
+    { "name": "Microsoft Research",     "group": "labs",  "kind": "rss",       "url": "https://www.microsoft.com/en-us/research/feed/", "pages": 2 },
+    { "name": "Apple ML Research",      "group": "labs",  "kind": "rss",       "url": "https://machinelearning.apple.com/rss.xml" },
+    { "name": "Amazon Science",         "group": "labs",  "kind": "rss",       "url": "https://www.amazon.science/index.rss" },
+    { "name": "Hugging Face",           "group": "labs",  "kind": "rss",       "url": "https://huggingface.co/blog/feed.xml" },
+    { "name": "Ai2",                    "group": "labs",  "kind": "rss",       "url": "https://allenai.org/rss.xml" },
+    { "name": "Qwen",                   "group": "labs",  "kind": "rss",       "url": "https://qwenlm.github.io/blog/index.xml" },
+    { "name": "Sakana AI",              "group": "labs",  "kind": "atom",      "url": "https://sakana.ai/feed.xml" },
+    { "name": "EleutherAI",             "group": "labs",  "kind": "rss",       "url": "https://blog.eleuther.ai/index.xml" },
+    { "name": "Berkeley AI Research",   "group": "labs",  "kind": "rss",       "url": "https://bair.berkeley.edu/blog/feed.xml" },
+
+    { "name": "The Decoder",            "group": "news",  "kind": "rss",       "url": "https://the-decoder.com/feed/", "pages": 4 },
+    { "name": "MarkTechPost",           "group": "news",  "kind": "rss",       "url": "https://www.marktechpost.com/feed/", "pages": 5 },
+    { "name": "MIT Technology Review",  "group": "news",  "kind": "rss",       "url": "https://www.technologyreview.com/topic/artificial-intelligence/feed", "pages": 2 },
+    { "name": "TechCrunch",             "group": "news",  "kind": "rss",       "url": "https://techcrunch.com/category/artificial-intelligence/feed/", "pages": 3 },
+    { "name": "Ars Technica",           "group": "news",  "kind": "rss",       "url": "https://arstechnica.com/ai/feed/", "pages": 2 },
+    { "name": "The Verge",              "group": "news",  "kind": "atom",      "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml" },
+    { "name": "MIT News",               "group": "news",  "kind": "rss",       "url": "https://news.mit.edu/rss/topic/artificial-intelligence2" },
+
+    { "name": "Hugging Face papers",    "group": "field", "kind": "hf-papers", "url": "https://huggingface.co/api/daily_papers" },
+    { "name": "Hugging Face models",    "group": "field", "kind": "hf-models", "url": "https://huggingface.co/api/models?sort=trendingScore&limit=100" },
+    { "name": "r/LocalLLaMA",           "group": "field", "kind": "atom",      "url": "https://www.reddit.com/r/LocalLLaMA/top/.rss?t=week" },
+    { "name": "r/MachineLearning",      "group": "field", "kind": "atom",      "url": "https://www.reddit.com/r/MachineLearning/top/.rss?t=week" },
+    { "name": "Simon Willison",         "group": "field", "kind": "atom",      "url": "https://simonwillison.net/tags/llms.atom" },
+    { "name": "Interconnects",          "group": "field", "kind": "rss",       "url": "https://www.interconnects.ai/feed" },
+    { "name": "Latent Space",           "group": "field", "kind": "rss",       "url": "https://www.latent.space/feed" },
+    { "name": "Import AI",              "group": "field", "kind": "rss",       "url": "https://importai.substack.com/feed" },
+    { "name": "Last Week in AI",        "group": "field", "kind": "rss",       "url": "https://lastweekin.ai/feed" }
+  ]
+}

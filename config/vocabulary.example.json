@@ -1,0 +1,38 @@
+{
+  "_comment": [
+    "SPEECH RECOGNITION VOCABULARY. Fed to SFSpeechAudioBufferRecognitionRequest.contextualStrings,",
+    "which biases the recogniser toward these phrases without retraining anything. It costs no RAM,",
+    "no model and no time — the recogniser simply weights them higher when a sound is ambiguous.",
+    "",
+    "DATA, NOT CODE, on purpose: main.swift reads this file every time it opens the microphone, so",
+    "adding a name takes an edit and no recompile. A rebuild to teach it one word is the kind of",
+    "friction that means the word never gets taught.",
+    "",
+    "WHAT BELONGS HERE: proper nouns and terms the recogniser has no reason to know — people, brands,",
+    "places, dishes, the names of this system's own parts. NOT ordinary English. Apple's bias is",
+    "relative, so a list padded with common words dilutes the weight on the words that needed help.",
+    "Keep it to things that actually get mangled.",
+    "",
+    "The cap is enforced in main.swift, not here — see the note beside contextualStrings.",
+    "",
+    "PER USER. config/vocabulary.json is yours and is not committed; install.sh starts it from this file.",
+    "Add the names the recogniser mangles for YOU: your own name, family and friends, your town, the",
+    "shops and dishes you order — one phrase per entry. It is re-read every time the microphone opens."
+  ],
+  "phrases": [
+    "JARVIS",
+    "Jarvis Search",
+    "Brave",
+    "Brave Browser",
+    "Tailscale",
+    "tailnet",
+    "Composio",
+    "OpenRouter",
+    "Ollama",
+    "qwen",
+    "phi4-mini",
+    "piper",
+    "openWakeWord",
+    "launchd"
+  ]
+}

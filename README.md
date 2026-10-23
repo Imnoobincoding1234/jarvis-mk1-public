@@ -750,3 +750,6 @@ Everything stays zero-dependency JS.
 | 🥈 **MK-2** | ~4–6 months |
 | 🥉 **MK-3** | a few years out — the aim is to compete with Claude Opus 4.8 / Opus 5 or stronger, as JARVIS improves and new breakthroughs land in AI/ML |
 | 🐧 **Linux** | compatibility coming |
+
+
+**NOTE:** THIS IS THE PUBLIC VERSION, MUCH WEAKER THAN THE PRIVATE VERSION

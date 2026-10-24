@@ -6,7 +6,7 @@ import json, os, subprocess, sys
 R = os.path.expanduser('~/JARVIS MK-1/finetune/data/casual_runs/'); J = os.path.expanduser('~/JARVIS MK-1/jarvis-os')
 TAG = os.environ.get('TAG', 'r8-20261017'); sets = sys.argv[1:] or ['live', 'v3', 'v2', 'dev']
 seen = {}
-for tag in ['base-20261014','fix2-20261015','prerestart-20261016','prerestart2-20261016','r7-20261016','r7cal-20261016','r7calrerun-20261016','r8-20261017','r8rerun-20261017','r8fix-20261017','r8fixrerun-20261017','live5-20261017','live5b-20261017','mpfix-20261019','mpfixrerun-20261019','c2k-20261022','c2krerun-20261022','c2kfix-20261022','c2kfixrerun-20261022','arbtie-20261024','arbtierun-20261024']:
+for tag in ['base-20261014','fix2-20261015','prerestart-20261016','prerestart2-20261016','r7-20261016','r7cal-20261016','r7calrerun-20261016','r8-20261017','r8rerun-20261017','r8fix-20261017','r8fixrerun-20261017','live5-20261017','live5b-20261017','mpfix-20261019','mpfixrerun-20261019','c2k-20261022','c2krerun-20261022','c2kfix-20261022','c2kfixrerun-20261022','arbtie-20261024','arbtierun-20261024','quickfive-20261024']:
     for s in ['live','v3','v2','dev']:
         f = R + f'gate-{tag}-{s}.grades.json'; sc = R + f'gate-{tag}-{s}.scored.json'
         if not (os.path.exists(f) and os.path.exists(sc)): continue

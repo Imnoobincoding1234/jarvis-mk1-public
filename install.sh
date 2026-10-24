@@ -107,12 +107,19 @@ fi
 if [ ! -f .env ] && [ ! -f private/vault.enc ] && [ "$CHECK_ONLY" = 0 ]; then
   cp .env.example .env && ok ".env started from .env.example (local-only; add keys later if you want them)"
 fi
+# CHECK MODE ON A FRESH CLONE (2026-10-24, tested from the public repo): a real run copies .env.example to .env just above,
+# before any model is read from it. --check copies nothing, so it read an absent .env and never looked for Bonsai 4B,
+# phi4-mini or the jarvis LoRA at all. It now reads the file a real run would have started from.
+ENVF=.env
+if [ ! -f .env ] && [ ! -f private/vault.enc ] && [ "$CHECK_ONLY" = 1 ]; then
+  ENVF=.env.example; warn "no .env yet — checking against .env.example, which a real run starts it from"
+fi
 
 # ── 2. the models (the ~6.3 GB that is deliberately not in git) ────────────
 # Read from the .env the vault restored, so the repo never hardcodes a model choice that has
 # already been changed once. Falls back to what was running when this was written.
-CHAT_MODEL="$(sed -n 's/^JARVIS_LOCAL_MODEL=//p' .env 2>/dev/null | tail -1)"
-VIS_MODEL="$(sed -n 's/^JARVIS_VISION_MODEL=//p' .env 2>/dev/null | tail -1)"
+CHAT_MODEL="$(sed -n 's/^JARVIS_LOCAL_MODEL=//p' "$ENVF" 2>/dev/null | tail -1)"
+VIS_MODEL="$(sed -n 's/^JARVIS_VISION_MODEL=//p' "$ENVF" 2>/dev/null | tail -1)"
 # The reasoning model. Read the same way and for the same reason — but with NO
 # fallback default, because unlike the others this one is optional: an install
 # that never set JARVIS_REASONING_MODEL should not silently acquire 2.5 GB of
@@ -123,10 +130,10 @@ VIS_MODEL="$(sed -n 's/^JARVIS_VISION_MODEL=//p' .env 2>/dev/null | tail -1)"
 # the embedder note above describes: .env names phi4-mini, nothing ever pulls it,
 # and every reasoning question dies on `model not found` — while ordinary chat
 # keeps working, so the machine looks fine until the moment it is asked to think.
-REASON_MODEL="$(sed -n 's/^JARVIS_REASONING_MODEL=//p' .env 2>/dev/null | tail -1)"
+REASON_MODEL="$(sed -n 's/^JARVIS_REASONING_MODEL=//p' "$ENVF" 2>/dev/null | tail -1)"
 # The MULTILINGUAL embedder, read the same way. Overridable so a machine can point at a different
 # one, defaulted below so a restore that never set it still gets a working Hinglish lane.
-ALT_EMBED_MODEL="$(sed -n 's/^JARVIS_EMBED_MODEL_ALT=//p' .env 2>/dev/null | tail -1)"
+ALT_EMBED_MODEL="$(sed -n 's/^JARVIS_EMBED_MODEL_ALT=//p' "$ENVF" 2>/dev/null | tail -1)"
 : "${CHAT_MODEL:=qwen2.5:3b-instruct-q4_K_M}"
 : "${VIS_MODEL:=qwen3-vl:2b}"
 # The embedder for semantic recall AND for every classifier in the system. 274 MB, and it must be
@@ -196,13 +203,13 @@ else cp config/vocabulary.example.json config/vocabulary.json && ok "config/voca
 # The REASONING model is pulled here too (2026-10-22): step 2 reads it from .env, which on a restored Mac does not exist
 # until the vault step — so the first run pulled no reasoning model and every reasoning question failed until a re-run.
 say "jarvis base + think hard + reasoning"
-REPLY_MODEL="$(sed -n 's/^JARVIS_CHAT_REPLY_MODEL=//p' .env 2>/dev/null | tail -1)"
-LORA_NAME="$(sed -n 's/^JARVIS_LORA_NAME=//p' .env 2>/dev/null | tail -1)"; : "${LORA_NAME:=jarvis}"
-LORA_BASE_PATH="$(sed -n 's/^JARVIS_LORA_BASE=//p' .env 2>/dev/null | tail -1)"
-LORA_ADAPTER_PATH="$(sed -n 's/^JARVIS_LORA_ADAPTER=//p' .env 2>/dev/null | tail -1)"
-REPLY_RUNTIME="$(sed -n 's/^JARVIS_CHAT_REPLY_RUNTIME=//p' .env 2>/dev/null | tail -1)"
-THINK_MODEL="$(sed -n 's/^JARVIS_THINK_MODEL=//p' .env 2>/dev/null | tail -1)"; : "${THINK_MODEL:=hf.co/prism-ml/Bonsai-8B-gguf:Q1_0}"
-REASON_MODEL_3A="$(sed -n 's/^JARVIS_REASONING_MODEL=//p' .env 2>/dev/null | tail -1)"
+REPLY_MODEL="$(sed -n 's/^JARVIS_CHAT_REPLY_MODEL=//p' "$ENVF" 2>/dev/null | tail -1)"
+LORA_NAME="$(sed -n 's/^JARVIS_LORA_NAME=//p' "$ENVF" 2>/dev/null | tail -1)"; : "${LORA_NAME:=jarvis}"
+LORA_BASE_PATH="$(sed -n 's/^JARVIS_LORA_BASE=//p' "$ENVF" 2>/dev/null | tail -1)"
+LORA_ADAPTER_PATH="$(sed -n 's/^JARVIS_LORA_ADAPTER=//p' "$ENVF" 2>/dev/null | tail -1)"
+REPLY_RUNTIME="$(sed -n 's/^JARVIS_CHAT_REPLY_RUNTIME=//p' "$ENVF" 2>/dev/null | tail -1)"
+THINK_MODEL="$(sed -n 's/^JARVIS_THINK_MODEL=//p' "$ENVF" 2>/dev/null | tail -1)"; : "${THINK_MODEL:=hf.co/prism-ml/Bonsai-8B-gguf:Q1_0}"
+REASON_MODEL_3A="$(sed -n 's/^JARVIS_REASONING_MODEL=//p' "$ENVF" 2>/dev/null | tail -1)"
 EXTRA_MODELS=("$THINK_MODEL")
 [ -n "$REASON_MODEL_3A" ] && EXTRA_MODELS+=("$REASON_MODEL_3A")
 [ "${REPLY_MODEL%:latest}" = "$LORA_NAME" ] && [ -z "$LORA_BASE_PATH" ] && EXTRA_MODELS+=("hf.co/prism-ml/Bonsai-4B-gguf:Q1_0")

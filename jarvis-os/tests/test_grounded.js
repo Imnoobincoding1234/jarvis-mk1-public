@@ -61,8 +61,14 @@ const lp = (pairs) => [{ token: pairs[0][0], logprob: Math.log(pairs[0][1]), top
     return done();
   }
 
-  head('the whole check on three development sources (v4.2 replies)');
   const F = p => path.join(__dirname, '..', '..', 'finetune', p);
+  // The development sources are his (finetune/data is not in the public repo): without them this used to CRASH on a
+  // missing file. It skips like test_reasonintent does — the offline checks above have already run.
+  if (!fs.existsSync(F('data/v42_grounded_heldout.json')) || !fs.existsSync(F('data/bonsai_eval_prompts_v42_grounded.jsonl'))) {
+    console.log('\nSkipping the live checks — the development sources are not on this machine (finetune/data is his).');
+    return done();
+  }
+  head('the whole check on three development sources (v4.2 replies)');
   const items = JSON.parse(fs.readFileSync(F('data/v42_grounded_heldout.json'), 'utf8')).items;
   const prompts = fs.readFileSync(F('data/bonsai_eval_prompts_v42_grounded.jsonl'), 'utf8').split('\n').filter(Boolean).map(l => JSON.parse(l));
   async function check(i, reply) {

@@ -43,7 +43,7 @@ const state = {
 // ---------------- utils ----------------
 function toast(msg) {
   const t = $('#toast');
-  t.textContent = msg;
+  t.textContent = honorify(msg);
   t.classList.add('show');
   clearTimeout(toast._t);
   toast._t = setTimeout(() => t.classList.remove('show'), 3200);
@@ -263,6 +263,7 @@ let pendingListenText = null; // decides the reopened mic once the WHOLE reply h
 
 function speak(text, opts) {
   opts = opts || {};
+  text = honorify(text);
   if (opts.queue && (speaking || speakQ.length)) { speakQ.push({ text, opts }); return; }
   if (!opts.queue) { speakQ = []; pendingListenText = null; }   // an unqueued line replaces the lot
   speakNow(text, opts);
@@ -343,6 +344,30 @@ function greeting() {
   const h = new Date().getHours();
   return h < 5 ? 'Working late' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
 }
+// THE HONORIFIC HE CHOSE (Settings → How to address you), as /api/overview last reported it — '' on a machine nobody
+// has set up, so a fresh install calls no one "Sir" (2026-10-24, tested from the public repo: the boot screen said
+// GOOD EVENING, SIR to a stranger). Kept between page loads so the boot greeting has it before the overview answers;
+// browser storage is only a convenience here — the server's setting is the truth.
+let honorificNow = (() => { try { return localStorage.getItem('jarvis.honorific') || ''; } catch (e) { return ''; } })();
+function noteHonorific(h) {
+  if (typeof h !== 'string' || h === honorificNow) return;
+  honorificNow = h;
+  try { localStorage.setItem('jarvis.honorific', h); } catch (e) {}
+}
+// profile.js honorify(), the same rules, for the lines this page writes itself. A reply the server already rewrote
+// comes through unchanged, so applying it twice is harmless.
+function honorify(text) {
+  if (typeof text !== 'string' || !text) return text;
+  const h = honorificNow;
+  if (h === 'Sir') return text;
+  const HON = /\bSir\b(?!\s+[A-Z][a-z])/g;
+  if (h) return text.replace(HON, h);
+  return text
+    .replace(/,\s*Sir(?=\s*[—–]|[.!?:;,)"”’]|$)/g, '')
+    .replace(/(^|[.!?]\s+|\n)Sir,\s*(\S)/g, (m, lead, c) => lead + c.toUpperCase())
+    .replace(/\s+Sir(?=[.!?—–:;,)"”’]|$)/g, '')
+    .replace(/\bSir\b(?!\s+[A-Z][a-z])\s*/g, '');
+}
 function orbSet(s, line) {
   state.orb = s;
   const w = $('#orbWrap');
@@ -351,7 +376,7 @@ function orbSet(s, line) {
   $('#stateDot').style.background = st.dot;
   $('#stateDot').style.boxShadow = '0 0 10px ' + st.dot;
   $('#stateLabel').textContent = st.label;
-  $('#stateLine').textContent = line || st.line();
+  $('#stateLine').textContent = honorify(line || st.line());
   $('#wave').classList.toggle('on', s === 'listening' || s === 'speaking');
 }
 
@@ -1290,7 +1315,7 @@ function trimConvo() {
 function renderConvo() {
   const log = $('#chatLog');
   log.innerHTML = '';
-  if (!state.convo.length) log.appendChild(msgEl('assistant', greeting() + ', Sir. Direct line open — how may I assist?'));
+  if (!state.convo.length) log.appendChild(msgEl('assistant', honorify(greeting() + ', Sir. Direct line open — how may I assist?')));
   for (const m of state.convo) log.appendChild(m.card ? cardEl(m.card, m) : msgEl(m.role, m.content, m.err, m.route));
   log.scrollTop = log.scrollHeight;
 }
@@ -1310,7 +1335,7 @@ function pushCard(card) {
   if (state.view === 'chat') appendConvo(m);
 }
 function pushMsg(role, content, err, route) {
-  const m = { role, content, err: !!err, route: route || null };
+  const m = { role, content: role === 'assistant' ? honorify(content) : content, err: !!err, route: route || null };
   state.convo.push(m); trimConvo(); saveConvo();
   if (state.view === 'chat') appendConvo(m);
 }
@@ -2059,6 +2084,7 @@ async function poll() {
     linkOk();
     state.tts = !!o.tts;   // server has a neural voice; otherwise speak() stays on Web Speech
     state.silent = !!o.silent;  // visual-silent mode: text only, and piper never loads
+    noteHonorific(o.honorific);
     if (o.runningApps != null && $('#runApps')) $('#runApps').textContent = o.runningApps;
     const s = o.stats;
     $('#cpuPct').textContent = s.cpu + '%';
@@ -3475,6 +3501,7 @@ async function runBootSequence() {
     let ov = null;
     const ovP = fetch('/api/overview').then(r => r.json()).then(j => (ov = j)).catch(() => {});
     await Promise.race([ovP, delay(1400)]);
+    if (ov) noteHonorific(ov.honorific);
     const s = (ov && ov.stats) || {};
     const agents = (ov && ov.agents) || [];
     const onlineN = agents.filter(a => a.running).length;
@@ -3488,9 +3515,12 @@ async function runBootSequence() {
       ['Storage array', s.diskFreeGB != null ? s.diskFreeGB + 'GB FREE' : 'READY', ''],
       ['Sensor grid', w ? 'CALIBRATED · ' + w.temp + '°' + w.unit : 'CALIBRATED', 'ok'],
       ['Voice / Vision', 'READY', 'ok'],
-      ['Fleet agents', onlineN + '/' + agents.length + ' ONLINE', (agents.length && onlineN === agents.length) ? 'ok' : 'warn'],
-      ['Network uplink', s.latency != null ? s.latency + ' ms' : 'OFFLINE', s.latency != null ? '' : 'down'],
-      ['LLM core', (ov && ov.hasKey) ? 'LINKED' : 'NO LLM', (ov && ov.hasKey) ? 'ok' : 'warn'],
+      // NOT YET KNOWN IS NOT DOWN (2026-10-24, tested from the public repo). The boot waits 1.4 s for /api/overview; on a
+      // fresh install still warming up it had not answered, and every row fell back to a failure — OFFLINE, NO LLM,
+      // 0/0 agents — about a machine whose local models were fine. With no answer yet, these say STANDBY.
+      ['Fleet agents', ov ? onlineN + '/' + agents.length + ' ONLINE' : 'STANDBY', ov ? ((agents.length && onlineN === agents.length) ? 'ok' : 'warn') : ''],
+      ['Network uplink', s.latency != null ? s.latency + ' ms' : (ov ? 'OFFLINE' : 'STANDBY'), s.latency != null || !ov ? '' : 'down'],
+      ['LLM core', ov ? (ov.hasKey ? 'LINKED' : 'NO LLM') : 'STANDBY', ov ? (ov.hasKey ? 'ok' : 'warn') : ''],
     ];
 
     await delay(780);                         // reactor + title settle
@@ -3514,7 +3544,7 @@ async function runBootSequence() {
     if (done) return;
     title.classList.add('flare');
     bootSound('online');
-    sub.textContent = greeting().toUpperCase() + ', SIR';
+    sub.textContent = honorify(greeting() + ', Sir').toUpperCase();
     await delay(1150);
   } catch (e) { /* fall through */ } finally {
     clearTimeout(safety);

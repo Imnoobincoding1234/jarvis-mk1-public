@@ -645,6 +645,17 @@ function estimateFlops(byModel) {
 }
 // An LLM is "available" if OpenRouter is keyed OR the user has opted into a local model.
 function haveLLM() { return !!envVal('OPENROUTER_API_KEY') || !!envVal('JARVIS_LOCAL_MODEL'); }
+// What a cloud request needs on a Mac with no Composio key: a plain answer for mail or a named app, null for anything
+// else. The decision is composio.route()'s own — the one the cloud lane makes with a key — so nothing new is matched.
+function cloudNeedsKey(text) {
+  const lane = composio.route(text);
+  // A search flavour (news, finance, scholar, places — `kind`) is left to the local lanes, which do those without a key.
+  if (lane.lane !== 'cloud' || lane.kind || !(lane.mail || lane.toolkit)) return null;
+  const app = lane.toolkit || 'gmail';
+  const what = lane.mail ? 'Your email' : app.charAt(0).toUpperCase() + app.slice(1);
+  return { reply: what + ' goes through the cloud connection, which is not set up on this Mac yet, Sir — add a Composio API key in ' +
+    'Settings → Connections, then say “connect ' + app + '”.', cloud: { lane: 'cloud', toolkit: app, key: false } };
+}
 
 // ---------------- small utils ----------------
 function sh(cmd, args, timeout) {
@@ -9582,6 +9593,14 @@ async function handleChatInner(body) {
     if (!readerNone) return agentReply(await runTypedGoal(userText, { noLearn: evalRun(body), messages: body && body.messages }));   // readerSaysNone: otherwise on to the answering lanes
     }
   }
+  // NO KEY, SO SAY WHAT IS MISSING (2026-10-24, tested from the public repo). Without a Composio key the lane above is
+  // skipped, so "read me my unread emails" fell through to lanes that cannot do it and came back "I could not carry that
+  // out". Mail and named apps now get what is missing and where it goes; the searches the lane would run (news,
+  // places…) are left to the local lanes, which can do them without a key.
+  if (plain && !readerOwns && !composio.available()) {
+    const nk = cloudNeedsKey(cmdText);
+    if (nk) { touchNode('cloud'); return nk; }
+  }
   // "connect gmail" / "what cloud services are connected"
   if (plain && CLOUD_ADMIN_RE.test(cmdText)) {
     const m = userText.match(/\bconnect\s+(?:to\s+)?([a-z0-9 _-]+)/i);
@@ -12440,6 +12459,8 @@ const server = http.createServer(async (req, res) => {
       const triaged = proactive.triage(visibleDyn.concat(notifLog));
       return send(res, 200, {
         now: Date.now(), stats, agents, weather, hasKey: haveLLM(), backup: backupMode(), runningApps: await runningAppCount(),
+        // How he chose to be addressed ('' when nobody has set this Mac up) — the page's own fixed lines follow it.
+        honorific: profile.honorific(),
         // Told once here rather than discovered by a failed request per spoken line: when there is
         // no local voice the page should go straight to Web Speech, not wait out a 503 first.
         tts: voice.available(),
@@ -13923,7 +13944,7 @@ module.exports = { handleChat, _resetTurnState, _systemPrompt: systemPrompt, att
   // arbitrate() reads a cache errand.js fills asynchronously, so a test that asserts a verdict has
   // to warm the same strings the live pre-warm does. Both are exported rather than reimplemented in
   // the suite: a test that warms a different set from the handler is testing something else.
-  arbitrate, readOnlyProcedureFor, clauseCandidates, errand, resolveReference, parseArithmetic, parseSingleStat, parseRunningApps,
+  arbitrate, readOnlyProcedureFor, cloudNeedsKey, clauseCandidates, errand, resolveReference, parseArithmetic, parseSingleStat, parseRunningApps,
   inSilentHours, voiceSilent, silentWriteState, silentState, parseStatCondition, blockedForQuestion, parseMultiFileCreate, chooseTrackControl,
   // classifyTeachStep decides what a sentence spoken DURING a lesson means. It had no test at all,
   // which is how "press enter" silently became a hunt for a button labelled "press enter".

@@ -229,8 +229,8 @@ Everything should be green. It changes nothing — it only looks. Anything red t
    **Pronouns**. Under **Where you are**, leave the fields blank to use your Mac's own country, time zone and °C/°F.
    Everything saves the moment you change it.
 3. Type **hi** in the chat box. With a microphone, say **"Hey Jarvis"** (or clap twice) and speak.
-4. Tell it about yourself in plain sentences whenever you like — *"my sister is called Anna"*, *"I live in Berlin"* —
-   and it remembers.
+4. Tell it about yourself in plain sentences whenever you like — *"I live in Berlin"*, *"my favourite colour is teal"* —
+   and it remembers. (Facts about yourself; facts about other people are not kept yet.)
 
 ### 9️⃣ (Optional) Extras
 
@@ -340,7 +340,7 @@ when it is unsure, and does nothing when it cannot tell. A few of each kind:
 | weather and time | *"weather in Delhi tomorrow"* · *"what time is it in Tokyo"* |
 | several at once | *"open youtube and what is my battery"* — each part runs on its own |
 | questions | *"who wrote Hamlet"* (answered from Wikipedia, then checked against it) · *"why did you do that?"* (from its own decision log) |
-| memory | *"my sister is called Anna"* … later, *"what's my sister's name?"* |
+| memory | *"my favourite colour is teal"* … later, *"what's my favourite colour?"* (facts about yourself — facts about other people are not kept yet) |
 | studying | *"quiz me"* · *"I want to learn about black holes"* |
 | dream mode | *"what did you do while I was away"* · *"dream now"* · *"turn dream mode off"* |
 | local businesses | *"find bakeries in Chandigarh without a website"* |

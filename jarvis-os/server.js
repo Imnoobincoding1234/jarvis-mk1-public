@@ -2165,6 +2165,7 @@ async function groundedCheck(model, sys, ask, reply) {
 // temperature 0 with its token logprobs, so the composer sends it only when the drafter was sure. JARVIS_COMPOSE_MODEL, default
 // phi4-mini (on the dev set its confidence separated good drafts from bad; qwen's did not). Through the memory gate like every call.
 async function composeDraft(messages) {
+  touchNode('composer');
   const model = envVal('JARVIS_COMPOSE_MODEL') || 'phi4-mini:latest';
   const prof = MP.profileFor(model);
   await ollamaDoor.makeRoomFor(model);
@@ -10540,10 +10541,17 @@ async function buildNeuralGraph() {
   // --- core spine: how a request actually travels ---
   // The owner's node carries the name set in Settings (profile.userName), so a new Mac shows its own owner, not a
   // name typed into the code; a blank profile reads YOU.
-  N('you', (profile.userName() || 'you').toUpperCase(), 'io', 'voice · text · ⌘K',
-    'You. Every request enters here — typed in chat, spoken through the mic, or triggered by a hotkey.');
-  N('ui', 'JARVIS OS UI', 'core', 'chat · voice · vision · world · neural',
-    'The interface layer: chat view, voice orb, camera vision, World Monitor and this Neural Network. Renders replies and streams live state from the server.');
+  N('you', (profile.userName() || 'you').toUpperCase(), 'io', 'chat · voice · terminal',
+    'You. Every request enters here — typed in the chat or in the terminal client, or spoken through the mic.');
+  N('ui', 'JARVIS OS UI', 'core', 'chat · voice · vision · world ⌘⇧W · neural ⌘⇧0',
+    'The interface layer: chat view, voice orb, camera vision, World Monitor and this Neural Network. Renders replies and streams live state from the server. ' +
+    'Keys: ⌘⇧W opens or closes the World Monitor, ⌘⇧0 this Neural Network, ⌘L the live log; Esc closes whichever is open, and stops a running request when nothing is typed.');
+  // THE TERMINAL CLIENT (jarvis-cli.js, 2026-10-14): the same /api/chat as the UI, so the same router and guards; its
+  // slash commands post exactly what the app's buttons post.
+  N('cli', 'TERMINAL CLIENT', 'io', 'jarvis-cli.js · /think · /brief · /capture · /attach · /focus · /schedule',
+    'JARVIS without the browser: node jarvis-os/jarvis-cli.js in a terminal. It talks to this server over the same HTTP API as the web UI and decides nothing itself — ' +
+    'the confirm gates, contact resolution, refusals and the harness all run here and apply identically. Its slash commands are the app\'s buttons: /think (Think hard), /brief (the briefing), ' +
+    '/capture (a screenshot to look at), /attach (an image), /focus on|off (Do Not Disturb), /schedule (an automation), plus /new, /stop, /steps, /clear and /help.');
   N('router', 'INTENT ROUTER', 'core', '8 lanes, first match wins',
     'Decides WHAT KIND of request this is, in a fixed order: macros \u2192 briefing \u2192 cloud \u2192 agent \u2192 research \u2192 clauses \u2192 compound \u2192 single action. Order matters \u2014 earlier lanes are cheaper and more certain, so a deterministic answer always beats guessing. One sentence is no longer forced into one lane: a request that carries two jobs can have each job answered by the lane that owns it.',
     [['r1','macros','first \u2014 a saved macro replays with no model at all'],
@@ -10572,7 +10580,7 @@ async function buildNeuralGraph() {
       ' — which also answers from Wikipedia in GROUNDED ANSWERS. ' : '') +
     'The 3B (' + localModel() + ') writes the other answers (research, briefings), picks the next step in the agentic loop and does the reference check. ' +
     'Reasoning questions go to ' + (reasoningModel() || 'the 3B') + ', and the Think hard button to THINK HARD. None of them reads a command (that is the READER MODEL) or does anything a deterministic rule already handles; the ONE-MODEL GATE decides which may sit in memory, and every plain-chat reply passes CLAIM CHECK before you see it. The hosted path still exists in code for a key that may be added one day, with a breaker that stops retrying a dead key. Plain chat answers stream as they are written. In voice mode the speech follows that stream rather than waiting for the finished text — a completed sentence, or a long enough clause when the model writes without terminators — but only while the server still says the half-written text is safe to say, because the plain-chat exit can replace a reply that turns out to be a false completion claim and those words must not already have been spoken.');
-  E('you', 'ui'); E('ui', 'router'); E('router', 'llm');
+  E('you', 'ui'); E('ui', 'router'); E('router', 'llm'); E('you', 'cli'); E('cli', 'router');
 
   // --- deterministic lanes (model-free, work offline) ---
   // THE READER. This node was QUICK ACTION, "regex verb table · config/verbs.json" — both long gone.
@@ -10651,9 +10659,29 @@ async function buildNeuralGraph() {
     'Decides whether something you said is a fact about you worth keeping — "I live in Ludhiana", "remember that …" — by regions of meaning, not by a sentence that happens to start with "my". A kept fact is stored as you said it (only a leading "jarvis," comes off) in your PROFILE and episodes, and stating it again replaces the old one instead of sitting beside it. It stands aside when the reader holds an action: "take me to reddit" was once stored as a fact. ' +
     'Known gaps: it still keeps some casual chat (16 stores across three test runs, like "ngl ur kinda goated") and misses some real facts ("my favourite pizza is margherita", a locker code).');
   E('router', 'selffact'); E('selffact', 'profile', 'stores');
-  N('think', 'THINK HARD', 'brain', THINK_MODEL().split('/').pop() + ' · ' + THINK_CTX() + '-token window · button only',
-    'The Think hard button, and nothing else: it is JARVIS’s own flag, so no words are read to decide it. Bonsai 8B with its thinking mode on, a lean reasoning prompt and an 8K window solved 6 of the 9 hardest problems on your graded logic set, where phi4-mini managed about 2 — but at 30 s to 4.5 min an answer and free memory down to 17%, so it is opt-in.');
-  E('ui', 'think', 'button'); E('think', 'modelgate', 'asks');
+  N('think', 'THINK HARD', 'brain', THINK_MODEL().split('/').pop() + ' · ' + THINK_CTX() + '-token window · button or /think',
+    'The Think hard button (or /think in the terminal client), and nothing else: it is JARVIS’s own flag, so no words are read to decide it. Bonsai 8B with its thinking mode on, a lean reasoning prompt and an 8K window solved 6 of the 9 hardest problems on your graded logic set, where phi4-mini managed about 2 — but at 30 s to 4.5 min an answer and free memory down to 17%, so it is opt-in.');
+  E('ui', 'think', 'button'); E('cli', 'think', '/think'); E('think', 'modelgate', 'asks');
+
+  // THE MESSAGE COMPOSER (C2, live since 2026-10-22 — finetune/README "Composer v3"). Read from the same .env switches
+  // agent.composeStrict reads, so the node says what the next message will actually go through.
+  {
+    const mode = String(envVal('JARVIS_COMPOSE_V3') || '').trim();
+    const draftModel = envVal('JARVIS_COMPOSE_MODEL') || 'phi4-mini:latest';
+    const draftCtx = Number(envVal('JARVIS_COMPOSE_CTX')) || Number(envVal('JARVIS_LOCAL_CTX')) || 8192;
+    N('composer', 'MESSAGE COMPOSER', 'brain',
+      mode === 'c2' ? 'C2 · your words · a sure draft · else it asks · ' + draftModel.replace(/:latest$/, '') + ' at ' + draftCtx
+        : mode === '1' ? 'v3 · one draft · ' + draftModel.replace(/:latest$/, '') : 'off · the older composer',
+      'Decides the BODY of a text or message before anything is sent. A body you said word for word goes exactly as you said it. One you only reported ' +
+      '("tell her I\'m running late") is written for you only when that is safe: reported in Hinglish it asks what to send; reported in English the draft model ' +
+      'writes ONE draft and it is sent only when every token of it is sure (lowest logprob -1.2 or better), otherwise it asks. A question ends the run there — ' +
+      'the harness records it as asked, with no retry and nothing learned. Switched by JARVIS_COMPOSE_V3 in .env.',
+      [['cm1', 'your words', 'a body said word for word is sent as said'],
+       ['cm2', 'Hinglish', 'reported in Hinglish → it asks what to send'],
+       ['cm3', 'English', 'reported in English → one draft, sent only when sure (≥ -1.2)'],
+       ['cm4', 'asked', 'a question ends the run — no retry, no learning']]);
+    E('detplan', 'composer', 'message body'); E('loop', 'composer', 'message body'); E('composer', 'modelgate', 'draft');
+  }
 
   // --- local execution ---
   N('sysctl', 'SYSTEM CONTROL', 'tool', Object.keys(sysctl.TOOLS).length + ' tools · files · apps · volume',
@@ -11001,8 +11029,10 @@ async function buildNeuralGraph() {
   N('music', 'MUSIC', 'logic', 'Spotify web \u00b7 structural resolution',
     'Plays a named track, deterministically, with no model in the path. The control is found by walking the page STRUCTURE, not by ranking button labels: Spotify labels the real song\u2019s button simply "Play" while every control that NAMES the track belongs to a playlist somebody titled after the search. So the card is matched instead \u2014 title, artist, and the word "Song" rather than "Playlist" \u2014 and among equals the one adding fewest unrequested words wins, which is what separates the studio track from a live version or a re-upload. Afterwards it reads Spotify\u2019s own transport to check WHAT is playing, not merely that something is: a press that lands on nothing leaves the previous track running, and every other signal calls that success. ' +
     'The ARTIST is carried all the way to the press. Asked for an artist\u2019s latest, the title is looked up first \u2014 and the artist used to be discarded the moment it had served that purpose, leaving a search for a bare title. There is a second song called \u201cDead Dance\u201d, by 0kill, and that is the one that got pressed while the log said plainly that it had resolved the latest for Lady Gaga. Bohemian Rhapsody only ever worked because its title happens to be unique. A title is not an identifier; a title and an artist very nearly are, so the artist now goes into the search as well as the match \u2014 filtering a result list that never contained the right row would have fixed nothing.');
-  N('world', 'WORLD MONITOR', 'cloud', 'USGS \u00b7 EONET \u00b7 GDACS \u00b7 UN \u00b7 GDELT',
-    'Live situational picture: earthquakes, natural events and disaster alerts from authoritative feeds, plus news. Asked about a specific COUNTRY it goes and fetches that country\u2019s own press \u2014 the national Google News edition where one exists, a scoped search and GDELT where it does not \u2014 because the world wires only carry a smaller country on a day it is having a very bad one, and their silence is not evidence that nothing is happening there.');
+  N('world', 'WORLD MONITOR', 'cloud', '\u2318\u21e7W \u00b7 USGS \u00b7 EONET \u00b7 GDACS \u00b7 UN \u00b7 GDELT \u00b7 flights \u00b7 satellites \u00b7 launches \u00b7 cyclones',
+    'Live situational picture: earthquakes, natural events and disaster alerts from authoritative feeds, plus news. Asked about a specific COUNTRY it goes and fetches that country\u2019s own press \u2014 the national Google News edition where one exists, a scoped search and GDELT where it does not \u2014 because the world wires only carry a smaller country on a day it is having a very bad one, and their silence is not evidence that nothing is happening there. ' +
+    'On the globe, worldlive.js adds the moving layer: flights (OpenSky / ADS-B), satellites (CelesTrak), launches (Launch Library) and cyclones (NHC). ' +
+    'Opened with ⌘⇧W, or by asking — "open world monitor", "world monitor kholo".');
   N('voice', 'VOICE', 'io', 'piper neural out \u00b7 Web Speech fallback',
     'Speech in, speech out. A reply is only spoken when the request itself was spoken. When JARVIS ends a spoken turn with a QUESTION the microphone reopens on its own so the answer can just be said \u2014 waiting for the utterance to finish first, since starting earlier would cut the question off, and closing again after a few seconds of silence. The cutoff measures silence, not thinking time: any speech cancels it. ' +
     'The voice itself is LOCAL and neural: piper, en_GB-semaine speaker 2, chosen by ear from five candidates. It is synthesised on the server and sent back as audio rather than spoken by the browser, for two reasons \u2014 the browser can only reach the voices macOS ships, whose best male en-GB one is a compact voice from 2010, and you can reach JARVIS from your phone over the tailnet, where anything built on macOS `say` would have spoken into an empty room. ' +

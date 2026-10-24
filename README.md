@@ -270,6 +270,86 @@ Accessibility, screen-control clicks return `ok:true` and nothing moves.
 
 ---
 
+## ⌨️ Using JARVIS: panels, shortcuts and commands
+
+### 🌍 World Monitor and 🧠 Neural Network
+
+| | 🌍 World Monitor | 🧠 Neural Network |
+|---|---|---|
+| **Keyboard** (in the JARVIS window) | **⌘ ⇧ W** opens it, again closes it | **⌘ ⇧ 0** opens it, again closes it |
+| **Type or say, to open** | *"open world monitor"* · *"pull up world monitor plz"* · *"world monitor kholo"* | *"open neural network"* · *"show me the neural net"* · *"neural network kholo"* |
+| **Type or say, to close** | *"close world monitor"* · *"world monitor band karo"* — or **Esc** | *"close the neural net"* · *"neural network band karo"* — or **Esc** |
+| **Ask it something** | its own box: *"summarize"* · *"biggest quake"* · *"what's happening in Ukraine"* | its own box: *"what happens when I say open youtube?"* |
+
+The panel opens only when you mean the panel: *"what is a neural network"*, *"open activity monitor"* and *"world news"* are
+other requests (`jarvis-os/tests/test_panels.js` checks exactly these). The Neural Network is built from the running
+system each time it opens — every component, what it is doing now, and the path a request takes — and lights each node
+as a request passes through it.
+
+### ⌨️ Keyboard shortcuts
+
+| keys | where | what it does |
+|---|---|---|
+| **⌘ ⇧ W** | JARVIS window | World Monitor on / off |
+| **⌘ ⇧ 0** | JARVIS window | Neural Network on / off |
+| **⌘ L** | JARVIS window | the live log on / off |
+| **Esc** | JARVIS window | closes the open panel or the log; while JARVIS is working and the box is empty, it **stops** it |
+| **Return** | any JARVIS box | send |
+| **⌘ 9** | anywhere | the Jarvis Search overlay, once built (`cd "Jarvis Search/src" && bash build.sh`) |
+| **ctrl-n** | terminal client | a fresh conversation |
+| **ctrl-c** | terminal client | stops a running request; pressed twice, leaves |
+| **ctrl-d** | terminal client | leaves |
+
+### 💻 The terminal client
+
+The same JARVIS without the browser: it talks to the running server over the same API as the web page, so the same
+guards apply, and it decides nothing itself. With JARVIS running:
+
+```bash
+node ~/"JARVIS MK-1"/jarvis-os/jarvis-cli.js
+```
+
+| command | what it does |
+|---|---|
+| `/think <question>` | **Think hard** on it — slow and careful (`/think` alone: for the next question) |
+| `/brief` | the briefing: calendar, schedule, battery, disk, weather |
+| `/capture [--display N] [question]` | takes a screenshot and JARVIS looks at it |
+| `/attach <path> [question]` | sends an image |
+| `/focus on` · `/focus off` | Do Not Disturb |
+| `/schedule <what and when>` | an automation — *`/schedule standup reminder tomorrow at 9am`* |
+| `/new` · `/stop` · `/steps` | a fresh conversation · stop whatever it is doing · what it did on the last run |
+| `/clear` · `/help` · `/quit` | clear the screen · this list · leave |
+
+The web chat box takes two slash commands of its own: `/schedule <what and when>`, and `/watch <condition>` —
+*`/watch CPU goes above 90%`* — which tells you when it happens.
+
+### 💬 Things to type or say
+
+Plain sentences, in English or Hinglish. The reader model turns each one into one checked action, asks *"Should I …?"*
+when it is unsure, and does nothing when it cannot tell. A few of each kind:
+
+| kind | try |
+|---|---|
+| apps and sites | *"open youtube"* · *"close safari"* · *"open spotify"* (the app if it is installed, the website if not) |
+| search and play | *"search lofi beats on youtube"* · *"play lofi on youtube"* |
+| files and folders | *"make a folder called notes in progress on my desktop"* · *"create a file called ideas.txt on my desktop"* · *"list my desktop"* · *"find my resume"* · *"empty the trash"* |
+| messages and calls | *"text mom I'm on my way"* · *"call dad"* — names come from your Contacts, WhatsApp unless you say iMessage or SMS, and nothing is sent without your OK |
+| reminders, calendar, notes | *"remind me to call the dentist at 5pm"* · *"what's on my calendar tomorrow"* · *"make a note: buy milk"* |
+| music and sound | *"pause"* · *"next song"* · *"volume up"* |
+| this Mac | *"how's my battery"* · *"what apps are running"* · *"take a screenshot"* · *"put the display to sleep"* |
+| weather and time | *"weather in Delhi tomorrow"* · *"what time is it in Tokyo"* |
+| several at once | *"open youtube and what is my battery"* — each part runs on its own |
+| questions | *"who wrote Hamlet"* (answered from Wikipedia, then checked against it) · *"why did you do that?"* (from its own decision log) |
+| memory | *"my sister is called Anna"* … later, *"what's my sister's name?"* |
+| studying | *"quiz me"* · *"I want to learn about black holes"* |
+| dream mode | *"what did you do while I was away"* · *"dream now"* · *"turn dream mode off"* |
+| local businesses | *"find bakeries in Chandigarh without a website"* |
+| Sundays | *"summary"* — the week in AI/ML |
+| stopping | *"stop"* — or **Esc** |
+| with a cloud key | *"take control of my screen"* (OpenRouter + `JARVIS_VISION_MODEL`) · *"read me my unread emails"* (Composio) |
+
+---
+
 ## 🗺️ What is where
 
 | | |

@@ -5850,6 +5850,16 @@ const destKindsIn = text => new Set(destsIn(text).map(x => x.kind));
 // work, so with the verb regexes gone it is not replaced by anything.
 const ARB_MIN = 4;      // the thing named, or a destination — nothing less claims a request
 const ARB_MARGIN = 3;   // and a near-tie is an ambiguity to be admitted, not resolved by position
+// The read-only procedure a sentence fits by meaning, or null: matched by the playbook's own embedders, and read-only
+// only when JARVIS's playbook entry says so (playbook.readOnlyTools). Used where an unsure verdict would otherwise
+// pre-empt it — see the arbiter's tie in handleChatInner.
+async function readOnlyProcedureFor(text) {
+  try {
+    if (!(await playbook.isProcedural(text))) return null;
+    const m = await playbook.match(text);
+    return m && m.pb && playbook.readOnlyTools(m) ? m : null;
+  } catch (e) { return null; }
+}
 function arbitrate(text, body) {
   const t = String(text || '').trim();
   if (!t) return null;
@@ -7578,6 +7588,20 @@ async function handleChatInner(body) {
     jlog('Arbiter › "' + cmdText.slice(0, 44) + '" → ' +
          (verdict.kind || 'AMBIGUOUS ' + verdict.ambiguous.join(' vs ')) +
          (verdict.why ? '  [' + verdict.why + ']' : ''));
+  }
+  // A TIE IS NOT AN ERRAND YET, AND A READ-ONLY PROCEDURE THAT FITS BY MEANING GOES FIRST (2026-10-24, his live turn).
+  // "find me resturants with no websites in my locality": the errand reader named "resturants with no websites" as a
+  // thing to order, the arbiter tied food vs grocery, and the question below pre-empted every lane after it — while
+  // find-businesses had matched the sentence by meaning and was never consulted. The same wall as the reader's unsure
+  // question (2026-10-15): only a procedure that just reads the world (`readOnly` on JARVIS's own playbook entry — no
+  // words) goes ahead of the ask, and the playbook lane below runs it walled to those tools. A procedure that can order
+  // anything (order-food, grocery) still waits for his answer, so a real tie is still asked.
+  if (verdict && !verdict.kind && verdict.ambiguous) {
+    const ro = await readOnlyProcedureFor(cmdText);
+    if (ro) {
+      jlog('Arbiter › the tie is set aside — "' + cmdText.slice(0, 44) + '" fits ' + ro.pb.id + ', a read-only procedure');
+      verdict = null;
+    }
   }
   // A NEAR-TIE IS AN AMBIGUITY, AND THE HONEST MOVE IS TO ASK. This is the case that used to be
   // settled silently by declaration order — the request genuinely did not say, and JARVIS guessed.
@@ -13899,7 +13923,7 @@ module.exports = { handleChat, _resetTurnState, _systemPrompt: systemPrompt, att
   // arbitrate() reads a cache errand.js fills asynchronously, so a test that asserts a verdict has
   // to warm the same strings the live pre-warm does. Both are exported rather than reimplemented in
   // the suite: a test that warms a different set from the handler is testing something else.
-  arbitrate, clauseCandidates, errand, resolveReference, parseArithmetic, parseSingleStat, parseRunningApps,
+  arbitrate, readOnlyProcedureFor, clauseCandidates, errand, resolveReference, parseArithmetic, parseSingleStat, parseRunningApps,
   inSilentHours, voiceSilent, silentWriteState, silentState, parseStatCondition, blockedForQuestion, parseMultiFileCreate, chooseTrackControl,
   // classifyTeachStep decides what a sentence spoken DURING a lesson means. It had no test at all,
   // which is how "press enter" silently became a hunt for a button labelled "press enter".
